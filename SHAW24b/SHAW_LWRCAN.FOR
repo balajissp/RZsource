@@ -1,0 +1,152 @@
+C
+      SUBROUTINE LWRCAN(LWCAN,LWRES,NPLANT,NC,NSP,NR,TLC,TLCDT,TR,TRDT,
+     >                  ABOVE,EMITSFC,TDIFFU,TDIFFC,DIFKL,FDDU,WDT)
+C
+C     THIS SUBROUTINE SUMS THE NET LONG-WAVE RADIATION EXCHANGE
+C     FOR A GIVEN SIDE OF EACH CANOPY LAYER (ABOVE OR BELOW).  THE
+C     VALUE OF "IN" COMING INTO THE SUBROUTINE IS LONG-WAVE FLUX
+C     ENTERING A GIVEN SIDE OF THE CANOPY, AND THE VALUE OF "IN"
+C     LEAVING THE SUBROUTINE IS THE LONG-WAVE FLUX LEAVING THE CANOPY
+C     ON THE OPPOSITE SIDE.
+C
+C***********************************************************************
+c      
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+C
+      PARAMETER (nodcan=11, NODRES=10, MXSPEC=10)
+C
+      DOUBLE PRECISION LWCAN(MXSPEC,NODCAN),LWRES(NODRES),
+     +  TLC(MXSPEC,NODCAN),TLCDT(MXSPEC,NODCAN),
+     +  TR(NODRES),TRDT(NODRES),TDIFFC(NODCAN),
+     +  DIFKL(MXSPEC+1,NODCAN),TDIFFU(NODRES),FDDU(MXSPEC),
+     +  RD(NODCAN+NODRES+1),RU(NODCAN+NODRES+1),DDU(NODCAN+NODRES+1),
+     +  A(2*(NODCAN+NODRES+1)),B(2*(NODCAN+NODRES+1)),
+     +  C(2*(NODCAN+NODRES+1)),D(2*(NODCAN+NODRES+1))
+C
+      PARAMETER (STEFAN=5.6697D-08)
+      common /shawp/ pplastic,emitc,emitr(10),emitsp,emits,emitf
+     &      ,palbedo,ptransm
+C
+C
+C     INITIALIZE MATRIX ELEMENTS
+      N = 1
+      A(1) = 0.0
+      B(1) = 1.0
+      C(1) = 0.0     
+      D(1) = ABOVE
+C
+      DO 20 I=1,NC
+         N = N + 1
+         D(N) = 0.0
+         DDU(I) = 0.0
+C        COMPUTE RADIATION EMITTED BY EACH PLANT WITH LAYER AND TOTAL 
+C        EMITTED BY ENTIRE LAYER
+         DO 10 J=1,NPLANT
+            TK=TLC(J,I)+273.16d0
+         EMIT=EMITC*STEFAN*(TK**4+4.0d0*(TK**3)*(TLCDT(J,I)-TLC(J,I)))
+C           COMPUTE TOTAL RADIATION EMITTED FROM BOTH SIDES OF LAYER
+C           BASED ON FRACTION OF TRANSMISSIVITY OF LAYER FOR PLANT
+            FRACTN = (1.-TDIFFC(I))*DIFKL(J,I)/DIFKL(NPLANT+1,I)
+            LWCAN(J,I)= -2.*FRACTN*EMIT
+            D(N) = D(N) + FRACTN*EMIT
+C           WEIGHT THE FRACTION OF UPWARD SCATTERED RADIATION
+            DDU(I) = DDU(I) + FDDU(J)*DIFKL(J,I)
+   10    CONTINUE
+         DDU(I) = DDU(I)/DIFKL(NPLANT+1,I)
+C
+C        COMPUTE COEFFICIENTS FOR UPWELLING RADIATION ABOVE LAYER
+         A(N) = -DDU(I)*(1.-EMITC)*(1.-TDIFFC(I))
+         B(N) = 1.0
+         C(N) = -(TDIFFC(I) + (1.-DDU(I))*(1.-EMITC)*(1.-TDIFFC(I)))
+C        COMPUTE COEFFICIENTS FOR DOWNWELLING RADIATION BELOW LAYER
+         N = N + 1
+         A(N) = C(N-1)
+         B(N) = 1.0        
+         C(N) = A(N-1)
+         D(N) = D(N-1)
+   20 CONTINUE
+C
+CC      if (nsp .eq. 0) then                                  !NOT IN ORIGINAL SHAW 25b? LIWANG 2017
+C       ADJUST MARTRIX FOR PLASTIC FILM 
+C       ASSUMING NET LONG-WAVE INTO FILM IS ZERO SINCE HEAT CAPACITY IS 
+C       NEGLIGIBLE. THEREFORE, IF 100% COVER THEN:
+C       Lu = (1-EMITF)*Ldi + EMITF*Lui+1; Ld = EMITF*Ldi + (1-EMITF)*Lui+1
+C       COMPUTE COEFFICIENTS FOR UPWELLING RADIATION ABOVE PLASTIC FILM
+CC        N = N + 1
+CC        A(N) = -PPLASTIC*(1.d0-EMITF)
+CC        B(N) = 1.0d0
+CC        C(N) = -PPLASTIC*EMITF - (1.d0-PPLASTIC)
+CC        D(N) = 0.0d0
+C       COMPUTE COEFFICIENTS FOR DOWNWELLING RADIATION BELOW PLASTIC
+CC        N = N + 1
+CC        A(N) = -PPLASTIC*EMITF - (1.d0-PPLASTIC)
+CC        B(N) = 1.0d0
+CC        C(N) = -PPLASTIC*(1.d0-EMITF)
+CC        D(N) = 0.0d0
+CC      end if
+      
+      DO 30 I=1,NR
+      	  N = N + 1
+         TK=TR(I)+273.16d0
+         EMIT=(1.-TDIFFU(I))*EMITR(I)*STEFAN
+     >        *(TK**4 + 4.0d0*WDT*(TK**3)*(TRDT(I)-TR(I)))
+         LWRES(I)=-2.*EMIT 
+C        COMPUTE COEFFICIENTS FOR UPWELLING RADIATION ABOVE LAYER
+C        HORIZONTAL LEAF ORIENTATION IS ASSUMED FOR SCATTERING. 
+C        THEREFORE ONLY BACKSCATTERING; NO FORWARD SCATTERING
+         A(N) = -(1.-EMITR(I))*(1.-TDIFFU(I))
+         B(N) = 1.0d0
+         C(N) = -TDIFFU(I)
+         D(N) = EMIT
+C        COMPUTE COEFFICIENTS FOR DOWNWELLING RADIATION BELOW LAYER
+         N = N + 1
+         A(N) = C(N-1)
+         B(N) = 1.0d0
+         C(N) = A(N-1)
+         D(N) = D(N-1)
+   30 CONTINUE
+C
+C     COMPUTE MATRIX ELEMENTS FOR LOWER SURFACE BOUNDARY
+      N = N + 1
+      B(N) = 1.0d0
+      C(N) = 0.0d0
+      IF (NSP .GT. 0) THEN
+         A(N) = -(1.-EMITSP)
+        ELSE
+         A(N) = -(1.-EMITS)
+      END IF
+      D(N) = EMITSFC
+C
+C     CALL MATRIX SOLVER
+      NLAYR = NC + NR
+c      if (nsp.eq.0) NLAYR = NC + NR + 1   !not in version 25b Liwang 2017
+      CALL SOLVRAD (NLAYR,A,B,C,D,RD,RU)
+C
+      N = 0
+      DO 40 I=1,NC
+      	  N = N + 1
+         LWCAN(NPLANT+1,I) = 0.0d0
+C        COMPUTE THE TOTAL RADIATION ABSORBED BY CANOPY LAYER
+         ABSORB = (1.-TDIFFC(I))*EMITC*(RD(N)+RU(N+1))
+         DO 35 J=1,NPLANT
+C           ADD THE FRACTION OF TOTAL RADIATION ABSORBED BY EACH PLANT 
+C           TO THAT EMITTED BY EACH PLANT
+            LWCAN(J,I)=LWCAN(J,I) + ABSORB*DIFKL(J,I)/DIFKL(NPLANT+1,I)
+            LWCAN(NPLANT+1,I) = LWCAN(NPLANT+1,I) + LWCAN(J,I)
+   35    CONTINUE
+   40 CONTINUE
+C
+C     SKIP NODE FOR PLASTIC LAYER (has this been done early??)  !not in version 25b Liwang 2017
+c      if (nsp .eq. 0) N = N + 1
+C      
+      DO 50 I=1,NR
+         N = N + 1
+         LWRES(I)=LWRES(I) + (1.-TDIFFU(I))*EMITR(I)*(RD(N)+RU(N+1))
+   50 CONTINUE
+C
+      ABOVE = RD(N+1)
+C
+      RETURN
+      END
+C
+C***********************************************************************

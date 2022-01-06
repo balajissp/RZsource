@@ -1,0 +1,36 @@
+C***********************************************************************
+C
+      SUBROUTINE RESVK(NR,NSP,TR,TRDT,CONVEC,VAPCON,WT,WDT,PRESUR)
+C
+C     THIS SUBROUTINE CALCULATES THE VAPOR CONDUCTANCE TERM (CONV)
+C     BETWEEN RESIDUE NODES USING THE CALCULATED THERMAL CONDUCTANCE.
+C
+C***********************************************************************
+C
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+C
+      PARAMETER (NODRES=10)
+C
+      DOUBLE PRECISION CONVEC(NODRES),VAPCON(NODRES),
+     +    TR(NODRES),TRDT(NODRES)       
+
+C
+      PARAMETER (RHOA=1.25D0, CA=1006.D0, P0=101.3D0,
+     +  VDIFSP=9.D-05, VAPSPX=14.D0)
+      common /shawp/ pplastic,emitc,emitr(10),emitsp,emits,emitf
+     &      ,palbedo,ptransm
+C
+      DO 10 I=1,NR
+         VAPCON(I)=CONVEC(I)/RHOA/CA
+C
+         IF (NSP .GT. 0) THEN
+C           SNOW FILTERS DOWN THRU RESIDUE - VAPOR DIFFUSIVITY IS THAT
+C           THROUGH SNOW -- but need to adjust for plastic cover
+            AVGTMP = WT*TR(I) + WDT*TRDT(I)
+            VAPCON(I)=(1.0D0-PPLASTIC)*
+     +                 VDIFSP*(P0/PRESUR)*(1.d0+AVGTMP/273.16d0)**VAPSPX
+         END IF
+   10 CONTINUE
+c         IF (PPLASTIC.GT.0.0D0) VAPCON(1)=CONVEC(1)*(1.0D0-PPLASTIC)   !LIWANG 2017
+      RETURN
+      END

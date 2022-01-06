@@ -1,0 +1,9 @@
+*.OUT
+*.out
+*.plt
+*.PLT
+*/STATE.BIN
+*/state.bin
+
+
+

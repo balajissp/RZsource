@@ -1,0 +1,363 @@
+C
+      SUBROUTINE ATSTAB(NC,NR,NSP,TA,TADT,T,TDT,HUM,HUMDT,VAP,VAPDT,
+     +  WIND,HEIGHT,ICE,ITER,HFLUX,VFLUX,WT,WDT,PRESUR,ZH,ZM,ZERO,
+     +  ZHSUB,ZMSUB,ZERSUB,WINDR,B1,D1,B2,D2,RHOR,ZR,gflux,
+     +  evapmx,USTAR,STABLE,TOTLAI,WINDC,ZC,ISHUTL,NPLANT,srootxt,dt,
+     +  CANLAI,istress)
+C
+C     note: gflux passed directly into routine from SHAWHT
+C======================================================================
+C
+C       PURPOSE:
+C     THIS SUBROUTINE CALCULATES THE ATMOSPHERIC STABILITY (WHEN SNOW
+C     IS PRESENT OR SHUTTLEWORTH ET OPTION IS NOT SELECTED), THE
+C     TRANSFER COEFFICIENTS FOR THE BOTH HEAT AND VAPOR
+C     FROM THE SURFACE, DEFINES THE BOUNDARY CONDITIONS FOR THE MATRIX
+C     SOLUTIONS, AND CALCULATES THE WINDSPEED PROFILES IN THE RESIDUE
+C     AND CANOPY.
+C
+C       REF:
+C
+C       VARIABLE DEFINITIONS:
+C       VARIABLE  I/O   DESCRIPTION
+C       --------  ---   -----------
+C       B1        I/O   diagonal term in Jacobian matrix for energy balance
+C       CA         P    spec heat of air  (J/kg-K)
+C       CI         P    spec heat cap of ice  (J/kg-K)
+C       CL         P    spec heat cap of liquid water  (J/kg-K)
+C       CM         P    spec heat cap of mineral fract of soil (J/kg-K)
+C       CON        L    cond term between nodes I and I+1  K/(Z(I+1)-Z(I))
+C       CONV       L    vapor cond between node i and i+1
+C       CV         P    spec heat of water vapor  (J/kg-K)
+C       D1        I/O   residual term in Newton-Raphson iteration for
+C                       energy balance
+C       DUMMY      L    dummy variable passed but not needed
+C       G          P    acceleration of gravity
+C       HEIGHT     I    height of windspeed and temp measurements
+C       HFLUX     I/O   turbulent heat flux at surface node
+C       HUM        I    humidity at beginning of time step
+C       HUMDT      I    humidity at end of time step
+C       I          L    canopy, snow, residue or soil layer
+C       ITER       I    current num of iter for energy and water balance
+C       LF         P    latent heat of fusion
+C       LS         P    latent heat of sublimation
+C       LV         P    latent heat of vaporization
+C       N          L    node num starting from surface material
+C       NR         I    num of matted residue layers
+C       NSP        I    num of layers in snowpack
+C       P0         P    stand atm pressure at sea level  (101,300 Pa)
+C       PRESUR     I    ave atm pressure at site  (N/m^2)
+C       RHOA       P    density of air  (kg/m^3)
+C       RHOI       P    density of ice   (kg/m^3)
+C       RHOL       P    density of liquid water  (kg/m^3)
+C       RHOM       P    density of the soil (particle density) kg/m^3
+C       RHOR       I    density of residue in matted layer  (kg/m^3)
+C       S          L    slope of sat vapor density curve  (kg/m^3-K)
+C       SATV       L    sat vapor density
+C       SATVDT     L    sat vapor density at end of time step
+C       STABLE     L    atm stability coeff
+C       T          I    temp
+C       TA         I    air temp at beginning of time step
+C       TADT       I    air temp at end of time step
+C       TDT        I    temp at end of time step
+C       TKA        P    thermal cond of air
+C       UGAS       P    universal gas constant
+C       USTAR      L    friction velocity (m/s)
+C       VAP        I    vapor density of the surface node at t (kg/m^3)
+C       VAPDT      I    vapor density of surface node at t+dt (kg/m^3)
+C       VDIFF      P    vap diffusivity in still air
+C       VFLUX     I/O   turbulent vapor transfer at surface node
+C       VONKRM     P    von Karman constant
+C       WDT        I    weighting factor for end of time step values
+C       WIND       I    ave wind speed for the time step (m/s)
+C       WINDR     I/O   windspeed at the top of the residue
+C       WT         I    weightin factor for beginning of time step values
+C       ZERO       I    plane of zero displacement in wind profile calc.
+C       ZH         I    surface roughness para for heat transfer
+C       ZM         I    surface roughness para for momentum transfer
+C       ZR         I    depth of node i in residue from the residue top
+C
+C
+C       COMMENTS:
+C
+C
+C       MASS STORAGE FILES:
+C
+C
+C       EXTERNAL REFERENCES:
+C                       VSLOPE
+C
+C       CALLED FROM:
+C
+C       PROGRAMMER:
+C
+C       VERSION:
+C
+C======================================================================
+C
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+C
+      PARAMETER (MXNOD=300, NODRES=10, nodcan=11,
+     +    MXSPEC=10, NODSNO=100, NODTOT=MXNOD+NODCAN+NODRES+NODSNO)
+C
+      DOUBLE PRECISION B1(NODTOT),D1(NODTOT),B2(NODTOT),D2(NODTOT),
+     +  WINDR(NODRES),RHOR(NODRES),ZR(NODRES),TOTLAI(MXSPEC),
+     +  WINDC(NODCAN),ZC(NODCAN),CANLAI(MXSPEC,NODCAN)
+      DOUBLE PRECISION LS,LV
+C
+      PARAMETER(LV=2.5D6,RHOL=1.0D3,RHOA=1.25D0,CA=1.006D3,LS=2.835D6,
+     + VONKRM=0.4D0,VDIFF=2.12D-5,P0=1.013D5,TKA=0.025D0)
+      common /shawp/ pplastic,emitc,emitr(10),emitsp,emits,emitf
+     &      ,palbedo,ptransm
+C
+      N=1
+      ITER1=0
+
+
+C
+C     IF SNOWPACK DOES NOT EXIST AND SHUTTLEWORTH ET BEING USED
+C     -- NO NEED TO CALCULATE FLUXES AT SURFACE
+C
+      IF (ISHUTL.EQ.0 .OR. NSP.GT.0) THEN
+C
+C     SHAW ET ALGORITHM BEING USED
+C       SURFACE MATERIAL IS EITHER CANOPY, RESIDUE, SNOW OR SOIL
+C
+        IF (ITER .LE. 2) THEN
+           IF (ITER .LE. 1) THEN
+C****         CALCULATE CONSTANTS FOR TIME STEP
+             CALL VSLOPE (DUMMY,SATV,TA)
+              CALL VSLOPE (DUMMY,SATVDT,TADT)
+              TMPAIR=WT*TA + WDT*TADT
+              VAPAIR=WT*HUM*SATV + WDT*HUMDT*SATVDT
+              ZMLOG=LOG((HEIGHT+ZM-ZERO)/ZM)
+              ZHLOG=LOG((HEIGHT+ZH-ZERO)/ZH)
+           END IF
+C      
+C****      DEFINE INITIAL ASSUMPTIONS FOR CURRENT TIME STEP
+           PSIM=0.0D0
+           PSIH=0.0D0
+           USTAR=WIND*VONKRM/(ZMLOG + PSIM)
+        END IF
+C      
+        TMPSFC=WT*T + WDT*TDT
+        VAPSFC=WT*VAP + WDT*VAPDT
+        HFLUX=0.0D0
+        VFLUX=0.0D0
+        IF (WIND .GT. 0.0D0) THEN
+C      
+          CALL STAB(ITER1,HEIGHT,HFLUX,PSIH,RH,TMPSFC,TMPAIR,ZH,ZERO,
+     +              ZMLOG,ZHLOG,WIND,USTAR,STABLE,NC,ZC(NC+1))
+C       
+          RV=RH
+c          if (nc.eq.0 .and. nsp.eq.0) then
+c             VFLUX=(VAPAIR-VAPSFC)/RV*(1.0d0-pplastic) 
+c          else
+c            Vapor transfer directly to snow or canopy is not limited by plastic
+             VFLUX=(VAPAIR-VAPSFC)/RV
+c          end if
+c           vflux=-evapmx*rhol-srootxt*rhol/dt
+        ENDIF
+C       
+C****   COMPARE FLUX WITH MINIMUM FLUX AS CALCULATED FROM THERMAL
+C       CONDUCTIVITY AND VAPOR DIFFUSIVITY OF STILL AIR -- HEAT FLUX FIRST
+   20   if (nc .gt. 0) then
+   	       HMINS=TKA*(TMPAIR-TMPSFC)/(HEIGHT-ZC(NC+1))
+   	      else
+   	       HMINS=TKA*(TMPAIR-TMPSFC)/(HEIGHT-ZERO)
+        end if
+        IF (ABS(HMINS) .LE. ABS(HFLUX)) THEN
+C          ..WIND IS SUFFICIENT THAT HEAT FLUX IS ENHANCED
+           CON=RHOA*CA/RH
+        ELSE
+C          ..WIND IS SUFFICIENTLY LOW TO BE CONSIDERED AS "STILL AIR"
+           HFLUX=HMINS
+           if (nc .gt. 0) then
+              CON=TKA/(HEIGHT-ZC(NC+1))
+            else
+              CON=TKA/(HEIGHT-ZERO)
+           end if
+        END IF
+C       
+C****   NOW COMPARE VAPOR FLUXES
+        DV=VDIFF*(((TMPAIR+273.16D0)/273.16D0)**2.0D0)*(P0/PRESUR)
+        if (nc .eq. 0) then
+           VMIN=DV*(VAPAIR-VAPSFC)/(HEIGHT-ZERO)  !*(1.0d0-pplastic)      !Liwang to account for partial plastic cover
+           if (nsp.gt.0) VMIN=DV*(VAPAIR-VAPSFC)/(HEIGHT-ZERO)         !Transfer to top of snow not limited by plastic
+        else
+c           Transfer to top of canopy not limited by plastic
+            VMIN=DV*(VAPAIR-VAPSFC)/(HEIGHT-ZC(NC+1))
+        end if
+        IF (ABS(VMIN) .LE. ABS(VFLUX)) THEN
+C          ..FLUX IS SUFFICIENT THAT VAPOR FLUX IS ENHANCED
+           CONV=1.0D0/RV
+        ELSE
+C          ..FLUX IS SUFFICIENTLY LOW TO BE CONSIDERED MINIMUM
+           VFLUX=VMIN
+           CONV=DV/HEIGHT
+        END IF
+C
+        if (nc.eq.0 .and. nsp.eq.0) then
+            conv=conv*(1.0d0-pplastic)
+            vflux=vflux*(1.0d0-pplastic)   !Per Gerald Flerchinger, not to double count
+        end if
+C
+        IF (NC .GT. 0) THEN
+C**** SURFACE MATERIAL IS CANOPY
+   40      B1(1)=B1(1) - WDT*CON
+           D1(1)=HFLUX
+           B2(1)=-WDT*CONV
+           D2(1)=VFLUX
+           WINDC(1)=USTAR*LOG((ZC(NC+1)+ZM-ZERO)/ZM)/VONKRM
+C          ..CALCULATE WINDSPEED AT THE CANOPY NODES ASSUMING AN
+C            EXPONENTIAL DECREASE IN WINDSPEED WITH DEPTH
+C            AWIND = 0  FOR SPARSE CANOPY: AWIND >= 4 FOR DENSE CANOPY
+           SUMLAI=0.0d0
+           DO 45 J=1,NPLANT
+              SUMLAI = SUMLAI + TOTLAI(J)
+   45      CONTINUE
+C          USE EXTINCTION COEFF FROM NIKOLOV & ZELLER (2003) ENVIRON.POLL.
+           AWIND = 2.879D0*(1.D0-EXP(-SUMLAI))
+           DO 46 I=2,NC+1
+C             COMPUTE WIND BASED ON EXPONENTIAL DECREASE WITH LAI
+              SUML = 0.0D0
+              DO 42 J=1,NPLANT
+                 SUML = SUML+CANLAI(J,I-1)
+   42         CONTINUE
+C             u(L) = uh*EXP(-AWIND*L/Ltot)  L = Total LAI above layer
+C             ==>  u(L+dL) = u(L)*exp(AWIND*dL/Ltot)  
+              WINDEXP = WINDC(I-1)*EXP(-AWIND*SUML/SUMLAI)
+              IF (I .LT. NC+1) THEN
+C               COMPUTE WIND BASED ON LOGARITHMIC WIND PROFILE
+                HNODE1 = ZC(NC+1) - ZC(I-1)
+                HNODE2 = ZC(NC+1) - ZC(I)
+                ZMCAN1 = LOG((HNODE1+ZMSUB-ZERSUB)/ZMSUB)
+                ZMCAN2 = LOG((HNODE2+ZMSUB-ZERSUB)/ZMSUB)
+                WSTAR = WINDC(I-1)*VONKRM/ZMCAN1
+                WINDLOG = WSTAR*ZMCAN2/VONKRM
+C               WIND AT NODE IS MINIMUM OF THE TWO APPROACHES
+C               (THIS RESOLVES PROBLEM WITH LITTLE OR NO LAI IN A LAYER)
+                WINDC(I) = MIN(WINDLOG,WINDEXP)
+               ELSE
+C               WIND AT TOP OF RESIDUE CANNOT BE ZERO
+                WINDC(I) = WINDEXP
+              END IF
+   46      CONTINUE
+           IF (NR.GT.0 .AND. NSP.EQ.0) THEN
+C             ..RESIDUE LIES BENEATH THE CANOPY -- CALCULATE WINDRH
+              WINDRH = WINDC(NC+1)  !*(1.0d0-pplastic)  !Liwang to account for plastic cover
+           ELSE
+C             ..NO RESIDUE LIES BENEATH CANOPY -- PERHAPS IT IS SNOW-COVERED
+              WINDRH=0.0d0
+           END IF
+C      
+        ELSE IF (NSP .GT. 0) THEN
+C****   SURFACE MATERIAL IS SNOW
+   50      CALL VSLOPE (S,DUMMY,TDT)
+           IF (ICE .EQ. 0) THEN
+C             ..SNOW IS NOT MELTING - ENERGY BALANCE BASED ON TEMPERATURE
+              B1(1) = B1(1) - WDT*CON - WDT*LS*S*CONV
+           ELSE
+C             ..SNOW IS MELTING - ENERGY BALANCE BASED ON LIQUID WATER
+              B1(1) = B1(1)
+           END IF
+           D1(1)=HFLUX + LS*VFLUX
+           B2(1)=0.0d0
+           D2(1)=0.0d0
+C          ..IF RESIDUE LIES BENEATH THE SNOW, WINDRH = 0.0
+           WINDRH=0.0d0
+C      
+        ELSE IF (NR .GT. 0) THEN
+C****      SURFACE MATERIAL IS RESIDUE
+   60      B1(1)=B1(1) - WDT*CON
+           D1(1)=HFLUX
+           B2(1)=-WDT*CONV
+           D2(1)=VFLUX
+           WINDRH=USTAR*dLOG((ZR(NR+1)+ZM-ZERO)/ZM)/VONKRM
+        ELSE
+C      
+C****      SURFACE MATERIAL IS BARE SOIL
+C****
+C gnf      Limit evaporation at the surface for supply-limited evaporation
+c           if (-vflux .gt. evapmx*rhol) then  !to make sure SHAW uses RZWQM evaporation
+            if (istress.ne.3) then
+              vflux=-evapmx*rhol
+              conv=0.0
+            endif
+              
+c           end if        
+c    
+           CALL VSLOPE (S,DUMMY,TDT)
+           D1(1)=HFLUX+LV*VFLUX
+           D2(1)=VFLUX/RHOL
+           B1(1) = B1(1) - WDT*CON - WDT*LV*S*CONV
+        END IF
+C
+      ELSE IF (ISHUTL.GT.1) THEN
+C
+C       PENFLUX ALGORITHMS ARE SUPPLYING HEAT FLUX AT SURFACE
+C
+        B1(1)=0.0D0
+c       ..Note: gflux passed directly into routine
+        D1(1)=gFLUX
+        N=N+1
+C
+        DO 75 I=2,NR
+           B1(N)=0.0D0
+           D1(N)=0.0D0
+           N=N+1
+   75   CONTINUE
+        IF (NR .GT. 0) THEN
+C          RESIDUE IS SURFACE MATERIAL
+C          INITIALIZE MATRIX FOR SOIL SURFACE
+           B1(2)=0.0D0
+           D1(2)=0.0D0
+C INITIALIZE??
+           WINDRH=WIND
+        END IF
+C
+      ELSE
+C
+C       SHUTTLEWORTH ET ALGORITHM BEING USED -- BOUNDARY CONDITION AT 
+C       SOIL SURFACE IS AIR TEMPERATURE; SET RESISTANCE TO HEAT TRANSFER
+C       VERY SMALL SO THAT SURFACE SOIL TEMPERATURE WILL APPROACH INPUT
+C       AIR TEMPERATURE
+C
+        TMPAIR=WT*TA + WDT*TADT
+        TMPSFC= TDT
+        RH=1.0
+        HFLUX=RHOA*CA*(TMPAIR-TMPSFC)/RH
+        CON=RHOA*CA/RH
+        VFLUX=0.0
+        CONV=0.0
+        D1(1)=HFLUX+LV*VFLUX
+        B1(1) = B1(1) - WDT*CON - WDT*LV*S*CONV
+C INITIALIZE??
+        WINDRH=WIND
+C
+C
+      END IF
+C
+C     CALCULATE THE WINDSPEED AT THE MID-POINT OF EACH RESIDUE LAYER
+C     ASSUMING AN EXPONENTIAL DECREASE IN WINDSPEED WITH DEPTH
+C     AWIND = 0  FOR SPARSE RESIDUE: AWIND >= 4 FOR DENSE RESIDUE
+C     Note: changed residue height index from nr to nr+1 for single
+C     residue layer system  RA 2/15/94
+C     Note: reference G. Campbell, 1973. Environmental Biophysics.
+C
+      IF (NR .GT. 0) THEN
+        AWIND = 0.1d0*(RHOR(1) - 20.D0)
+        WINDR(1)=WINDRH*EXP(-AWIND*(ZR(1)+ZR(2))/4.0D0/ZR(NR+1))
+        if (pplastic .gt. 0.0) then 
+c          No hindrance to wind where there is no plastic 
+           windr(1) = windrh
+           AWIND = 0.1d0*(RHOR(2) - 20.D0)
+        end if           
+        DO 66 I=2,NR
+           WINDR(I) = WINDRH*EXP(-AWIND*ZR(I)/ZR(NR+1))
+   66   CONTINUE
+      ENDIF
+C
+      N=N+1
+      RETURN
+      END

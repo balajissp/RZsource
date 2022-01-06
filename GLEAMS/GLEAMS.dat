@@ -1,0 +1,266 @@
+=UF-Erosion-ADDENDUM
+========================================================================
+==                                                                    ==
+==                GLEAMS E R O S I O N   M O D E L                    ==
+==                 MODEL VARIABLES AND PARAMETERS                     ==
+==                                                                    ==
+========================================================================
+=     Erosion control parameters
+=
+= ITEM NO.   DESCRIPTION
+= --------   -----------
+= See GLEAMS Manual
+========================================================================
+T -1:use enrichment
+3.2 0.022 1.881                                             {0:DACRE,CHS,WLW (Gleams hydrology)}
+1995 1996 4 3 1                                             {4:BYEAR,EYEAR,EROOUT,FLGSEQ,METFLG}
+20.0                                                        {5: SSCLY:m^2/g}
+4 1.2949698528                                              {6:NPTSP,DAOVR}
+3.4104 0.02 4.35 0.04 6.09 0.03 7.1688 0.024                {7:XOV(i),SLOV(i):m,m/m}
+1 1.0 0.0302933                                             {8:NXK,XSOIL(i),KSOIL(i)}
+5 4 2.4 2.25 1.2949698528 0.0809356158 20.0                 {9:NSC,CTLO,RA,RNDACHL (m),DACHU (m),Z (m/m)}
+1.6008 0.021 3.5496 0.032 7.5516 0.014 10.5096 0.018 12.9108 0.024 {10:XLSP(i),SSLP(i):m,m/m}
+20.0 0.03 0.02                                              {11:CTLZ,CTLN,CTSL}
+3                                                           {13:NYEARS}
+001 108 131 155 180 200 302 309 0 0                         {14:CDATE(i)}
+113 119 140 160 200 259 268 0 0 0                           {14:CDATE(i)}
+114 141 160 200 250 276 288 0 0 0                           {14:CDATE(i)}
+1 1.0                                                       {15:NXF,XFACT(i)}
+0.26 0.62 0.54 0.42 0.30 0.2 0.2 0.2                        {16:CFACT(i)/1/1}
+1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0                             {17:PFACT(i)/1/1}
+0.03 0.03 0.01 0.01 0.01 0.02 0.03 0.04                     {18:NFACT(i)/1/1}
+0.62 0.54 0.42 0.30 0.20 0.20 0.20                          {16:CFACT(i)/2/1}
+1.0 1.0 1.0 1.0 1.0 1.0 1.0                                 {17:PFACT(i)/2/1}
+0.03 0.01 0.01 0.01 0.01 0.02 0.03                          {18:NFACT(i)/2/1}
+0.62 0.54 0.42 0.30 0.20 0.20 0.20                          {16:CFACT(i)/3/1}
+1.0 1.0 1.0 1.0 1.0 1.0 1.0                                 {17:PFACT(i)/3/1}
+0.03 0.01 0.01 0.01 0.01 0.02 0.03                          {18:NFACT(i)/3/1}
+1 1.0                                                       {19:NXC,XCHAN(i)}
+0.065 0.4 0.03 0.03 0.03 0.03 0.065 0.065                   {20:NCHAN(i)/1/1}
+0.011484 0.011484 -99.0 -99.0 -99.0 -99.0 -99.0 -99.0       {21:DCHAN(i)/1/1}
+-10.0 -99.0 -99.0 -99.0 -99.0 -99.0 -99.0 -99.0             {22:WCHAN(i)/1/1}
+0.065 0.04 0.03 0.03 0.03 0.03 0.065                        {20:NCHAN(i)/2/1}
+0.011484 0.011484 -99.0 -99.0 -99.0 -99.0 -99.0             {21:DCHAN(i)/2/1}
+0.348 -99.0 -99.0 -99.0 -99.0 -99.0 -99.0                   {22:WCHAN(i)/2/1}
+0.065 0.04 0.03 0.03 0.03 0.03 0.065                        {20:NCHAN(i)/3/1}
+0.011484 0.011484 -99.0 -99.0 -99.0 -99.0 -99.0             {21:DCHAN(i)/3/1}
+-99.0 -99.0 -99.0 -99.0 -99.0 -99.0 -99.0                   {22:WCHAN(i)/3/1}
+
+
+==========================================================================
+Cards 1-3: TITLE
+TITLE Three 80-character lines of alphanumeric information that identifies the particular computer run. For
+example, the soil type, the crop rotation, the tillage practices, may be useful in identifying the file.
+This title will be printed on the erosion output file.
+
+Card 4: BYEAR*, EYEAR*, EROOUT, FLGSEQ, METFLG
+BYEAR Four-digit year when simulation begins, e.g. 1973
+EYEAR Four-digit year when simulation ends, e.g. 1975
+EROOUT Code for output
+0 for abbreviated annual summary output;
+1 for detailed annual summary output;
+2 for abbreviated monthly and annual summary output;
+3 for detailed monthly and annual summary output;
+4 for abbreviated storm-by-storm and summary output;
+5 for detailed storm-by-storm and summary output;
+FLGSEQ This flag indicates the execution sequence of erosion-sediment sub-models as follows:
+1 overland;
+2 overland-impoundment;
+3 overland-channel;
+4 overland-channel-channel;
+5 overland-channel-impoundment;
+6 overland-channel-channel-impoundment.
+)))))))))))))))))))))))))))))))))
+* Changed to 4-digit year in version 3.0 for Y2K compliance
+FLGSEQ determines whether certain groups of cards are read. Cards 6, 7, and 8 are always read
+once and once only. Cards 9 to 11 are read only if FLGSEQ is 3 or more; they are repeated for a
+64
+second channel if FLGSEQ is 4 or 6. Card 12 is read only if FLGSEQ is 2, 5, or 6, and they are
+read only once.
+METFLG Code for metrication
+O if parameter data are in English units;
+1 if parameter data are in metric units.
+
+Card 5: SSCLY
+SSCLY Specific surface area for clay particles (m2/g) (suggested value of 20.0 for kaolinite and 800.0 for
+montmorillonite), e.g. 20.0
+
+Card 6: NPTSO, DAOVR
+NPTSO Number of points for overland flow profile slope, e.g. 5 (Maximum number is 10. Generally little
+advantage in using more than 5.)
+DAOVR Drainage area represented by the overland flow profile, acres (hectares), e.g. 3.2 (1.30)
+
+Card 7: XOV(I), SLOV(I) for I = 1 to NPTSO on Card 6
+XOV() Distance from upper end of overland flow profile to the point where slope is given, ft (m), e.g. 140.0
+(42.67)
+SLOV() Slope of the overland flow profile at the XOV(), ft/ft (m/m), e.g. 0.02
+NOTE: Up to 5 points can be given on one card. If 6 to 10 points are used, two Cards 8 are required.
+It is possible to have two slopes given at the same distance to represent a sharp break. An example
+for an abrupt slope change is shown below
+Card 6: 3 2.0
+Card 7: 80.0 0.02 80.0 0.04 120.0 0.04
+
+Card 8: NXK, XSOIL(I), KSOIL(I) for I = 1 to NXK
+NXK Number (1 to 4) of slope segments differentiated by changes in soil erodibility factor, e.g. 1
+XSOIL() Relative horizontal distance from the top of the slope to the bottom of the segment, e. g. 1.0
+KSOIL() Soil erodibility factor for the slope segment just above XSOIL, ton/ac per English EI
+(t.ha.h/ha.MJ.mm), e.g. 0.23
+Example: Assume a horizontal slope length of 200 ft (60.96 m), KSOIL = 0.20 for the first 150 ft
+(45.72 m), and KSOIL = 0.30 for the last 50 ft (15.24 m). Card 8 would be as shown below:
+Card 8: 2 0.75 0.20 1.0 0.30
+65
+The last XSOIL on Card 8 must be 1.0.
+
+Cards 9 to 11 contain the initial channel parameters. If FLGSEQ is 1 or 2 on Card 4, no Cards 9 to 11 are needed. If
+FLGSEQ is 4 or 6, two sets of Cards 9 to 11 are required for the two channels indicated. Channel profile plots should
+be developed before completing Cards 9 to 11.
+Card 9: NSC, CTLO, RA, RN, DACHL, DACHU, Z
+Card 9 applies to the field channel, standing at the upper end of the 1st or 2nd channel, whichever is being
+considered, looking downstream.
+NSC Number of channel segments differentiated by changes in slope, e.g. 3 (Maximum of 5.)
+CTLO Channel outlet control condition that affects flow depth:
+1 if critical depth controls depth at the end of the channel;
+2 if uniform flow controls depth at the end of the channel;
+3 same as 2, except Manning's "n" for the outlet channel is the same as that for the lower segment
+of the field channel, that is, the field channel continues beyond the edge of the field;
+4 if a rating curve controls depth at the end of the channel.
+Critical discharge, Q, is computed as follows:
+Q = RA * YRN
+where
+Q = critical discharge, ft /sec (m /sec),
+RA = coefficient (Card 10),
+Y = flow depth, ft (m),
+RN = exponent (Card 10).
+RA Coefficient in the rating equation, e.g. 2.4 (Leave blank if CTLO < 4)
+RN Exponent in the rating equation, e.g. 2.25 (Leave blank if CTLO < 4)
+DACHL Total drainage area at the lower end of the channel, ac (ha), e.g. 3.2 (1.30)
+DACHU Drainage are at the upper end of channel, ac (ha), e.g. 0.20 (0.08)
+Z Side slope of field channel cross-section expressed as horizontal-to-vertical distance, ft/ft (m/m), e.
+g. 20.0
+Enter the value for Z that most closely approximates the channel shape.
+
+Card 10: XSLP(1), SSLP(1) for I = 1 to NSC (Card 9)
+XLSP() Distance from upper end of the channel to the bottom of segment I, ft (m), e.g. 46.0 (14.02)
+SSLP() Slope of segment I directly above, ft/ft (m/m), e.g. 0.025
+66
+
+Card 11: CTLZ, CTLN, CTLSL
+NOTE: Card 11 refers to the outlet control channel, that is, standing at the end of the channel looking
+downstream (at the end of the 1st channel looking at the 2nd channel, or at the end of the field
+channel looking beyond the edge of the field.
+CTLZ Side slope of a cross-section of the outlet control channel, expressed as a ratio of horizontal-
+to-vertical e.g. 20.0
+CTLN Manning's "n" for the outlet control channel, e.g. 0.03
+CTLSL Slope of the outlet control channel, ft/ft (m/m), e.g. 0.002
+
+Card 12 is for impoundment parameters. If FLGSEQ = 1, 3, or 4 (Card 4), skip card 12--do not leave blank line.
+Card 12: DAPND, INTAKE, FRONT, DRAW, SIDE, CTL, DIAO, C
+DAPND Total drainage area above the impoundment, same as DACRE in hydrology, ac (ha), e.g. 3.2 (1.30)
+INTAKE Saturated soil-water intake rate or saturated conductivity within the impoundment, in/hr (cm/hr), e.g.
+0.20 (0.51)
+FRONT Embankment front slope (vertical to horizontal), ft/ft (m/m), e.g. 0.20
+DRAW Slope (vertical to horizontal) along channel draining into the impoundment, ft/ft (m/m), e.g. 0.024
+SIDE Side slope (vertical to horizontal) of land at impoundment toward DRAW, ft.ft (m/m) e.g. 0.01
+CTL Code for type of impoundment outlet:
+1 if the pipe outlet control is typical of impoundment-type terraces;
+2 if an orifice coefficient, C, is to be entered.
+DIAO Diameter of orifice in outlet pipe, in (cm), e.g. 3.0 (7.5) Leave blank if CTL = 2.
+C Orifice coefficient, e.g. 3000.0 Leave blank if CTL=1.
+The equation for C is:
+C = 3600 Q/Y0.5
+where
+Q = peak discharge of pipe outlet, cu ft /sec (cu m/sec),
+Y = depth of water above orifice, ft (m).
+Updateable Parameters
+The remaining input, Cards 13 to 22, are updateable parameters that are time dependent. The program reuses the
+updateable parameters after a period of rotation (NYEARS, Card 13) is completed. The execution sequence flag
+67
+(FLGSEQ, Card 4) determines the sequence in which Cards 13 to 22 are read. There are no updateable parameters for
+the impoundment. The updateable overland flow parameters are on Cards 15 to 18, and those for the channel are on
+Cards 20 to 22. An overland-channel-channel sequence (FLGSEQ = 4, Card 4) will have Cards 13 and 14 followed
+by Cards 15 to 18 for the overland flow, followed by Cards 19 to 22 for the 1st channel, followed by another set of
+Cards 19 to 22 for the 2nd channel.
+
+Card 13: NYEARS
+NYEARS The number of years in this rotation, e.g. 1
+
+Card 14: CDATE(J) for J = 1 to 10
+CDATE() The Julian days on which sets of parameters take effect, e.g. 001, 105, etc.
+The first CDATE must be 001 for the first year of a rotation or simulation in order to have
+parameters for model operation to begin at the start of a year. The beginning CDATE of subseqent
+years does not have to be 001.
+NOTE: The computer reads all 10 data fields on Card 14 but uses only values greater than zero. If,
+for example, only five CDATES are to be used in a year (J = 5), enter them in the first five fields of
+the card and leave the last five fields blank. The parameter editor automatically includes CDATE
+= 001 for the first year, and places CDATE in the appropriate fields.
+Use one Card 14 for each year of rotation. The maximum number of CDATES possible in a rotation
+is 40. They may be spread out, such as 4 per year for a 10-year rotation (10 Card 14's); 10 per yr for
+a 4-yr rotation (4 Card 14's); or any combination between these. Each year does not require the same
+number of CDATES.
+Card 13 and an appropriate number of Card 14's must always be the first cards in a set of updateable
+parameters.
+Cards 15 to 18 contain the updateable parameters for the overland flow. Card 15 is read on the initial pass through the
+program, but not in subsequent reads of updateable parameters. This means that the XFACT's initially entered on Card
+15 will remain the same for every year of the rotation.
+
+Card 15: NXF, XFACT(I) for I = 1 to NXF
+NXF Number (1 to 4) of overland flow profile segments differentiated by changes in the overland flow
+updateable (annual) parameters, e.g. 1.0
+XFACT() Relative horizontal distance from the top of the overland flow profile to the bottom of segment I
+(ratio of distance to bottom of segment to total profile length), e.g. 1.0
+NOTE: A set of Cards 16 to 18 are needed for each overland flow segment, NXF, for each year of the
+rotation. For example, if NXF = 3 and NYEARS = 3 (Card 13), 9 sets of Cards 16 to 18 are needed.
+The last XFACT on Card 15 must be 1.0 The proper sequence of these sets and the last value are
+established automatically in the parameter editor.
+68
+
+Card 16: CFACT(I,J) for J = 1 to the number of updates per year
+CFACT() Soil loss ratio for overland flow profile segment I, e.g. 0.56
+
+Card 17: PFACT(I,J) for J = 1 to the number of updates per year
+PFACT() Contouring factor for overland flow profile segment I, e.g. 1.0
+
+Card 18: NFACT(I,J) for J = 1 to the number of updates per year
+NFACT() Manning's "n" for overland flow profile segment I, e.g. 0.020
+CAUTION: NFACT must never be less than 0.010 This lower limit is fixed in the parameter editor
+which will not accept a smaller value.
+
+Cards 19 to 22 contain the updateable channel parameters. Card 19 is read on the initial pass through the program, but
+not in subsequent years of annual channel parameters. This means that the XCHAN's entered initially will remain the
+same or every year of the rotation. The proper sequence of these updateable channel parameters is established
+automatically by the parameter editor.
+Card 19: NXC, XCHAN(I) for I = 1 To NXC
+NXC Number (1 to 4) of channel profile segments differentiated by changes in the channel parameters, e.g.
+1
+XCHAN() Relative horizontal distance from top of channel to the bottom of segment I, e.g. 1.0
+NOTE: The last value of XCHAN on card 19 must be 1.0 This is automatically established by the parameter
+editor.
+
+Card 20: NCHAN(I,J) for J = 1 to the number of updates per year
+NCHAN() Manning's "n" for channel segment I, e.g. 0.045
+CAUTION: NCHAN must not be less than 0.030 The parameter editor will not accept a smaller
+value.
+
+Card 21: DCHAN(I,J) for J = 1 to the number of updates per year
+DCHAN() Depth to nonerodible layer in the middle of the channel for segment I, ft (m), e.g. 0.33 (0.101)
+
+Card 22: WCHAN(I,J) for J = 1 to the number of updates per year
+69
+WCHAN() Top width of channel for segment I, ft (m), e.g. 10.0 (3.05)
+NOTE: A set of Cards 20 to 22 is repeated for each channel segment (XCHAN, Card 19). Similarly, a group
+of sets are repeated for each year of the rotation.
+If FLGSEQ = 4 or 6 (Card 4), a similar set of Cards 20 to 22 are repeated for each segment and year for the second
+channel.
+Parameters on Cards 21 and 22 have a feature none of the other parameters have: if negative values are assigned to any
+parameter--with one important exception described below--the model uses the computed value for DCHAN and
+WCHAN. For example, a -99.0 value on Card 21 tells the model to use the simulated value for DCHAN rather than
+update to some specified value, say 0.33 (0.10). Where a positive value, such as 0.33 (0.10) is given, it indicates that
+tillage occurred and the depth to nonerodible layer or plowpan is reset to 0.33 ft (0.10 m). The -99.0 is used to make
+it more prominent; any negative value serves the same purpose. These same conditions hold for WCHAN (Card 22),
+also.
+There is one exception where negative values on Cards 21 and 22 have computational value, and that is on the first
+pass through the annual values. The first fields of DCHAN and WCHAN values are used as the absolute values. In
+subsequent reuse of the annual values, if a minus sign is present, computed values of DCHAN and WCHAN are used
+rather than the absolute value of the parameters.
+Generalized tables for the erosion component (some help tables from the parameter editor) are given for user
+information.

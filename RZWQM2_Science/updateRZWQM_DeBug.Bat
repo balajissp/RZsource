@@ -1,0 +1,1 @@
+copy c:\rzwqm2_science\rzwqm2_science\debug\rzwqm2_science.exe c:\rzwqm2\bin\RzwqmRelease.exe

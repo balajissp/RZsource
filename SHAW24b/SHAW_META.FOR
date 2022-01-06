@@ -1,0 +1,90 @@
+C
+      SUBROUTINE META(NSP,TSPDT,RHOSP,DZSP,DLWDT,DT)
+C
+C======================================================================
+C
+C       PURPOSE:
+C     COMPUTES THE CHANGE IN DENSITY OF THE SNOW COVER CAUSED BY
+C     DESTRUCTIVE (EQUI-TEMPERATURE) METAMORPHISM, COMPACTION, AND THE
+C     PRESENCE OF LIQUID-WATER.
+C
+C       REF:
+C
+C       VARIABLE DEFINITIONS:
+C       VARIABLE  I/O   DESCRIPTION
+C       --------  ---   -----------
+C       CMET1      P    compaction para for snow
+C       CMET2      P    compaction para for snow
+C       CMET3      P    fractal rate of settling for snowpack
+C       CMET4      P    settling para for snow metamorphism
+C       CMET5      P    ratio of settling para for wet snow compared to dry
+C       DLWDT      I    liquid water depth for i-th snow pack node at
+C                       end of time step
+C       DZSP      I/O   thickness of i-th snowpack node
+C       I          L    canopy, snow, residue or soil layer
+C       NSP        I    num of layers in snowpack
+C       RHOI       P    density of ice   (kg/m^3)
+C       RHOL       P    density of liquid water  (kg/m^3)
+C       RHOSP      I    density of ice fract of snowpack  (kg/m^3)
+C       SNOMAX     P    density below which the settling rate of snow is CMET3
+C       TSPDT      I    temp of snowpack layer at time t + dt
+C
+C       COMMENTS:
+C
+C       EXTERNAL REFERENCES:
+C                       NONE
+C
+C       CALLED FROM:
+C
+C       PROGRAMMER:
+C
+C       VERSION:
+C
+C======================================================================
+C
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+C
+      PARAMETER (NODSNO=100)
+C
+      DOUBLE PRECISION TSPDT(NODSNO),RHOSP(NODSNO),DZSP(NODSNO),
+     +  DLWDT(NODSNO)
+      PARAMETER(RHOL=1.0D3,RHOI=9.2D2)
+      PARAMETER(CMET1=1.0D-2,CMET2=2.1D1,CMET3=1.0D-2,CMET4=4.0D-2,
+     +          CMET5=2.0D0)  !, SNOMAX=150.0D0)
+      COMMON/SNOWDEN/DEN_MAX,DEN_INIT
+C
+C     WEIGHT IS THE WATER-EQUIVALENT (CM) ABOVE THE LAYER.
+      WEIGHT=0.0D0
+      SNOMAX = DEN_MAX*1000.D0
+C
+      DO 10 I=1,NSP
+C        IF DENSITY IS THAT OF ICE, DO NOT INCREASE IT ANY MORE
+         IF (RHOSP(I) .GE. RHOI) GO TO 10
+         WEL= RHOSP(I)*DZSP(I)/RHOL
+C
+C****    DESTRUCTIVE METAMORPHISM TERM.
+C
+         TERM=EXP(CMET4*TSPDT(I))
+         IF (RHOSP(I) .LE. SNOMAX) THEN
+            T1=TERM*CMET3
+           ELSE
+            T1=TERM*CMET3*EXP(-46.0D0*(RHOSP(I)-SNOMAX)/RHOL)
+         END IF
+C
+C****    COMPACTION TERM.
+C
+         TERM=EXP(0.08D0*TSPDT(I))
+         T2=WEIGHT*CMET1*EXP(-CMET2*RHOSP(I)/RHOL)*TERM
+C
+C***     LIQUID-WATER TERM.
+C
+         IF (DLWDT(I) .GT. 0.0D0) T1=CMET5*T1
+C
+C****    DENSIFICATION OF THE LAYER.  (WATER-EQUIVALENT STAYS THE SAME.)
+C
+         RHOSP(I)=RHOSP(I)*(1.0D0 + DT*(T1+T2)/3600.0D0)
+         DZSP(I)=RHOL*WEL/RHOSP(I)
+         WEIGHT=WEIGHT + (WEL+DLWDT(I))*1.0D2
+   10 CONTINUE
+      RETURN
+      END

@@ -1,0 +1,36 @@
+C:\RZWQM2\projects\01TRT1\cntrl.dat
+C:\RZWQM2\projects\01TRT1\rzwqm.dat
+C:\RZWQM2\projects\Meteorology\weather_1960_2009HighT10.MET
+C:\RZWQM2\projects\Meteorology\new49Y2009Hourly.brk
+C:\RZWQM2\projects\01TRT1\rzinit.dat
+C:\RZWQM2\projects\01TRT1\plgen.dat
+C:\RZWQM2\projects\Meteorology\akron.sno
+C:\RZWQM2\projects\Analysis\01TRT1.ana
+1  1  2008  31  12  2009
+0  0  0  0  0  0  0  0  0  0  0  0  
+0  0  0  0  0  0  0  0  0  0  0  0  
+100  100  100  100  100  100  100  100  100  100  100  100  
+100  100  100  100  100  100  100  100  100  100  100  100  
+100  100  100  100  100  100  100  100  100  100  100  100  
+100  100  100  100  100  100  100  100  100  100  100  100  
+100  100  100  100  100  100  100  100  100  100  100  100  
+100  100  100  100  100  100  100  100  100  100  100  100  
+=================================================================
+= file location for simulation controls used in RZWQM2
+= file location for main parameters for RZWQM2
+= file location for Weather data excluding rainfall
+= file location for rainfall data
+= file location for initial soil status
+= file locaiton for parameters used in the generic plant growth module
+= file location for the snow parameters
+= file location for the *.ana file storing daily outputs
+= begining simulation (DD MM YYYY) and end simulation date (DD MM YYYY)
+= increase in Tmin in oC
+= increase in Tmax in oC
+= % used to modify windrun
+= % used to modify solar radiation
+= % used to modify Pan Evaporation
+= % used to modify relative humdity
+= % used to modify rainfall amount
+= % used to modify Co2
+=================================================================

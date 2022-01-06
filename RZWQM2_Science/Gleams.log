@@ -1,0 +1,71 @@
+ GLEAMS EROSION/SEDIMENT YIELD- Version 3.0
+ T                                                                                                                                                                                                                                                              
+ Use Enrichment Factor =  T                                                                                                                                                                                                                                     
+ 1.5       1         1                                                                                                                                                                                                                                          
+ 20                                                                                                                                                                                                                                                             
+ 1         0                                                                                                                                                                                                                                                    
+ DRAINAGE AREA IS ZERO <===================
+ SOIL SLOPE IS ZERO <======================
+ 1         1.0       0.005                                                                                                                                                                                                                                      
+ 1                                                                                                                                                                                                                                                              
+ 001                                                                                                                                                                                                                                                            
+ 1         1.0                                                                                                                                                                                                                                                  
+ 0.01                                                                                                                                                                                                                                                           
+ 0.01                                                                                                                                                                                                                                                           
+ 0.01                                                                                                                                                                                                                                                           
+ INITIAL CONSTANTS
+ BEGINNING YEAR FOR THIS RUN 2013
+ MANNING N BARE SOIL (OVER)  0.10000E-01
+ MANNING N BARE SOIL (CHAN)  0.30000E-01
+ WT. DENSITY SOIL (IN PLACE)   1.2000     G/CM**3 
+ CHANNEL ERODIBILITY FACTOR  0.13500     (TONNE-HA-H/HA-MJ-MM)
+ YALIN CONSTANT (ALL PART.)  0.63500    
+ MOMENTUM COEFF. FOR NONUNIFORM VELOCITY IN CROSS SECTION   1.5600     (NO UNITS)
+ DISTRIBUTION OF PRIMARY PARTICLES AND ORGANIC MATTER IN THE ORIGINAL SOIL MASS
+    TYPE        FRACTION     SPECIFIC SURFACE (M**2/G OF SOIL)
+ CLAY 0.11000        20.000    
+ SILT 0.71000        4.0000    
+ SAND 0.18000       0.50000E-01
+             (M**2/G OF ORGANIC CARBON)
+ ORGANIC MATTER 0.19935E-01    2000.0    
+ (ORGANIC CARBON = ORGANIC MATTER/1.73)
+ INDEX OF SPECIFIC SURFACE   25.895     M**2/G OF TOTAL SOIL
+ PARTICLE SPECIFICATIONS
+ TYPE       DIA.    EQSAND DIA.   SPGRAV.   FRAC. IN
+  NO.        MM         MM       GM/CM**3  DETACH. SED.
+            1        0.002                  2.60       0.03                                                                                                                                                                                                     
+            2        0.010                  2.65       0.51                                                                                                                                                                                                     
+            3        0.030                  1.80       0.20                                                                                                                                                                                                     
+            4        0.301                  1.60       0.16                                                                                                                                                                                                     
+            5        0.201                  2.65       0.10                                                                                                                                                                                                     
+ PARTICLE COMPOSITION
+ TYPE                PRIMARY PARTICLE FRACTIONS
+  NO.      CLAY       SILT       SANDORGANIC MATTER
+               1       1.000      0.000      0.000         0.181                                                                                                                                                                                                
+               2       0.000      1.000      0.000         0.000                                                                                                                                                                                                
+               3       0.134      0.866      0.000         0.024                                                                                                                                                                                                
+               4       0.341      0.165      0.494         0.062                                                                                                                                                                                                
+               5       0.000      0.000      1.000         0.000                                                                                                                                                                                                
+ OVERLAND FLOW INPUTS
+ OVERLAND FLOW TOPOGRAPHY
+ OVERLAND AREA       0.0000     Hectares
+ SLOPE LENGTH        1.0000       M
+ AVERAGE SLOPE       0.0000    
+ SEGMENT TYPES DEFINING OVERLAND FLOW PROFILE
+ The Profile is UNIFORM             
+ SLOPE STEEPNESS ALONG OVERLAND FLOW PROFILE
+ DISTANCE    DISTANCE      SLOPE
+  METERS      NONDIM.
+   0.0000      0.0000      0.0000    
+   1.0000      1.0000      0.0000    
+ SOIL ERODIBILITY ALONG OVERLAND FLOW PROFILE
+ DISTANCE    DISTANCE      SOIL
+  METERS      NONDIM.      EROD
+   1.0000      1.0000     0.50000E-02
+ OVERLAND FLOW COVER AND MANAGEMENT PARAMETERS
+ (ONE TABLE FOR EACH YEAR OF THE    1 YEAR ROTATION)
+ Year  1 Dates:    1001                                                                                                                                                                                                                                         
+ X =  1.0000     Ft
+ SOIL LOSS RATIO      0.010                                                                                                                                                                                                                                                       
+ CONTOURING FACTOR    0.010                                                                                                                                                                                                                                                       
+ MANNINGS N           0.010                                                                                                                                                                                                                                                       

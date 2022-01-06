@@ -1,0 +1,559 @@
+The modification is in module rzDay.for, subroutine PHYSCL. 
+Line 28-267 were descriptions of variables in this subroutine. 
+Line 443-444 were commented out to avoid repeated calculation of drainage in infiltration periods.
+Line 504 was commented out to make redistribution occur simultaneously with infiltration.
+
+
+
+Code:
+      SUBROUTINE PHYSCL(CC,TMIN,TMAX,EPAN,RTS,U,ATMP,INP4,JDAY,PTRANS,
+     +    LAI,SLKS,TUP,COPLNT,CORES,FT,FTR,RDF,TTRFD,IMAGIC,NSC,AIRR,TQ,
+     +    IBRKTH,UPNIT,EWP,IRRTYP,MDAY,IPL,RH,IYYY,NOSTAR,XNU,ALPH,
+     +    H2OTAB,RPOOL,ICNVG,BIGCNV,HEIGHT,CAPZONE,BD,FPW,INXPL,EFFLUX,
+     +    IRTYPE,OMSEA,TLAI,SNOWPK,IRLOC,METMOD,IPR,SDEAD_HEIGHT,
+     +    SDEAD,SDCN,HYDGRAD,ICHEM,jeday,tdew,npcpoint,nuse,
+     +    IHOURLY,ISHAW,IPENFLUX,hrt,hrts,hru,hrh,fracom,clouds,
+     +    RET_day_T,RET_day_S,iwzone,co2r,rth,hrth,wsi,plwidth,RSDIA,
+     +    smelt_SHAW,TBOTM,Hmin,DAYRAIN,istress0,subirr,SSURFT,IPDEPTH,
+     +    jbday)
+C
+C======================================================================
+C
+C       PURPOSE: SIMULATE PHYSICAL PROCESSES @ A SINGLE TIME STEP
+C
+C       REF:
+C
+C       VARIABLE DEFINITIONS:
+C       VARIABLE  I/O DESCRIPTION
+C       --------  --- -----------
+C       ACCPO4     L
+C       ACTEVP     L
+C       ACTTRN     L
+C       AEF        I  FIELD SATURATION FRACTION [0..1]
+C       AEVAP  L  POTENTIAL SOIL EVAPORATION (CM/HR)
+C       AIRR  I/O AMOUNT OF IRRIGATION WATER TO APPLY
+C       ASPECT     I  ASPECT ANGLE CLOCKWISE FROM NORTH [Radius]
+C       ATMP   I  ATMOSPHERIC PRESSURE CORRECTED FOR ELEV [KPA]
+C       ATRANS     L  ACTUAL TRANSPIRATION VALUE FOR EACH LAYER.[CM/DAY]
+C       BASE   I  BASAL AREA OF A PLANT [M^2]
+C       BKCHEM     L  FLUX OF SELECTED CHEMICALS AT BRK. THR. NODE
+C             CONTAINS NO3-N, PEST#1-3 [UG/CM^2]
+C       BRKH2O     L  FLUX OF WATER AT BRK. THR. NODE [CM/DAY]
+C       CANIRR     L
+C       CC         I  TRANSPORT MATRIX FOR MOBILE CHEMICALS [MG/L]
+C             CONTAINS ONLY THE SOLUBLE FORM OF CHEMICAL:
+C             1-HYDROGEN, 2-CALCIUM, 3-SODIUM, 4-MAGNISIUM,
+C             5-CLORINE, 6-BICARBONATE, 7-SULFATE, 8-ALUMINUM,
+C             9-NITRATE-N, 10-AMMONIUM-N, 11-CARBONATE,
+C             12-UREA-N, 13-PEST #1, 14-PEST #2, 15-PEST #3
+C       CDNCI  I  WATER SEEPAGE OUT BOTTOM OF PROFILE [CM]
+C       CII        L  INFILTRATION AMT. AT CURRENT TIME STEP [CM]
+C       CLAT   I  LATERAL HYDROLIC CONDUCTIVITY [CM/HR]
+C       CMPS   L  CUMM. WATER SEEP OUT BOTTOM OF PROFILE FROM
+C             MACROPORES [CM]
+C       CNVG   L
+C       CONCX2     I  PEST. CONC. INVOLVED IN KINETIC PROCESSES [UG/G-S]
+C       COPLNT     I  INITIAL AMT OF PESTICIDE ON THE FOLIAGE [UG/CM^2]
+C       COR        L  CORRECTION FACTOR FOR ROUNDING ERROR
+C       CORES  I  INIT. AMT. CHEM. AVAIL. ON RESIDUE FOR DISSIPATION
+C       CSH        I  SOIL HEAT CAPACITIES (WET-DRY) [J/MM^3/C]
+C       CUMCLM     I  CUM CHEMICAL FLOW IN MP VS. TIME [UG/CM^2]
+C       CUMMF  I  CUM MACROPORE WATER FLOW [CM]
+C       CUTTER     L
+C       DAYTIM     L  TIME OF DAY [0..24 HRS]
+C       DELOLD     L
+C       DELSTO     L
+C       DELT   L  INCREMENTAL TIME STEP [HR]
+C       DELTA  L
+C       DELZ   I  NODAL DEPTH FORWARD DIFFERENCES [CM]
+C       DFLOW  I  WATER FLOW FROM DEADEND MACROPORES TO SOIL
+C             SPACIALLY DISTRUB [CM]
+C       DTCHEM     L  TOTAL AMOUNT OF CHEMICAL LOST TO SEEPAGE
+C             CORRESPONDS TO CC ORDER [UG/CM^2]
+C       DTEVAP     L
+C       DTMASS     L
+C       DTOLD  L
+C       DTSEEP     L
+C       DTSINK     L
+C       DUR        L  STORM DURATION [HR]
+C       ELEV   I  LOCATION ELEVATION [M]
+C       EPAN   I  DAILY PAN EVAPORATION [CM]
+C       EVAP   L  AVE EVAP RATE OVER PHOTOPERIOD [CM/HR] (<=0)
+C       EWP       I/O
+C       FERTIR    I/O AMT. OF FERTILIZER IN IRRIGATION WATER [MG/L]
+C       FIRST  L  TRUE IF FIRST TIME THROUGH ROUTINE
+C       FLOW   I  CUMCUL. WATER FLOW FROM CONT. MACROPORES TO SOIL
+C             IN EACH LAYER. [CM]
+C       FMP        L  CUMMULATIVE FLOW FROM MACROPORES [CM]
+C       FT         I
+C       FTR        I
+C       H    I    NODAL SOIL WATER PRESSURE HEADS [CM]
+C       HKBAR  I  LAYER INTERFACE HYDRAULIC COND [CM/HR]
+C       HROOT  L
+C       I    L    INDEX VARIABLE
+C       IBRKTH     I
+C       ICRUST    I/O FLAG FOR PRESENCE OF SURFACE CRUST [0=NO, 1=YES]
+C       ICHEM  L  INDICATOR FLAG SIGNALLING IF EQUILIBRIUM CHEMISTRY IS USED
+C                 (0) - DO NOT USE CHEMISTRY MODEL, USE DEFAULT VALUES
+C                 (1) - USE CHEMISTRY MODEL
+C       ID        I/O INDEX FOR DEPTH OF WETTING FRONT
+C       IHOUR  L
+C       IMAGIC     I  INDICATOR OF DEBUG OUTPUT
+C       INP4   I  POINTER TO BRKPNT.DAT DATAFILE
+C       IP         L  INDEX FOR PESTICIDE NUMBER
+C       IPL        I  PLANT CURRENTLY MODELING [1..MXSPEC]
+C       IPSTM  P
+C       IPSTO  P
+C       IREBOT     I  BOTTOM B.C. INDICATOR: 1 (CONSTANT HEAD) OR 2 (UNIT FLUX
+C       ISEG   L
+C       ITBL   I  FLAG FOR PRESENCE OF WATER TABLE [0=NO, 1=YES]
+C       ITYPE  L  INDICATOR FOR SOIL TYPE
+C       IYYY   I  --YEAR (4 DIGITS).
+C       J    L    INDEX VARIABLE
+C       JDAY   I  JULIAN DAY   [1..366]
+C       JJ         L
+C       JSTDAY     L
+C       K   I/O VON KARMAN CONSTANT ( =.41)
+C       LAI        L  LEAF AREA INDEX (LIVE LEAVES ONLY)
+C       TLAI   L  LEAF AREA INDEX (LIVE AND DEAD LEAVES)
+C       MAXBP  P  MAXIMUM NUMBER OF BREAK POINTS IN A RAINSTORM
+C       MAXHOR     P  MAXIMUM NUMBER OF SOIL HORIZONS
+C       MAXSCT     P  MAX NUMBER OF SOIL CONSTITUENTS PER HORIZON
+C       MDAY   I  TOTAL DAY FROM START OF SIMULATION
+C       MINUT  L
+C       MXCHEM     P  MAXIMUM NUMBER OF CHEMICALS SIMULATED
+C       MXNOD  P  MAX NUMBER OF NUMERICAL NODES
+C       MXNODT     P
+C       MXPEST     P  MAXIMUM NUMBER OF PESTICIDES
+C       NBPR   L
+C       ND         L
+C       NDXN2H     I  INDEX FOR NUMERICAL LAYERS TO HORIZONS,
+C               IE. WHICH HORIZON IS NUMERICAL LAYER IN.
+C       NHOR   I  NUMBER OF SOIL HORIZONS
+C       NN         I  NUMBER INTERIOR NODES IN RICHARD'S EQN SOLUTION
+C       NOSTAR     I
+C       NS         L
+C       NSC        I  CURRENT OUTPUT SCENARIO NUMBER
+C       NSPAN  L
+C       OBTNIT     L
+C       OLDSTR     L
+C       PCLAY  L  SEDIMENT FRACTION CLAY CONTENT [0..1]
+C       PDEN   L
+C       PES        L  POTENTIAL EVAP FROM SUBSTRATE [CM/DAY]
+C       PESTIR    I/O AMT. OF PESTICIDES IN IRRIGATION WATER [MG/L]
+C       PET        L  POTENTIAL TRANSPIRATION [CM/DAY]
+C       PP         L  PHOTOPERIOD [HR]
+C       PSAND  L  SEDIMENT SIZE FRACTION SAND PORTION [0..1]
+C       PSILT  L  SEDIMENT SIZE FRACTION SILT PORTION [0..1]
+C       PTRANS    I/O TOTAL POTENTIAL TRANSPIRATION (DIRECT + UNUSED
+C             SOIL EVAPORATION).[CM/DAY]
+C       PUP        L
+C       PWRTS  I  NUMBER OF PLANT WITH ACTIVE ROOTS [#/HA]
+C       QF         I  LAYER INTERFACIAL MOIST FLUXES [CM/HR]
+C       QS         L  NODAL WATER UPTAKE BY PLANTS [CM/HR]
+C       RDF        I  FRACTIONAL DISTRIBUTION OF ROOTS BY LAYER [0..1]
+C       RFDD  I/O TOTAL RAINFALL DEPTH [CM]
+C       RH         I  RELATIVE HUMIDITY [0..100]
+C       BD         L  SOIL BULK DENSITY [G/CM^3]
+C       RNDR   L  RANDOM ROUGHNESS [CM]
+C       ROI        L  TOTAL SURFACE RUNOFF [CM]
+C       RRATE  I
+C       RTS        I  TOTAL S-W RADIATION INCOMING [MJ/M^2/DAY]
+C       SLKS   I  SOIL LAYER KD VALUES; CORRECTED FOR OM [CM^3/G]
+C       SLOPE  I  SLOPE OF FIELD [RAD]
+C       SMELT  L  SNOWMELT FOR THE DAY (CM)
+C       SNODON     L  FLAG FORCING ONE PASS THROUGH THE SNOMELT ROUTINE
+C       SNOWPK    I/O PACK WATER EQUILIVALENT THAT IS PASSED IN FOR INITIAL
+C       SOILHP     I  MODIFIED BROOKS-COREY PARAMETERS
+C               (1):   HB    - BUBBLING PRESSURE O(H) [CM]
+C               (2):   LAMDA - PORE SIZE DISTRIBUTION INDEX
+C               (3):   EPS   - EXPONENT FOR K(H) CURVE
+C               (4):   KSAT  - SAT HYDRAULIC CONDUCT [CM/HR]
+C               (5):   WR    - RESIDUAL WATER CONTENT
+C               (6):   WS    - SATURATION WATER CONTENT
+C               (7):   WFC   - FIELD CAPACITY (1/3 BAR) WC
+C               (8):   WFC   - FIELD CAPACITY (1/10 BAR) WC
+C               (9):   WWP   - WILTING POINT (15 BAR) WC
+C               (10):  HB    - BUBBLING PRESSURE K(H) CURVE [CM]
+C               (11):  C2    - SECOND INTRCEPT ON K(H) CURVE
+C               (12):  N1    - FIRST EXPONENT FOR K(H) CURVE
+C               (13):  A1    - CONSTANT FOR O(H) CURVE
+C       SOILPP     I
+C       SOLTP1    I/O ARRAY OF HEAT MODEL PARAMETERS,
+C              1: SAT MOISTURE CONTENT [0..1]
+C              2: FIELD CAPACITY [0..1]
+C              3: TEXTURE CLASS (1-COARSE, 2-MED, 3-FINE)
+C              4: # CONSTITUENTS FOR THERMAL PROPERTY CALC
+C              5: DRY VOL HEAT CAPACITY  [J/MM^3/C]
+C       SOLTP2     I  (MAXSCT X MAXHOR X 3) ARRAY OF SOIL HORIZON
+C             CONSTITUENT PROPERTIES, CONSTIT'S BY ROW,
+C             HORIZON BY COL, PROPERTY BY PLANE
+C             1: CONSTITUENT VOLUME FRACTIONS
+C             2: CONSTITUENT HEAT CONDUCT [J/MM/HR/C],
+C             3: PARTICLE SHAPE FACTORS GA
+C       SPAN   L  LOGICAL: T - STORM SPANS 2 OR MORE DAYS;
+C       SSEEP  L
+C       START  L  FLAG FOR PHYSCL ROUTINE INITIALIZATION
+C       SSTART     L  FLAG FOR SNOW ROUTINE INITIALIZATION
+C       STMSEG     L
+C       STORM  L  COL 1: INCREMENTAL BREAKPOINT TIMES
+C             ("DELTA T"'S) [HR]; INCREMENTAL BREAKPOINT
+C             RAINFALL DEPTHS [CM]
+C       T    I    SOIL TEMPERATURE IN NUMERICAL CONFIGURATION [C]
+C       TACTVE     L
+C       TAIRR I/O NITROGEN IN IRRIGATION WATER
+C       TARAIN    I/O NITROGEN IN RAIN WATER
+C       TBDH   L
+C       TCII   L
+C       TDAY   L
+C       TDPLNT     L
+C       TEVAP  L
+C       TFMASS     L
+C       THETA  I  VOLUMETRIC WATER CONTENT [CM^3/CM^3]
+C       TL         I  NUMERICAL LAYER THICKNESSES [CM]
+C       TLRO  I/O LOSS OF NITROGEN DUE TO RUNOFF [KG-N/HA]
+C       TLSEP I/O LOSS OF NITROGEN DUE TO SEEPAGE [KG-N/HA]
+C       TLDRN I/O LOSS OF NITROGEN DUE TO TILE DRAINAGE [KG-N/HA]
+C       TLLAT I/O LOSS OF NITROGEN DUE TO LATERAL FLOW [KG-N/HA]
+C       TLT        I  DEPTH TO BOTTOM OF NUMERICAL LAYERS [CM]
+C       TM         L  AVERAGE DAILY AIR TEMPERATURE [C]
+C       TMASS  L
+C       TMAX   I  MAXIMUM AIR TEMPERATURE [C]
+C       TMIN   I  MINIMUM AIR TEMPERATURE [C]
+C       TMIRR  L
+C       TNITUP    I/O TOTAL NITROGEN UPTAKE FOR WHOLE PROFILE [G/PLANT]
+C       TNUP   L
+C       TOOTH  L    PROFILE WATER STORAGE BEFORE RAINFALL (CM)
+C       TPASS  L
+C       TQ        I/O
+C       TRFDD  L  ACCUMULATED TOTAL RAINFALL DEPTH [CM]
+C       TRNTIM     L
+C       TROI   L
+C       TRTS   L  TOTAL ROOTS FOR PROFILE (SUM OF RDF)
+C       TS0        L  STORM STARTING CLOCK TIME [HR], 0<TS0<24
+C       TSE        L  STORM CLOCK ENDING TIME [HR], 0<TSE<24
+C       TSEEP  L
+C       TSTART     L
+C       TTCII  L
+C       TTRFD  L  DAILY TOTAL RAINFALL DEPTH [CM]
+C       TTMASS     L
+C       TTRO   L
+C       TTUP   L
+C       TUP       I/O WATER UPTAKE / LAYER [CM].
+C       IRRTYP     I  --TYPE OF IRRIGATION, IE. SPRINKLER, FLOOD,
+C             FURROW, DRIP, or SUBSURFACE.
+C       U    I    IONIC STRENGTH [MOLES/L]
+C       UPNIT I/O UPTAKE OF NITROGEN FOR EACH LAYER [G/PLANT/LAYER]
+C       UPPASS     L  PASSIVE UPTAKE OF NITROGEN [KG-N/HA]
+C       UPACT  L  ACTIVE UPTAKE OF NITROGEN [KG-N/HA]
+C       UPTOT  L  TOTAL NITROGEN UPTAKE [KG-N/HA]
+C       UPDMD  L  TOTAL NITROGEN DEMAND BY PLANTS [KG-N/HA]
+C       WRES   L  MOISTURE CONTENT OF RESIDUE [0..1]
+C       WRKNUM     I  WORK ARRAY INTERMEDIATARY VALUES OF:
+C               1: SUBDIAG ELEM'S IN TRIDIAG SYSTEM
+C               2: DIAG   "
+C               3: SUPER   "
+C               4: R.H.S.   "
+C               5: WORKING SPACE FOR TRIDIAG SOL'N
+C               6:        "
+C               7: TEMPORARY NEW TEMPERATURE SOL'N [C]
+C               8: INTERFACIAL SOIL THERMAL COND [J/MM/HR/C]
+C               9: SCALED PLAT WATER UPTAKES
+C       XLAT   I  LATITUDE OF FIELD
+C       XNU        I
+C       ZN         I  DEPTH TO NUMERICAL NODES [CM]
+C       ZRFDD  L
+C
+C       COMMENTS:
+C
+C       MASS STORAGE FILES:
+C
+C       EXTERNAL REFERENCES:
+C             ADJDT
+C             CHSPAN
+C             EVNTRO
+C             HEATFX
+C             MANOUT
+C             MASSBL
+C             POTEVP
+C             RECON
+C             REDIST
+C             SGATE
+C             SINK
+C             SOILPR
+C             STMINP
+C             UPTAKE
+C             VGATE
+C             WCHEAD
+C
+C       CALLED FROM:
+C
+C       PROGRAMMER: KEN ROJAS
+C
+C       VERSION:   3.0
+C
+C-----------------------------------------------------------------------
+C
+
+NOTE: Most of the codes were not provided here to simplify this documentation, readers are referred to the full ?rzDay.for? document for details.
+
+
+C       . . .  R A I N . . . AND  . . . I R R I G A T I O N   . . .
+C       ===========================================================
+C       .. CHECK FOR IRRIGATION EVENT OR SPANNING RAINFALL EVENT
+        IF(AIRR.GT.0.0D0.AND.(.NOT.SPAN)) THEN
+C
+C         ..CHECK IF STORM AND IRRIGATION EVENT START AT THE SAME TIME
+          IF(AIRR.GT.0.0D0.AND.(JDAY.EQ.JSTDAY.AND.TS0.EQ.0.0D0)) THEN
+C
+C           ..PAD THE STORM EVENT BY 1 MINUTE TO ALLOW BOTH TO OCCUR
+            TS0=TS0+1
+          ENDIF
+          SPAN=.FALSE.
+          PERIOD='IRR  '
+          IF(SMELT.GT.0.0D0.or.smelt_shaw.gt.0.0d0) THEN
+            IFMT='(1X,"===> SNOWMELT INFILTRATION AT ",I3,":",    I2.2,1
+     +X,A2)'
+          ELSE
+            IFMT='(1X,"===> IRRIGATION EVENT AT ",I3,":",I2.2,    1X,A2)
+     +'
+C
+            IF (IRLOC.GT.0) THEN
+C             .. IRLOC WOULD BE 0 IF AUTOMATIC IRRIGATION IS USED
+              IF(IRRTYP(IRLOC).EQ.1) THEN
+C
+C               .. SPRINKLER IRRIGATION; SETUP PSEUDO-STORM DATA
+                ISEG=1
+                NBPR=4
+                NSPAN=4
+C LIWANG MA, DEC 8, 2006. TO PREVENT RRATE BEING 0
+                IF (RRATE(IRLOC).EQ.0.0D0) RRATE(IRLOC)=1.0d0
+                RRATE_C = RRATE(IRLOC)
+C END OF MODIFICATION
+                TMIRR=AIRR/RRATE(IRLOC)
+                DO 140 I=1,NBPR
+                  STMSEG(I,1,ISEG)=TMIRR*0.25D0
+                  STMSEG(I,2,ISEG)=AIRR*0.25D0
+  140           CONTINUE
+                IF(TMIRR.GT.24.0D0) THEN
+                  PRINT*
+                  PRINT*,'  <<< E R R O R  >>>'
+                  PRINT*
+                  PRINT*,'IT WOULD TAKE MORE THAN 24 HOURS TO APPLY'
+                  PRINT*,'THE AMOUNT OF IRRIGATION WATER YOU SPECIFIED'
+                  PRINT*,'AT THE CURRENT APPLICATION RATE.'
+                  PRINT*
+                  PRINT*,'AMOUNT =',AIRR,'  RATE =',RRATE(IRLOC)
+                  CANIRR=.TRUE.
+                ENDIF
+              ELSEIF(IRRTYP(IRLOC).EQ.4) THEN
+C
+C         ..FIND average Ksat of the top 30 cm  Liwang Ma, 12-18-2008
+          TERM2=0.0D0
+          DO 402 J=1,30
+             JJ=IT2H(j)
+c            IF(Jj.EQ.1) THEN
+              TERM2=TERM2+1.0d0/soilhp(4,JJ)   !1 cm increment for the infiltration grade.
+c            ELSE
+c              TERM2=TERM2+(DHB(J)-DHB(J-1))/soilhp(4,JJ)
+c            ENDIF
+  402     CONTINUE
+          SK_avg = 30.0d0/term2/2  ! per Laj request to use 30 cm average Ksat/2.0
+C               .. DRIP IRRIGATION; SETUP FOR CONSTANT RAINFALL @ KSAT RATE
+                ISEG=1
+                NBPR=4
+                NSPAN=4
+c                TMIRR=AIRR/SOILHP(4,1)
+                TMIRR=AIRR/SK_avg
+                DO 150 I=1,NBPR
+                  STMSEG(I,1,ISEG)=TMIRR*0.25D0
+                  STMSEG(I,2,ISEG)=AIRR*0.25D0
+  150           CONTINUE
+C
+              ENDIF
+            ENDIF
+          ENDIF
+        ELSE
+C
+C         ... INITIALIZE STORM
+          PERIOD='STORM'
+          IFMT='(1X,"===> RAINFALL EVENT AT ",I3,":",I2.2,1X,A2)'
+C
+C         ... CHECK IF NEXT STORM SPANS NEXT DAY & ADJUST
+          IF(.NOT.SPAN) THEN
+C
+C           ..ONLY GO IN HERE IF FIRST TIME THRU AFTER READ
+            NBPR=NBPRI
+            CALL CHSPAN(DUR,MAXBP,NBPR,SPAN,STORM,TS0,STMSEG,NS,ND)
+            ISEG=1
+            NSPAN=NS
+            DAYRAIN=DAYRAIN+RFDNEW
+          ELSE
+C
+C           ..GO THRU HERE ONLY ON A SPAN STORM
+            IF(AIRR.GT.0.0D0) THEN
+              CALL MANOUT(-1,0,JDAY,0,IYYY)
+              PRINT*,'===> IRRIGATION APPLICATION CANCELED (SPANNING)'
+              CANIRR=.TRUE.
+            ENDIF
+            PRINT*,'===> CONTINUING PREVIOUS DAYS STORM'
+            PRINT*
+            ISEG=2
+            SPAN=.FALSE.
+            NSPAN=ND
+          ENDIF
+        ENDIF
+        IF(CANIRR) THEN
+          AIRR=0.0D0
+          DO 160 I=1,4
+            FERTIR(I)=0.0D0
+  160     CONTINUE
+          DO 170 I=1,MXPEST
+            PESTIR(I)=0.0D0
+  170     CONTINUE
+        ENDIF
+        CANIRR=.FALSE.
+C
+C       .. PRINT TIME OF STORM
+        IHOUR=INT(MOD(DAYTIM,12.0D0))
+        MINUT=INT((DAYTIM-INT(DAYTIM))*60.0D0)
+        IF(IHOUR.EQ.0) IHOUR=12
+        IF(INT(DAYTIM/12.0D0).LT.1) THEN
+          WRITE(*,FMT=IFMT) IHOUR,MINUT,'AM'
+        ELSE
+          WRITE(*,FMT=IFMT) IHOUR,MINUT,'PM'
+        ENDIF
+C
+C       ..FIND STORM DURATION
+        TMSTM=0.0D0
+        DO 180 I=1,NSPAN
+          TMSTM=TMSTM+STMSEG(I,1,ISEG)
+  180   CONTINUE
+        IF(AIRR.GT.0.0D0) THEN
+          TMSTM=0.0D0
+          TTAIRR=AIRR
+        ENDIF
+C
+C       ... CALCULATE FLUX DUE TO SUBSURFACE DRAINAGE
+        SUBDR=0.0D0
+!commented out to avoid repeated calculation
+cx      IF(IDRAIN.EQ.1) CALL TILEFLO(TLT,HORTHK,THGCUR,DRSPAC,DRRAD,
+cx   +      H2OTAB,SUBDR,NN,NHOR,CLAT,IDP,UDRN)   
+C
+C       ..IF THERE IS A SNOWPACK SET TEMPERATURE SURFACE BOUNDRY CONDITION = 0
+c           if (ihourly.eq.1) then  !use hourly air temperature for surface temp all the time, 6-12-2014
+                TMX=hrt(idaytim)
+c           else
+c                TMX=TM       !check this if Penflux is used.
+c           endif
+        IF(SNP.GT.0.0D0) THEN  !assume zero temperature only snow depth greater than an inch
+          TMX=TMX+(0.85D0+31.13D0*SNP/100.0D0)  !FROM GE AND GONG, 2010 VOL 115, D08107, DIO:10.1029/2009JD012798, J GEOPHYSICAL RESEARCH
+        ENDIF
+C
+C       ..FIND POTENTIAL TOTAL OUTFLOW FOR STORM
+C       TOUTFLO = (SUBDR+BOTFLX)*TMSTM
+C
+C       ..FIND INITIAL WATER CONTENT
+        TOOTH=0.0D0
+        DO 190 I=1,NN
+          if (ishaw.eq.1) then
+          TOOTH=TOOTH+(THETA(I) + THETAI(I)*RHOI/RHOL) * TL(I)
+          else
+          TOOTH=TOOTH+THETA(I)*TL(I)
+          endif
+  190   CONTINUE
+C
+c      if (airr.gt.0.0d0.and.smelt_SHAW.eq.airr) then
+c         STMSEG(1,1,1)=2.0D0  !make it a two hour rain event for snowmelt
+c         STMSEG(1,2,1)=AIRR
+c      endif
+C       .. GO THROUGH INFILTRATION ROUTINE
+        CALL EVNTRO(CC,NN,NHOR,ID,FTR,SLKS,STMSEG(1,1,ISEG),
+     +      STMSEG(1,2,ISEG),COPLNT,CORES,NBPR,ZRFDD,JDAY,CII,ROI,AIRR,
+     +      FMP,DTCHEM,T,SOLTP1,TMX,CMPS,IMAGIC,INT(TLT(IBRKTH)),BRKH2O,
+     +      BKCHEM,H2OTAB,SUBDR,DRSEEP,DTDCHEM,TLT,HORTHK,CAPZONE,SMELT,
+     +      IDP,OMSEA,IYYY,THGCUR,pori,SCUPCH,Hmin)
+C
+        CUTTER=0.0D0
+        TMASS=0.0D0
+        DO 200 I=1,NN
+          TMASS=TMASS+CC(I,9)*TL(I)*THETA(I)
+          if (ishaw.eq.1) then
+          CUTTER=CUTTER+(THETA(I) + THETAI(I)*RHOI/RHOL) * TL(I)
+          else
+          CUTTER=CUTTER+THETA(I)*TL(I)
+          endif
+  200   CONTINUE
+        TTMASS=TOOTH+ZRFDD-ROI-CUTTER-CDNCI-DRSEEP
+        IF((IMAGIC.LE.-1.AND.IMAGIC.GE.-3).OR.IMAGIC.EQ.-10) WRITE(9,
+     +      1000) JDAY,TOOTH,ZRFDD,ROI,DRSEEP,CDNCI,CUTTER,TTMASS
+C
+C       ..UPDATE HEADS WITH NEW WATER CONTENTS
+        CALL WCHEAD(THETA,H,SOILHP,NN,NDXN2H,MAXHOR)
+C
+C       ..FIND WATER TABLE
+        IF(ITBL.EQ.1) CALL WATBL(NN,NDXN2H,MAXHOR,SOILHP,H,QF(NN),DELT,
+     +      TLT,ZN,IREBOT,BOTHED,BOTFLX,H2OTAB,ALPH,AEF,CAPZONE,THETA)
+C
+cx      DAYTIM=DAYTIM+TMSTM   !commented out to reset time step for redistribution
+        DELOLD=CUTTER
+        AIRR=0.0D0
+        FIRST5=.TRUE.
+        DTSEEP=DTSEEP+CDNCI
+        DTDSEEP=DTDSEEP+DRSEEP
+        TTRFD=TTRFD+ZRFDD+SNRO
+        TRFDD=TRFDD+ZRFDD+SNRO
+        TTRO=TTRO+ROI+SNRO
+        TROI=TROI+ROI+SNRO
+        RZrunoff=RZrunoff+ROI
+        TCII=TCII+CII
+        TTCII=TTCII+CII
+        IF(DAYTIM.GE.(24.0D0-COR)) THEN
+          DAYTIM=24.0D0
+          CALL MASSBL(MDAY,IMAGIC,TL,THETA,NN,DAYTIM,DTOLD,DTEVAP,
+     +        DTSINK,DTSEEP,DTDSEEP,DTLAT,TTRFD,TTRO,FMP,TTCII,DTCHEM,
+     +        CMPS,CNVG,DTDCHEM,DTLCHEM,ICNVG,BIGCNV,OMSEA,TTAIRR,SMELT,
+     +        SNRO,JDAY,IYYY,jeday,DTQSN,THETAI,ishaw,SCUPCH,dsubirr,
+     +        jbday)
+        ENDIF
+CC ----- chd -------------
+      If (ErosionActive.and.nspan.gt.0) then                                            !sab\
+C       GLEAMS
+c        RzIrrigation = AIRR_C  !sab presumed to be in cm for this day-used in Gleams
+c        RzRainfall = trfdd_C    !sab 5/03 - these link to gleams - in cm, must be in inches
+c        RzRunoff   = troi_C     !sab conversion takes place in GLEAMSDailyErosion in Rz-Erosion
+c        gleams_ei = 100 * gleams_exrain * gleams_ei
+        !DayMeanTemp = T(1)            !sab
+c        Call DailyErosion (SOLOSS,ENRICH,iyyy*1000+jday,           !sab arg=yyyyddd=sdate
+c     &                          T(1),trfdd_C,                     ! trfdd_c includes rain and irrigation
+c     &                          RzRunoff)
+        totaltime=0.0d0
+        totalrain=0.0d0
+        thirtyRR=0.0d0
+        do i=1,30
+            RR30(i)=0.d0
+        enddo
+c
+        do i=1,nspan-1
+        totaltime=totaltime+stmseg(i,1,iseg)
+        totalrain=totalrain+stmseg(i,2,iseg)
+        enddo
+        if (totaltime.le.0.5d0) then
+            thirtyRR=(totalrain/2.54d0)/max(totaltime,0.5d0)
+        else
+        istart=1
+        iend=0
+        do i=1,nspan-1   !nspan is # of breakpoints, nspan-1 is # of storm segments
+            iend=iend+int(stmseg(i,1,iseg)*60.d0)
+            RRI=(stmseg(i,2,iseg)/2.54d0)/stmseg(i,1,iseg)
+            do j=istart,iend
+            thirtyRR=max(thirtyRR,AVEMOV(RR30,30,RRI,J))
+            enddo
+            istart=istart+int(stmseg(i,1,iseg)*60.d0)
+        enddo
+        endif
+      end if
+c
+      ELSE
+C
+

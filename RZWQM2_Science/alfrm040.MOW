@@ -1,0 +1,16 @@
+!This file is for parameters controlling simulated mowing events for alfalfa
+!for CROPGRO-Forage model.
+!Mow height is not used any where, except to affect canopy height as m or cm.
+!MOW is residual biomass in kg/ha after mowing
+!RSPLF is residual percent leaf after mowing
+!MVS is the residual vegetative stage (node #) after mowing
+!RSHT is the residual height (cm) after mowing (not currently used)
+@TRNO     DATE   MOW RSPLF   MVS  RSHT
+     1 2016116  1000    20     2   5.0
+     1 2016146  1000    20     2   5.0
+     1 2016188  1000    20     2   5.0
+     1 2016215  1000    20     2   5.0
+     1 2016250  1000    20     2   5.0
+     1 2016312  1000    20     2   5.0
+     1 2017102  1000    20     2   5.0
+     1 2017143  1000    20     2   5.0

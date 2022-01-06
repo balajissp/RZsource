@@ -1,0 +1,213 @@
+C
+      SUBROUTINE EBSNOW(N,NSP,NR,ICESPT,TSP,TSPDT,DLW,DLWDT,RHOSP,ZSP,
+     +                   DZSP,QVSP,VAPSP,VAPSPT,SSP,ITER,WT,WDT,DT,
+     +                   PRESUR,A1,B1,C1,D1,evapmx,istress)
+C
+C======================================================================
+C
+C       PURPOSE:
+C     THIS SUBROUTINE CALCULATES THE JACOBIAN MATRIX COEFFICIENTS FOR
+C     THE SNOW PORTION OF THE NEWTON-RAPHSON SOLUTION OF THE ENERGY
+C     BALANCE
+C
+C       REF:
+C
+C       VARIABLE DEFINITIONS:
+C       VARIABLE  I/O   DESCRIPTION
+C       --------  ---   -----------
+C       A1        I/O   first term in Jacobian  matrix for energy balance
+C       B1        I/O   diagonal term in Jacobian matrix for energy balance
+C       C1        I/O   third term in Jacobian  matrix for energy balance
+C       CON        L    cond term between nodes I and I+1  K/(Z(I+1)-Z(I))
+C       CONV       L    vapor cond between node i and i+1
+C       CSP        L    ave vol heat cap of the snow for time step (J/kg-K)
+C       CSPDT      L    vol heat cap of snow at time t+dt (J/kg-K)
+C       CSPT       L    vol heat cap of snow at time t (J/kg-K)
+C       D1        I/O   residual term in Newton-Raphson iteration for
+C                       energy balance
+C       DLW        I    depth of liquid water for i-th snow pack node
+C       DLWDT      I    liquid water depth for i-th snow pack node at
+C                       end of time step
+C       DZSP       I    thickness of i-th snowpack node
+C       I          L    canopy, snow, residue or soil layer
+C       ICESPT     I    1 if snow layer contains both ice and water at t+dt
+C       ITER       I    current num of iter for energy and water balance
+C       J          L    specifies solute species in soil or plant species
+C       LF         P    latent heat of fusion
+C       LS         P    latent heat of sublimation
+C       LV         P    latent heat of vaporization
+C       N          I    node num starting from surface material
+C       NR         I    num of matted residue layers
+C       NSP        I    num of layers in snowpack
+C       NSP1       L    NSP+1
+C       PRESUR     I    ave atm pressure at site  (N/m^2)
+C       QVSP       I    vapor flux between snow nodes i and i+1
+C       QVSPDT     L    vapor flux between snow nodes i and i+1 at t+dt
+C       QVSPT      L    vapor flux between snow nodes i and i+1 at t
+C       RHOL       P    density of liquid water  (kg/m^3)
+C       RHOSP      I    density of ice fract of snowpack  (kg/m^3)
+C       SLOPE      L    slope of simulation site
+C       SSP        I    source term in energy balance for i-th snow node
+C       TK         L    ave thermal cond over the time step
+C       TSP        I    temp of canapy layer at time t
+C       TSPDT      I    temp of snowpack layer at time t + dt
+C       VAPSP      I    vap den of lower bound of snowpack at t (kg/m^3)
+C       VAPSPT     I    vap den of lower bound of snowpack at t+dt (kg/m^3)
+C       WDT        I    weighting factor for end of time step values
+C       WT         I    weightin factor for beginning of time step values
+C       ZSP        I    depth of node i in the snow from the snowpack top
+C
+C
+C       COMMENTS:
+C
+C       EXTERNAL REFERENCES:
+C                       CONDUC
+C                       QVSNOW
+C                       SNOWHT
+C                       SNOWTK
+C                       WEIGHT
+C
+C       CALLED FROM:
+C
+C       PROGRAMMER:
+C
+C       VERSION:
+C
+C======================================================================
+C
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+C
+      PARAMETER (MXNOD=300, NODRES=10, nodcan=11,
+     +  NODSNO=100, NODTOT=MXNOD+NODCAN+NODRES+NODSNO)
+C
+      DOUBLE PRECISION TSP(NODSNO),TSPDT(NODSNO),DLW(NODSNO),
+     +  DLWDT(NODSNO),RHOSP(NODSNO),ZSP(NODSNO),DZSP(NODSNO),
+     +  QVSP(NODSNO),SSP(NODSNO),QVSPT(NODSNO),QVSPDT(NODSNO),
+     +  TK(NODSNO),CON(NODSNO),CONV(NODSNO),SLOPE(NODSNO),CSP(NODSNO),
+     +  CSPT(NODSNO),CSPDT(NODSNO),A1(NODTOT),B1(NODTOT),C1(NODTOT),
+     +  D1(NODTOT)
+      INTEGER ICESPT(NODSNO)
+      DOUBLE PRECISION LF,LS,LV
+
+      PARAMETER (LF=3.35D5, LV=2.5D6, LS=2.835D6, RHOL=1.0D3)
+      common /shawp/ pplastic,emitc,emitr(10),emitsp,emits,emitf
+     &      ,palbedo,ptransm
+C
+C**** DETERMINE THE VAPOR FLUX BETWEEN NODES
+      IF (ITER .EQ. 1)
+     +      CALL QVSNOW (NSP,QVSPT,CONV,SLOPE,TSP,ZSP,VAPSP,PRESUR)
+      CALL QVSNOW (NSP,QVSPDT,CONV,SLOPE,TSPDT,ZSP,VAPSPT,PRESUR)
+C     IF UNDERLYING MATERIAL IS RESIDUE, VAPOR DENSITY IS NOT A FUNCTION
+C     OF TEMPERATURE, I.E.  SLOPE(NSP+1) = 0.0D0
+      IF (NR .GT. 0) SLOPE(NSP+1) = 0.0D0
+C
+C**** OBTAIN THE AVERAGE VAPOR FLUX OVER THE TIME STEP
+      CALL WEIGHT (NSP,QVSP,QVSPT,QVSPDT,WT,WDT)
+C
+c gnf check if soil can supply water for evaporation
+c         if (-qvr(nr).gt.evapmx*rhol) then
+      if (istress.lt.3) then     !ISTRESS=0
+      if (nr.eq.0) then
+             qvsp(nsp)=-evapmx*rhol
+             conv(nsp)=0.0
+      endif
+      else
+             qvsp(nsp)=qvsp(nsp)*(1.0d0-pplastic)
+             conv(nsp)=conv(nsp)*(1.0d0-pplastic)
+      endif
+c
+c         end if
+      IF (ITER .EQ. 1) THEN
+C        (DENSITY AND THERMAL CONDUCTIVITY ARE CONSTANT OVER TIME STEP)
+C****    DETERMINE THE THERMAL CONDUCTIVITY OF EACH NODE
+         CALL SNOWTK (NSP,TK,RHOSP)
+         TK(NSP+1) = TK(NSP)
+C
+C****    DETERMINE THE CONDUCTANCE TERM BETWEEN NODES
+         NSP1 = NSP+1
+
+         CALL CONDUC (NSP1,ZSP,TK,CON)
+      END IF
+C
+C**** CALCULATE THE SPECIFIC HEAT OF EACH NODE
+      IF (ITER .EQ. 1) CALL SNOWHT (NSP,CSPT,TSP,RHOSP)
+      CALL SNOWHT (NSP,CSPDT,TSPDT,RHOSP)
+C
+C**** OBTAIN THE AVERAGE SPECIFIC HEAT OVER THE TIME STEP
+      CALL WEIGHT (NSP,CSP,CSPT,CSPDT,WT,WDT)
+C
+C
+C**** DETERMINE THE COEFFICIENTS FOR THE SURFACE LAYER
+      D1(N)= D1(N) - CON(1)*(WT*(TSP(1)-TSP(2))
+     +                      + WDT*(TSPDT(1)-TSPDT(2))) + SSP(1)
+     +           - CSP(1)*(TSPDT(1)-TSP(1))*DZSP(1)/DT
+     +           - RHOL*LF*(DLWDT(1)-DLW(1))/DT - LS*QVSP(1)
+C
+      IF (ICESPT(1) .EQ. 0) THEN
+C        LAYER IS NOT MELTING - ENERGY BUDGET BASED ON TEMPERATURE
+         A1(N+1) = WDT*(CON(1) + CONV(1)*LS*SLOPE(1))
+         B1(N) = B1(N) - WDT*(CON(1) + CONV(1)*LS*SLOPE(1))
+     +                 - DZSP(1)*CSP(1)/DT
+        ELSE
+C
+C        LAYER IS MELTING - ENERGY BUDGET BASED ON WATER CONTENT
+         A1(N+1)= 0.0D0
+         B1(N)= B1(N) - RHOL*LF/DT
+C        IF SNOW IS NOT FIRST MATERIAL, SET DERIV. FOR LAST NODE TO 0
+         IF (N.GT.1) C1(N-1)=0.0D0
+      END IF
+C
+C**** DETERMINE THE COEFFICIENTS FOR THE REMAINDER OF THE SNOWPACK
+      DO 20 I=N+1,N+NSP-1
+         J=I-N+1
+         D1(I)= CON(J-1)*(WT*(TSP(J-1)-TSP(J))
+     +                   + WDT*(TSPDT(J-1)-TSPDT(J)))
+     +         - CON(J)*(WT*(TSP(J)-TSP(J+1))
+     +                   + WDT*(TSPDT(J)-TSPDT(J+1))) + SSP(J)
+     +         - CSP(J)*(TSPDT(J)-TSP(J))*DZSP(J)/DT
+     +         - RHOL*LF*(DLWDT(J)-DLW(J))/DT - LS*(QVSP(J)-QVSP(J-1))
+C
+         IF (ICESPT(J) .EQ. 0) THEN
+C           LAYER IS NOT MELTING - ENERGY BUDGET BASED ON TEMPERATURE
+            A1(I+1)= WDT*(CON(J) + CONV(J)*LS*SLOPE(J))
+            B1(I)= -WDT*(CON(J-1)+CON(J))
+     +             - WDT*LS*SLOPE(J)*(CONV(J-1) + CONV(J))
+     +             - DZSP(J)*CSP(J)/DT
+            C1(I-1)= WDT*(CON(J-1) + CONV(J-1)*LS*SLOPE(J))
+           ELSE
+C
+C           LAYER IS MELTING - ENERGY BUDGET BASED ON WATER CONTENT
+            A1(I+1)= 0.0D0
+            B1(I)= -RHOL*LF/DT
+            C1(I-1)= 0.0D0
+         END IF
+20    CONTINUE
+C
+C
+C**** DETERMINE THE BOUNDARY CONDITIONS FOR TOP LAYER OF NEXT MATERIAL
+      N=N+NSP
+C
+      IF (NR .GT. 0) THEN
+C        SNOW OVERLYING RESIDUE
+C        CHECK IF LAST SNOW NODE IS MELTING - IF SO, ENERGY BALANCE
+C        IS BASED ON WATER CONTENT, NOT TEMPERATURE AND A1(N)=0.0D0
+         IF (ICESPT(NSP) .EQ. 0) A1(N) =  WDT*CON(NSP)
+         B1(N) = -WDT*CON(NSP)
+         C1(N-1) = C1(N-1) + WDT*CON(NSP)
+         D1(N) = CON(NSP)* (WT*(TSP(NSP) - TSP(NSP+1))
+     +                     + WDT*(TSPDT(NSP) - TSPDT(NSP+1)))
+C
+        ELSE
+C        SNOW IS LYING ON BARE SOIL - INCLUDE LATENT HEAT TRANSFER
+C        AND VAPOR FLUX DEPENDENCE ON TEMPERATURE OF SOIL SURFACE
+C        CHECK IF LAST SNOW NODE IS MELTING - IF SO, ENERGY BALANCE
+C        IS BASED ON WATER CONTENT, NOT TEMPERATURE AND A1(N)=0.0D0
+         IF (ICESPT(NSP) .GT. 0)
+     +      A1(N)=WDT*(CON(NSP)+CONV(NSP)*LV*SLOPE(NSP))
+         B1(N) =-WDT*(CON(NSP) + CONV(NSP)*LV*SLOPE(NSP+1))
+         C1(N-1) = WDT*(CON(NSP) + CONV(NSP)*LS*SLOPE(NSP+1))
+         D1(N) = CON(NSP)* (WT*(TSP(NSP) - TSP(NSP+1))
+     +                 + WDT*(TSPDT(NSP) - TSPDT(NSP+1))) + LV*QVSP(NSP)
+      END IF
+      RETURN
+      END

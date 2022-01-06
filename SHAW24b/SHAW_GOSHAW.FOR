@@ -1,0 +1,1395 @@
+C     Last change by KEJ:  17 Mar 95    9:00AM
+C     Last change by RMA:  25 April 1997 TOLER = 0.01
+C     Last change by GNF:   2 May   1997
+C            
+c rma\gf 
+      SUBROUTINE GOSHAW(NC,NSP,NR,NS,NSALT,DT,UHGHT,TA,HUM,WIND,
+     +  SUNHOR,GFLUX,SPMELT,EVAPS,PRESUR,
+     +  SOILHP,NDXN2H,ZS,TSDT,CC,MATDT,VLCDT,VICDT,QSL,RHOB,SAT,
+     +  sand,silt,CLAY,om,
+     +  ALBSOI,ICESDT,ZR,TRDT,GMCDT,RHOR,TSPDT,DLWDT,ICESPT,RHOSP,
+     +  DZSP,ZSP,ZH,ZM,VAPRDT,RCOVER,
+     +  PLANTZ,PLANTW,TCDT,TLCDT,VAPCDT,WCANDT,ZC,TOTLAI,ITYPE,IEVAP,
+     +  RSTOM0,ROOTDN,TRANSP,TPOT,ROOTXT,
+     +  pmw,slks,RAIN,HOUR,ALATUD,SLOPE,ASPECT,elev,
+     +  ALBRES0,CANALB,NPLANT,evapr,
+     +  ISHUTL,HAFDAY,DECLIN,CLOUDS,NNSP,TRAIN,jday,
+     +  tswcan,tswsno,tswres,tswsoi,tlwcan,tlwsno,tlwres,tlwsoi,
+     +  swcan,swsnow,swres,swsoil,lwcan,lwsnow,lwres,lwsoil,
+     +  hsum,hflux,gsum,vLEsum,ATRANS,evapmx,dchar,xtract,tevaps,evap1,
+     +  store,iyyy,fdepth,tdepth,tbotm,Hmin,ISTRESS,XANGLE,
+     +  PLEAF0,RSTEXP,RLEAF0,RROOT0,RESTKB,WINDC,EMITR0,
+     +  TLCSHAW,TLEAFU,TLEAFL)
+
+
+C
+C======================================================================
+C
+C       PURPOSE:
+C     THIS SUBROUTINE IS THE MAIN DRIVER FOR THE HEAT ROUTINES TAKEN
+C     FROM THE SHAW MODEL
+C
+C       REF:
+C
+C       VARIABLE DEFINITIONS:
+C       VARIABLE  I/O   DESCRIPTION
+C       --------  ---   -----------
+C       A1         L    first term in Jacobian  matrix for energy balance
+C       B1         L    diagonal term in Jacobian matrix for energy balance
+C       BCONC      L    CONC (J,I) at beginning of user-specified time step
+C       BDLW       L    DLW (I) at beginning of user-specified time step
+C       BMAT       L    MAT (I) at beginning of user-specified time step
+C       BSALT      L    SALT (J,I) at beginning of user-specified time step
+C       BTR        L    TR(I) at beginning of user-specified time step
+C       BTSP       L    TSP(I) at beginning of user-specified time step
+C       BVLC       L    VLC(I) at beginning of user-specified time step
+C       C1         L    third term in Jacobian  matrix for energy balance
+C       CONC       L    conc of j-th solute in soil soln at time t (eq/kq)
+C       CONCDT     L    conc of j-th solute in soil soln at time t+dt (eq/kg)
+C       CS         L    ave heat cap of the soil over time step  (J/kg-K)
+C       D1         L    residual term in Newton-Raphson iteration for
+C                       energy balance
+C       DELTA      L    matrix soln for change in para for i-th node
+C       DELNRG     L    matrix soln for energy balance for previous time step
+C       DELWTR     L    matrix soln for water balance for previous time step
+C       DLW        L    depth of liquid water for i-th snow pack node
+C       DLWDT     I/O   liquid water depth for i-th snow pack node at
+C                       end of time step
+C       DUMMY      L    dummy variable passed but not needed
+C       DZSP       I    thickness of i-th snowpack node
+C       G          P    acceleration of gravity
+C       GMC        L    grav water content of i-th residue node at time t
+C       GMCDT      I    grav water content of i-th residue node at t+dt
+C       HEIGHT     I    height of windspeed and temp measurements
+C       HFLUX      I    turbulent heat flux at surface node
+C       HUM        I    humidity at beginning of time step
+C       HUMDT      L    humidity at end of time step
+C       I          L    canopy, snow, residue or soil layer
+C       IBICES     L    ICES(I) at beginning of user-specified time step
+C       ICES       L    1 if soil layer contains both ice and water at t
+C       ICESDT    I/O   1 if soil layer contains both ice and water at t+dt
+C       ICESP      L    1 if snow layer contains both ice and water at t
+C       ICESPT    I/O   1 if snow layer contains both ice and water at t+dt
+C       ITER       L    current num of iter for energy and water balance
+C       J          L    specifies solute species in soil or plant species
+C       LEVEL      L    desired level of output and when to switch levels
+C       LF         P    latent heat of fusion
+C       MAT        L    matric potential  (m)
+C       MATDT     I/O   matric potential at t+dt  (m)
+C       pmw        i    molecular weight of pesticides (g/mole)
+C       N          L    node num starting from surface material
+C       NDT        L    num of times steps per hour
+C       NR         I    num of matted residue layers
+C       NS         I    num of soil layers
+C       NSALT      I    num of different types of solutes to be simulated
+C       NSP       I/O   num of layers in snowpack
+C       NTIMES     L    num of current time step within the hour
+C       PRESUR     I    ave atm pressure at site  (N/m^2)
+C       QSL        I    ave liquid flux for time step between soil nodes
+C       QSV        L    vapor flux between soil node i and i+1
+C       QSVDT      L    vapor flux between soil node i and i+1 at t+dt
+C       QSVT       L    vapor flux between soil node i and i+1 at t
+C       QVSP       L    vapor flux between snow nodes i and i+1
+C       RHOB       I    bulk density of soil  (kg/m^3)
+C       RHOI       P    density of ice   (kg/m^3)
+C       RHOL       P    density of liquid water  (kg/m^3)
+C       RHOR       I    density of residue in matted layer  (kg/m^3)
+C       RHOSP      I    density of ice fract of snowpack  (kg/m^3)
+C       SALT       L    amount of j-th solute in i-th soil node at t
+C       SALTDT     L    amount of j-th solute in i-th soil node at t+dt
+C       SALTKQ     L    adsorption char of solute j for node i  (kg/kg)
+C       SAT        I    sat WC
+C       SATV       L    sat vapor density
+C       SATVDT     L    sat vapor density at end of time step
+C       SCOUT      L    liquid water outflow from snowpack for the hour
+C       slks       i    kd of pesticides cm3 (water)/ g (soil)
+C       SR         L    source term in energy balance for i-th residue node
+C       SS         L    heat souce for soil layer
+C       SSP        L    source term in energy balance for i-th snow node
+C       T          L    temp
+C       TA         I    air temp at beginning of time step
+C       TADT       L    air temp at end of time step
+C       TDT        L    temp at end of time step
+C       TK         L    thermal conductivity of the soil (W/m-K)
+C       TOLER      P    desired tolerance
+C       TOPSNO     L    sum of vapor entering the top of the snowpack
+C       TOTPOT     L    total water potential
+C       TQVSP      L    sum of vapor flux in snow pack over the hour
+C       TR         L    temp of residue layer at time t
+C       TRAIN      L    rain temp
+C       TRDT      I/O   temp of residue layer at time t + dt
+C       TS         L    temp of soil layer at time t
+C       TSDT       I    temp of soil layer at time t + dt
+C       TSP        L    temp of canapy layer at time t
+C       TSPDT     I/O   temp of snowpack layer at time t + dt
+C       UGAS       P    universal gas constant
+C       VAPSPT     L    vap den of lower bound of snowpack at t+dt (kg/m^3)
+C       VFLUX      L    turbulent vapor transfer at surface node
+C       VIC        L    vol ice content
+C       VICDT     I/O   vol ice content at t+dt
+C       VLC        L    vol liquid content
+C       VLCLMT     I    vol WC of soil below which thermal cond
+C                       is linear interpolated to that of dry soil
+C       VLCDT      I    vol liquid content at t+dt
+C       WDT        P    weighting factor for end of time step values
+C       WIND       I    ave wind speed for the time step (m/s)
+C       WINDR      L    windspeed at the top of the residue
+C       WT         P    weightin factor for beginning of time step values
+C       ZERO       P    plane of zero displacement in wind profile calc.
+C       ZHSP       P    surface roughness para for heat transfer
+C                       with snowcover
+C       ZMSP       P    surface roughness para for momentum transfer
+C                       with snowcover
+C       ZR         I    depth of node i in residue from the residue top
+C       ZS         I    depth of node i in the soil from the soil surface
+C       ZSP        I    depth of node i in the snow from the snowpack top
+C
+C       COMMENTS:
+C
+C       EXTERNAL REFERENCES:
+C                       ADJUST
+C                       ATSTAB
+C                       BACKUP
+C                       EBRES
+C                       EBSNOW
+C                       EBSOIL
+C                       FROZEN
+C                       QVSOIL
+C                       SNOMLT
+C                       SOURCE
+C                       SUMDT
+C                       TDMA
+C                       UPDATE
+C                       VSLOPE
+C                       WBSNOW
+C                       WCH
+C                       WEIGHT
+C
+C       CALLED FROM:
+C
+C       PROGRAMMER:
+C
+C       VERSION:
+C
+C======================================================================
+C
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+C
+      PARAMETER (MAXBP=50, MXNOD=300,MXNODT=3001,MAXHOR=12, MAXSCT=11,
+     1  MXCHEM=15, MXPEST=3, MXAPP=200, MXSPEC=10, NODRES=10, nodcan=11,
+     +  NODSNO=100, NODTOT=MXNOD+NODCAN+NODRES+NODSNO,
+     +  NODPLT=NODCAN*MXSPEC,ALBEXP=3.5D0)
+c rma
+      LOGICAL first,fexist
+c
+c rma\gf
+      DOUBLE PRECISION TS(MXNOD),TSDT(MXNOD),MAT(MXNOD),MATDT(MXNOD),
+     +  cc(MXNOD,mxchem),CONC(MXCHEM,MXNOD),CONCDT(MXCHEM,MXNOD),
+     +  VLC(MXNOD),VLCDT(MXNOD),VIC(MXNOD),VICDT(MXNOD),QSL(MXNOD),
+     +  QSV(MXNOD),QSVT(MXNOD),QSVDT(MXNOD),SS(MXNOD),SALT(MXCHEM,
+     +  MXNOD),SALTDT(MXCHEM,MXNOD),SALTKQ(MXCHEM,MXNOD),RHOB(MXNOD),
+     +  SAT(MXNOD),sand(mxnod),silt(mxnod),CLAY(MXNOD),om(mxnod),
+     +  ZS(MXNOD),CS(MXNOD),TK(MXNOD),BTS(MXNOD),RESTKB(NODRES),
+     +  BMAT(MXNOD),BCONC(MXCHEM,MXNOD),BVLC(MXNOD),BVIC(MXNOD),
+     +  BSALT(MXCHEM,MXNOD),TR(NODRES),TRDT(NODRES),GMC(NODRES),
+     +  GMCDT(NODRES),SR(NODRES),WINDR(NODRES),RHOR(NODRES),ZR(NODRES),
+     +  BTR(NODRES),TSP(NODSNO),TSPDT(NODSNO),DLW(NODSNO),DLWDT(NODSNO)
+      DOUBLE PRECISION QVSP(NODSNO),SSP(NODSNO),RHOSP(NODSNO),
+     +  DZSP(NODSNO),ZSP(NODSNO),BGMC(NODRES),albres(nodres),
+     +  TQVSP(NODSNO),BTSP(NODSNO),BDLW(NODSNO),A1(NODTOT),B1(NODTOT),
+     +  C1(NODTOT),D1(NODTOT),DELTA(NODTOT),DELNRG(NODTOT),
+     +  DELWTR(NODTOT),SOILHP(13,MAXHOR),EVAPR(NODRES),PMW(MXPEST),
+     +  SLKS(MXNOD,MXPEST,2),SWCAN(MXSPEC,NODCAN),SWSNOW(NODSNO),
+     +  SWRES(NODRES),LWCAN(MXSPEC,NODCAN),LWSNOW,LWRES(NODRES),LWSOIL,
+     +  TDIFFU(NODRES),TDIFFC(NODCAN),DIFKL(MXSPEC+1,NODCAN),
+     +  XANGLE(MXSPEC),CLUMPNG(MXSPEC),FDDU(MXSPEC),
+     +  A2(NODTOT),B2(NODTOT),C2(NODTOT),D2(NODTOT)
+      DOUBLE PRECISION VAPR(NODRES),VAPRDT(NODRES),BVAPR(NODRES),
+     +  EVAPK(NODRES),RESCOF(NODRES),GMCMAX(NODRES),QVR(NODRES),
+     +  PLANTZ(MXSPEC),PLANTW(MXSPEC),TC(NODCAN),TCDT(NODCAN),
+     +  TLC(MXSPEC,NODCAN),TLCDT(MXSPEC,NODCAN),TLCLWR(MXSPEC,NODCAN),
+     +  VAPC(NODCAN),VAPCDT(NODCAN),WCAN(NODCAN),WCANDT(NODCAN),
+     +  PCAN(MXSPEC),PCANDT(MXSPEC),QVC(NODCAN),BTC(NODCAN),
+     +  BTLC(mxspec,NODCAN),
+     +  BVAPC(NODCAN),BWCAN(NODCAN),BPCAN(mxspec),DCHAR(MXSPEC,NODCAN),
+     +  DRYCAN(MXSPEC,NODCAN),CANLAI(MXSPEC,NODCAN),TOTLAI(MXSPEC),
+     +  ZC(NODCAN),CANALB(MXSPEC),TRNSP(MXSPEC),XTRACT(MXNOD),
+     +  TRANSP(MXSPEC),TPOTNL(MXSPEC),TPOT(MXSPEC),
+     +  ROOTXT(MXNOD),WINDC(NODCAN),RSTOM0(MXSPEC),
+     +  RSTEXP(MXSPEC),PLEAF0(MXSPEC),RLEAF0(MXSPEC),RROOT0(MXSPEC),
+     +  TOTROT(MXSPEC),RLEAF(MXSPEC,NODCAN),
+     +  RROOT(MXSPEC,MXNOD),ROOTDN(MXSPEC,MXNOD)
+C
+      DOUBLE PRECISION LF,wlag(11),store
+C
+      INTEGER IBICES(MXNOD),ICES(MXNOD),ICESDT(MXNOD),ICESP(NODSNO),
+     +  ICESPT(NODSNO),NDXN2H(MXNOD),ITYPE(MXSPEC),IEVAP(MXSPEC)
+      INTEGER LEVEL(6),NSALT,HOUR
+C
+      PARAMETER(LF=3.35D5,G=9.81D0,UGAS=8.3143D0,RHOL=1.0D3,RHOI=9.2D2,
+     +  TOLER=1.0D-3,WT=0.4D0,WDT=0.6D0,ZMSP=1.5D-3,ZHSP=1.5D-3,
+     +  ZERO=0.0D0)
+C
+      common /shawp/ pplastic,emitc,emitr(10),emitsp,emits,emitf
+     &      ,palbedo,ptransm
+c      PARAMETER(TKM=7.3D0,TKWM=0.58D0,TKWL=1.0D0,TKWI=0.5D0,TKWA=1.79D0,
+c     +  VLCLMT=0.1D0)
+C
+      PARAMETER (CANMA=-53.72D0, CANMB=1.32D0)
+      DATA RESCOF/NODRES*5000.D0/, GMCMAX/NODRES*2.0D0/
+c     +  DCHAR/NODPLT*0.02D0/,    !per Gerald suggestion,
+C     +  RSTEXP/MXSPEC*1.0D0/, PLEAF0/MXSPEC*-100.D0/,
+c     +  RSTEXP/MXSPEC*1.0D0/, PLEAF0/MXSPEC*-200.D0/,
+C     +  RLEAF0/MXSPEC*9.0D-5/, RROOT0/MXSPEC*4.5D-5/   !these parameters are the same as Soy2004 used by Flerchinger
+c     +  RLEAF0/MXSPEC*5.0D-5/, RROOT0/MXSPEC*2.5D-5/   !these parameters are the same as Soy2004 used by Flerchinger
+C
+      DATA LEVEL/6*0/,A1/NODTOT*0.0D0/,B1/NODTOT*0.0D0/,
+     +                C1/NODTOT*0.0D0/,D1/NODTOT*0.0D0/
+     +                A2/NODTOT*0.0D0/,B2/NODTOT*0.0D0/
+     +                C2/NODTOT*0.0D0/,D2/NODTOT*0.0D0/
+      DATA NCC/0/, NRR/0/
+C
+      IF (RCOVER.GT.0.0D0.AND.PPLASTIC.GT.0.0D0) THEN
+          albres(1)=palbedo                             !should we adjust albedo and emissivity based on pplastic and rcover? Liwang 2017
+          albres(2)=albres0
+          EMITR(1)=EMITF
+          EMITR(2)=EMITR0
+          RHOR(1)=1.2D3                                 !PLASTIC DENSITY KG/M^3  LIWANG 2017
+      ELSEIF (RCOVER.GT.0.0D0.AND.PPLASTIC.EQ.0.0D0) THEN
+          albres(1)=ALBRES0
+          EMITR(1)=EMITR0
+      ELSEIF (RCOVER.EQ.0.0D0.AND.PPLASTIC.GT.0.0D0) THEN
+          albres(1)=palbedo
+          EMITR(1)=EMITF
+          TRDT(2)=TSDT(1)
+          RHOR(1)=1.2D3
+      ELSE
+          albres(1)=ALBRES0
+          EMITR(1)=EMITR0
+      ENDIF
+      if (NR.gt.0) then
+          ALBRES(NR+1)=ALBRES(NR)
+          EMITR(NR+1)=EMITR(NR)
+       endif
+C
+      level(1)=1
+C
+      TADT=TA
+      HUMDT=HUM
+      HEIGHT = UHGHT
+C
+      MAXNDT=INT(80.D0*DT/3.6D3)  !LIWANG MA, 2-12-2011
+      IF (MAXNDT.LT.4) MAXNDT=4
+      MAXDBL=MAXNDT
+C
+C     ..INITIALIZE CANOPY VARIABLES
+      IF (ISHUTL .EQ. 0) THEN
+        IF (NNSP .EQ. 0) THEN
+          OSTORSN = 0.0D0
+          DO 4 I = 1,NSP
+            OSTORSN = OSTORSN + RHOSP(I) * DZSP(I) / RHOL + DLWDT(I)
+            SWSNOW(I)=0.0D0
+ 4        CONTINUE
+          LWSNOW=0.0D0
+CXXXX     NNSP=NSP
+        ENDIF
+        IF (NPLANT .GT. 0) THEN
+C         CHECK IF CANOPY HAS EMERGED
+          NCCHK=0
+          DO 5 J=1,NPLANT
+             IF (TOTLAI(J)*PLANTZ(J).GT.0) NCCHK=1
+C            INITIALIZE LEAF TEMPERATURE
+C             IF (ITYPE(J) .EQ. 0) THEN
+C                XANGLE(J)=0.0D0
+C             ELSE
+C                XANGLE(J)=1.0D0
+C             END IF
+5         CONTINUE
+          IF (NCCHK.EQ.0) THEN
+C            CANOPY HAS NOT EMERGED -- NO CANOPY LAYERS
+             NC=0
+           ELSE
+             IF (NCC .EQ. 0) THEN
+              NC=1
+              CALL VSLOPE (DUMMY,SATV,TA)
+              TCDT(1)=TA
+              TCDT(2)=TA
+              VAPCDT(1)=HUM*SATV
+              VAPCDT(2)=HUM*SATV
+              DO J=1,NPLANT
+                 TLCDT(J,1)=TA
+              END DO
+              IF (NNSP.GT.0) THEN
+C              SNOW MELTED AND EXPOSED CANOPY--SET MAX WATER CONTENT
+               CALL CANHUM(2,.999D0,DUMMY,WCANDT(1),TCDT(1),CANMA,CANMB)
+               WCAN(1)=WCANDT(1)
+              ELSE
+C              SET WATER CONTENT TO EQUILIBRIUM WITH HUMIDITY
+               CALL CANHUM (2,HUM,DUMMY,WCANDT(1),TCDT(1),CANMA,CANMB)
+               WCAN(1)=WCANDT(1)
+              END IF
+             END IF
+C           ..DISAGGREGATE PLANT CANOPY INTO LAYERS
+            CALL CANLAY (NPLANT,NC,NS,PLANTZ,PLANTW,ZC,WCANDT,TCDT,
+     +       TLCDT,VAPCDT,ITYPE,DCHAR,DRYCAN,CANLAI,TOTLAI,RLEAF0,RLEAF,
+     +       TOTROT,ROOTDN,RROOT0,RROOT)
+          END IF
+        ELSE
+          NC=0
+        END IF
+        NCC=NC
+        NNSP=NSP
+      ENDIF
+
+C        PRINT OUT INITIAL FROST AND SNOW DEPTH
+C            CALL FROST (NSP,NS,1,JDAY,
+C     >      HRSTRT,YEAR,0,ZSP,RHOSP,DZSP,DLWDT,WLAG,STORE,
+C     >      ZS,VLCDT,VICDT,ICESDT)
+C
+C     ..INITIALIZE RESIDUE VARIABLES
+      IF (NR .GT. 0) THEN
+         IF (NRR .EQ. 0) THEN
+C           ..RESIDUE NOT PRESENT LAST TIME STEP
+C              - INITIALIZE TEMPERATURE AND VAPOR
+            CALL VSLOPE (DUMMY,SATV,TA)
+            DO 7 I=1,NR
+               TRDT(I)=TA
+               VAPRDT(I)=HUM*SATV
+    7       CONTINUE
+            CALL RESGMC(NR,HUM,GMCDT,TRDT)
+         END IF
+         TRDT(NR+1)=TSDT(1)
+      END IF
+      NRR=NR
+C
+      IF (NSALT .GT. 0) THEN
+C        ..SET CONCENTRATION TO IONIC POTENTIAL AND INITIALIZE CHEM. PARAMS
+C           --CONVERT FROM MG/L TO MOLES/LITER
+         DO 10 I=1,NS
+C
+C       CC         I  TRANSPORT MATRIX FOR MOBILE CHEMICALS [MG/L]
+C             CONTAINS ONLY THE SOLUBLE FORM OF CHEMICAL:
+C             1-HYDROGEN, 2-CALCIUM, 3-SODIUM, 4-MAGNISIUM,
+C             5-CLORINE, 6-BICARBONATE, 7-SULFATE, 8-ALUMINUM,
+C             9-NITRATE-N, 10-AMMONIUM-N, 11-CARBONATE,
+C             12-UREA-N, 13-PEST #1, 14-PEST #2, 15-PEST #3
+C           ..conc of mobile ions h,ca,na,mg,cl,hco3,so4,al,no3,nh4,co3,urea
+            CONCDT(1,I) =cc(i,1)  / 10020.0d0
+            CONCDT(2,I) =cc(i,2)  / 40080.0d0
+            CONCDT(3,I) =cc(i,3)  / 23000.0d0
+            CONCDT(4,I) =cc(i,4)  / 24300.0d0
+            CONCDT(5,I) =cc(i,5)  / 35450.0d0
+            CONCDT(6,I) =cc(i,6)  / 61018.0d0
+            CONCDT(7,I) =cc(i,7)  / 96060.0d0
+            CONCDT(8,I) =cc(i,8)  / 26980.0d0
+            CONCDT(9,I) =cc(i,9)  / 14000.0d0
+            CONCDT(10,I)=cc(i,10) / 14000.0d0
+            CONCDT(11,I)=cc(i,11) / 60018.0d0
+            CONCDT(12,I)=cc(i,12) / 28000.0d0
+            do 16 ic = 1,12
+              SALTKQ(ic,I) = 0.0D0
+ 16         continue
+C
+C           ..set conc of pesticides, need to revisit this section, Liwang Ma, 9-4-2009
+            do 15 ip = 1,mxpest
+c liwang ma
+            if (pmw(ip).ne.0.0d0) then
+              CONCDT(12+ip,I)= cc(i,12+ip) / (pmw(ip)*1.0d3)
+	      else
+              CONCDT(12+ip,I)= 0.0d0
+            endif
+              SALTKQ(12+ip,I)= slks(i,ip,1)
+ 15         continue
+            do 17 is = 1,nsalt
+              SALTDT(is,I)=CONCDT(is,I) *
+     +          (SALTKQ(is,I)+VLCDT(I)*RHOL/RHOB(I))
+ 17         continue
+   10    CONTINUE
+      END IF
+C
+C FIND BOTTOM TEMPEATURE FOR USING THE DIRECLET CONDITION
+	  INQUIRE (FILE = 'LOWERB.DAT', EXIST = FEXIST)
+        IF (.NOT.FEXIST) THEN
+c      itmpbc=1
+C     ESTIMATE TEMPERATURE AT LOWER BOUNDARY
+c      IF (ITMPBC.GT.0) THEN
+      CALL SOILTK (NS,TK,VLCDT,VICDT,RHOB,sand,silt,clay,om)
+      CALL SOILHT (NS,CS,VLCDT,VICDT,TSDT,MATDT,CONCDT,RHOB,
+     +             om,NSALT)
+         IF (TSDT(NS).LE.0.0) THEN
+C           ADJUST HEAT CAPACITY FOR SOIL FREEZING - INCLUDE LATENT 
+C           HEAT OF FUSION OVER THE NEXT 1.0C INTERVAL
+            TSNS = TSDT(NS)
+            VLCNS = VLCDT(NS)
+            IF (TSDT(NS-1) .GT. TSDT(NS)) THEN
+               TSDT(NS) = TSDT(NS) + 1.0
+              ELSE
+               TSDT(NS) = TSDT(NS) - 1.0
+            END IF
+         CALL FROZEN(NS,NS,VLCDT,VICDT,MATDT,CONCDT,TSDT,SALTDT,ICESDT,
+     +                 SOILHP,NDXN2H,RHOB,NSALT,SALTKQ,SAT,Hmin)
+            CS(NS) = CS(NS) + ABS(RHOL*LF*(VLCNS-VLCDT(NS)))
+C           RESET BOTTOM TEMPERATURE
+            TSDT(NS) = TSNS
+         CALL FROZEN(NS,NS,VLCDT,VICDT,MATDT,CONCDT,TSDT,SALTDT,ICESDT,
+     +                 SOILHP,NDXN2H,RHOB,NSALT,SALTKQ,SAT,Hmin)
+         END IF
+C     CALCULATED DAMPING DEPTH
+      DAMPNG=SQRT(2.D0*TK(NS)/CS(NS)/1.99238D-07)
+c         DZS = ZS(NS)-ZS(NS-1)
+c         C1DDT = (1. + 2.*DZS/DAMPNG)/DT
+c         TSDT(NS) = TSDT(NS) + (-2.D0*TK(NS)/CS(NS)/DAMPNG/DZS/C1DDT)
+c     >    *(TSDT(NS)-TSDT(NS-1)) - 1.99238D-07*(TSDT(NS) - TSAVG)/C1DDT
+C     CALCULATE WEIGHTING COEFFICIENT BASED ON DAILY TIME STEP
+      AA=(-0.00082d0+0.00983957d0*DAMPNG/(ZS(NS)-ZS(NS-1)))
+     >    *(ZS(NS)/DAMPNG)**(-0.381266d0)
+      IF (AA .LT. 0.0d0) AA=0.0d0
+C     ADJUST FOR ACTUAL TIME STEP
+      AA=AA*DT/86400.d0
+      TSDT(NS)=(1.-AA)*TSDT(NS) + AA*TSDT(NS-1)
+C
+      ELSE
+      TSDT(NS)=tbotm   !SOITMP
+      endif
+C
+      NDT=1
+      NTIMES=1
+C
+C**** SAVE VALUES AT THE BEGINNING OF THE TIME STEP
+      CALL UPDATE (NS,NR,NSP,NC,NPLANT,NSALT,IBICES,ICESDT,BTS,TSDT,
+     + BMAT,MATDT,BCONC,CONCDT,BVLC,VLCDT,BVIC,VICDT,BSALT,SALTDT,
+     + BTR,TRDT,BVAPR,VAPRDT,BGMC,GMCDT,BTC,TCDT,BTLC,TLCDT,
+     + BVAPC,VAPCDT,BWCAN,WCANDT,BPCAN,PCANDT,BTSP,TSPDT,BDLW,DLWDT,
+     + ICESP,ICESPT)
+C
+C**** INITIALIZE BEGINNING-OF-TIME-STEP VARIABLES
+      CALL UPDATE (NS,NR,NSP,NC,NPLANT,NSALT,ICES,ICESDT,TS,TSDT,
+     + MAT,MATDT,CONC,CONCDT,VLC,VLCDT,VIC,VICDT,SALT,SALTDT,
+     + TR,TRDT,VAPR,VAPRDT,GMC,GMCDT,TC,TCDT,TLC,TLCDT,
+     + VAPC,VAPCDT,WCAN,WCANDT,PCAN,PCANDT,TSP,TSPDT,DLW,DLWDT,
+     + ICESP,ICESPT)
+C
+C**** DEFINE BOUNDARY CONDITIONS FOR TIME STEP
+C
+      JH=NDXN2H(NS)
+      HTMP = -(SOILHP(1,JH)+5.0D0)
+C LMA UPDATE WCH
+      MATDT(NS) = WCH(HTMP,VLCDT(NS),SOILHP(1,JH),JH,0)/1.0D2
+      VICDT(NS)=0.0D0
+      ICESDT(NS)=0
+      DO 130 J=1,NSALT
+        SALTDT(J,NS)=SALT(J,NS)
+        CONCDT(J,NS)=SALTDT(J,NS)/(SALTKQ(J,NS)+VLCDT(NS)*RHOL/RHOB(NS))
+  130 CONTINUE
+      IF (TSDT(NS) .LE. 0.0D0) CALL FROZEN(ns,NS,VLCDT,VICDT,MATDT,
+     +    CONCDT,TSDT,SALTDT,ICESDT,SOILHP,NDXN2H,RHOB,NSALT,SALTKQ,
+     +    SAT,Hmin)
+C
+C**** CALCULATE THE SHORT-WAVE ENERGY BALANCE IF SHUTTLE-WORTH ET NOT
+C     SELECTED
+      DECLIN=0.4102D0*SIN(2*3.14159D0*(jday-80)/365.0D0)
+      COSHAF=-TAN(ALATUD)*TAN(DECLIN)
+      IF (ABS(COSHAF) .GE. 1.0) THEN
+         IF (COSHAF .GE. 1.0) THEN
+C           SUN DOES NOT COME UP ON THIS DAY (WINTER IN ARCTIC CIRCLE)
+            HAFDAY=0.0D0
+          ELSE
+C           SUN DOES NOT SET ON THIS DAY (SUMMER IN THE ARCTIC CIRCLE)
+            HAFDAY=3.14159D0
+         END IF
+       ELSE
+         HAFDAY=ACOS(COSHAF)
+      END IF
+c      IF (ISHUTL.EQ.0 .OR. NSP.GT.0) THEN
+CXXXX   ALBSOI=ALBDRY*EXP(-ALBEXP*VLCDT(1))
+C       DEFINE XANGLE AND CLUMPNG PARAMETERS.
+        CLUMPNG = 1.0D0
+        CALL SWRBAL (NC,NSP,NR,SWCAN,SWSNOW,SWRES,SWSOIL,
+     +  SUNHOR,HAFDAY,DECLIN,HOUR,DT,ALATUD,SLOPE,ASPECT,RCOVER,
+     +  ALBRES,ALBSOI,CANLAI,CANALB,XANGLE,CLUMPNG,NPLANT,
+     +  TDIFFC,DIFKL,TDIFFU,FDDU,RHOSP,DZSP,altitu,ZSP,TOTLAI)
+c      ENDIF
+C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
+C**** START ITERATIVE PROCEDURE TO SOLVE ENERGY AND MOISTURE BALANCE
+C
+  100 ITER = 0
+      SUMDL = 0.0D0
+C
+  200 ITER = ITER + 1
+C  
+C     ..INITIALIZE MATRIX ELEMENTS TO ZERO
+      N = 0
+C     ..CANOPY NODES
+      DO 85 I=1,NC
+         N=N+1
+         A1(N+1)=0.0D0
+         B1(N)=0.0D0
+         C1(N)=0.0D0
+         D1(N)=0.0D0
+         A2(N+1)=0.0D0
+         B2(N)=0.0D0
+         C2(N)=0.0D0
+         D2(N)=0.0D0
+   85 CONTINUE
+C     ..SNOWPACK NODES
+      DO 87 I=1,NSP
+         N=N+1
+         A1(N+1)=0.0D0
+         B1(N)=0.0D0
+         C1(N)=0.0D0
+         D1(N)=0.0D0
+         A2(N+1)=0.0D0
+         B2(N)=0.0D0
+         C2(N)=0.0D0
+         D2(N)=0.0D0
+   87 CONTINUE
+C     ..RESIDUE NODES
+      DO 90 I=1,NR
+         N=N+1
+         A1(N+1)=0.0D0
+         B1(N)=0.0D0
+         C1(N)=0.0D0
+         D1(N)=0.0D0
+         A2(N+1)=0.0D0
+         B2(N)=0.0D0
+         C2(N)=0.0D0
+         D2(N)=0.0D0
+   90 CONTINUE
+C     ..SOIL NODES
+      DO 95 I=1,NS
+        N=N+1
+        A1(N+1)=0.0D0
+        B1(N)=0.0D0
+        C1(N)=0.0D0
+        D1(N)=0.0D0
+        A2(N+1)=0.0D0
+        B2(N)=0.0D0
+        C2(N)=0.0D0
+        D2(N)=0.0D0
+   95 CONTINUE
+C
+      IF (ISHUTL.EQ.0 .OR. NSP.GT.0) THEN
+C        ..DETERMINE LONG-WAVE RADIATION BALANCE FOR EACH NODE
+          CALL VSLOPE (DUMMY,SATV,TA)
+          VAPA=HUM*SATV
+         CALL LWRBAL (NC,NSP,NR,NPLANT,TA,TLC,TLCDT,TLCLWR,TSP,TSPDT,
+     +            TR,TRDT,TS,TSDT,CLOUDS,LWCAN,LWSNOW,LWRES,LWSOIL,
+     +            TDIFFU,TDIFFC,DIFKL,FDDU,WDT,vapa)
+C
+C        ..CALCULATE LONG-WAVE RAD. CONTRIBUTION TO ENERGY BALANCE MATRIX
+         CALL LWRMAT (NC,NSP,NR,TC,TSP,TR,TS,
+     +               ICESPT,WDT,TDIFFC,TDIFFU,A1,B1,C1)
+C
+      ELSE
+C
+C        SHUTTLE-WORTH OR PENFLUX OPTION SELECTED - DEFINE RADIATION INPUT
+         N = 0
+C        ..RESIDUE NODES
+         DO 97 I=1,NR
+            N=N+1
+            SWRES(I)=0.0D0
+            LWRES(I)=0.0D0
+   97    CONTINUE
+C        ..SOIL SURFACE
+         N=N+1
+         SWSOIL=0.0D0
+         LWSOIL=0.0D0
+      END IF
+C
+C**** SUM THE SOURCE-SINK TERMS FOR EACH NODE
+      CALL SOURCE (NSP,NR,NS,SSP,SR,SS,
+     +             SWSNOW,SWRES,SWSOIL,LWSNOW,LWRES,LWSOIL)
+C
+      N = 1
+C
+C**** DETERMINE THE BOUNDARY CONDITION FOR THE SURFACE MATERIAL
+C
+C
+      IF (NC .GT. 0 .AND. ISHUTL .EQ. 0) THEN
+C        ..CANOPY IS THE SURFACE MATERIAL
+!        ENSURE THAT INSTRUMENT HEIGHT IS ABOVE CANOPY, PER GNF, 9-2-2009
+         IF (HEIGHT < (ZC(NC+1)+1.0D0)) HEIGHT = (ZC(NC+1)+1.0D0)
+C        COMPUTE SURFACE ROUGHNESS PARAMETERS
+         ZEROC = 0.77d0*ZC(NC+1)
+         ZMC = 0.13d0*ZC(NC+1)
+         ZHC = 0.2d0*ZMC
+         IF (NSP .GT. 0) THEN
+            ZMSUB=ZMSP
+            ZHSUB=ZHSP
+            ZERSUB=0.0
+           ELSE
+            ZMSUB=ZM
+            ZHSUB=ZH
+            ZERSUB=ZERO
+         END IF
+C
+         IF (ISTRESS.GE.3) THEN
+C        SHAWET - USE BEGINNING AND END OF TIME STEP VAPOR DENSITY
+         CALL ATSTAB (NC,NR,NSP,TA,TADT,TC(1),TCDT(1),HUM,HUMDT,
+     +     VAPC(1),VAPCDT(1),WIND,HEIGHT,ICE,ITER,HFLUX,VFLUX,WT,WDT,
+     +     PRESUR,ZHC,ZMC,ZEROC,ZHSUB,ZMSUB,ZERSUB,WINDR,B1,D1,B2,D2,
+     +     RHOR,ZR,gflux,evapmx,USTAR,STABLE,TOTLAI,WINDC,ZC,
+     +     ISHUTL,NPLANT,srootxt,dt,CANLAI,istress)
+         ELSE                        !ISTRESS=0
+C        ASSUME NO STORAGE IN CANOPY - USE VAPOR AT END OF STEP ONLY
+         WTS=0.0D0
+         WDTS=1.0D0
+         CALL ATSTAB (NC,NR,NSP,TA,TADT,TC(1),TCDT(1),HUM,HUMDT,
+     +    VAPCDT(1),VAPCDT(1),WIND,HEIGHT,ICE,ITER,HFLUX,VFLUX,WTS,WDTS,
+     +     PRESUR,ZHC,ZMC,ZEROC,ZHSUB,ZMSUB,ZERSUB,WINDR,B1,D1,B2,D2,
+     +     RHOR,ZR,gflux,evapmx,USTAR,STABLE,TOTLAI,WINDC,ZC,
+     +     ISHUTL,NPLANT,srootxt,dt,CANLAI,istress)
+         END IF
+C
+C        ..IF RESIDUE IS NOT PRESENT, GO THROUGH CALCULATION OF THE
+C          VAPOR DENSITY AT THE SOIL SURFACE TO DEFINE VAPOR DENSITY AT
+C          LOWER CANOPY OR SNOWPACK BOUNDARY
+C
+      ELSE IF (NSP .GT. 0) THEN
+C        ..SNOW IS THE SURFACE MATERIAL
+         CALL VSLOPE (DUMMY,SATV,TSP(1))
+         CALL VSLOPE (DUMMY,SATVDT,TSPDT(1))
+C        ..CALCULATE THE SATURATED VAPOR DENSITY OVER ICE
+         TMP = TSP(1) + 273.16D0
+         TMPDT = TSPDT(1) + 273.16D0
+         VAP = SATV*EXP(0.018D0/(UGAS*TMP)*LF*TSP(1)/TMP)
+         VAPDT = SATVDT*EXP(0.018D0/(UGAS*TMPDT)*LF*TSPDT(1)/TMPDT)
+
+
+         CALL ATSTAB (NC,NR,NSP,TA,TADT,TSP(1),TSPDT(1),HUM,HUMDT,
+     +     VAP,VAPDT,WIND,HEIGHT,ICE,ITER,HFLUX,VFLUX,WT,WDT,PRESUR,
+     +     ZHSP,ZMSP,ZERO,ZHSUB,ZMSUB,ZERSUB,WINDR,B1,D1,B2,D2,RHOR,ZR,
+     +     gflux,evapmx,USTAR,STABLE,TOTLAI,WINDC,ZC,ISHUTL,NPLANT,
+     +     srootxt,dt,CANLAI,istress)
+C
+C        ..IF SNOW IS OVERLYING BARE SOIL, GO THROUGH CALCULATION OF THE
+C          VAPOR DENSITY AT THE SOIL SURFACE TO DEFINE VAPOR DENSITY AT
+C          LOWER SNOWPACK BOUNDARY
+C
+      ELSE IF (NR .GT. 0 .AND. ISHUTL.NE.1) THEN
+C        ..RESIDUE IS THE SURFACE MATERIAL
+         CALL ATSTAB (NC,NR,NSP,TA,TADT,TR(1),TRDT(1),HUM,HUMDT,
+     +   VAPR(1),VAPRDT(1),WIND,HEIGHT,ICE,ITER,HFLUX,VFLUX,WT,WDT,
+     +   PRESUR,ZH,ZM,ZERO,ZHSUB,ZMSUB,ZERSUB,WINDR,B1,D1,B2,D2,
+     +   RHOR,ZR,gflux,evapmx,USTAR,STABLE,TOTLAI,WINDC,ZC,ISHUTL,
+     +   NPLANT,srootxt,dt,CANLAI,istress)
+      ELSE
+C
+C       SOIL IS THE SURFACE MATERIAL
+C       ---- FIRST CALCULATE THE TOTAL WATER POTENTIAL, THEN THE HUMIDITY
+C            MAY BE DETERMINED.  CALL VSLOPE TO OBTAIN THE SATURATED
+C            VAPOR DENSITY.  USING HUMIDITY AND SATURATED VAPOR DENSITY,
+C            THE VAPOR PRESSURE AT THE SOIL SURFACE MAY BE CALCULATED.
+C
+        TLCONC=0.0D0
+        TLCNDT=0.0D0
+        DO 205 J=1,NSALT
+           TLCONC=TLCONC+CONC(J,1)
+           TLCNDT=TLCNDT+CONCDT(J,1)
+  205   CONTINUE
+        TOTPOT=MAT(1)-TLCONC*UGAS*(TS(1)+273.16D0)/G
+        TOTPDT=MATDT(1)-TLCNDT*UGAS*(TSDT(1)+273.16D0)/G
+        CALL VSLOPE (DUMMY,SATV,TS(1))
+        CALL VSLOPE (DUMMY,SATVDT,TSDT(1))
+        VAP=SATV*EXP(.018D0*G/UGAS/(TS(1)+273.16D0)*TOTPOT)
+        VAPDT=SATVDT*EXP(.018D0*G/UGAS/(TSDT(1)+273.16D0)*TOTPDT)
+C
+C      ..BARE SOIL CONDTION
+        CALL ATSTAB (NC,NR,NSP,TA,TADT,TS(1),TSDT(1),HUM,HUMDT,VAP,
+     +    VAPDT,WIND,HEIGHT,ICE,ITER,HFLUX,VFLUX,WT,WDT,PRESUR,
+     +    ZH,ZM,ZERO,ZHSUB,ZMSUB,ZERSUB,WINDR,B1,D1,B2,D2,RHOR,ZR,gflux,
+     +    evapmx,USTAR,STABLE,TOTLAI,WINDC,ZC,ISHUTL,NPLANT,srootxt,dt,
+     +    CANLAI,istress)
+C
+      END IF
+C
+      IF (NC.GT.0 .OR. NSP.GT.0 .OR. NR.GT.0) THEN
+C       CALCULATE VAPOR DENSITY AT SOIL SURFACE AS SURFACE BOUNDARY FOR
+C       OVERLYING MATERIAL
+        TLCONC=0.0D0
+        TLCNDT=0.0D0
+        DO 206 J=1,NSALT
+           TLCONC=TLCONC+CONC(J,1)
+           TLCNDT=TLCNDT+CONCDT(J,1)
+  206   CONTINUE
+        TOTPOT=MAT(1)-TLCONC*UGAS*(TS(1)+273.16D0)/G
+        TOTPDT=MATDT(1)-TLCNDT*UGAS*(TSDT(1)+273.16D0)/G
+        CALL VSLOPE (DUMMY,SATV,TS(1))
+        CALL VSLOPE (DUMMY,SATVDT,TSDT(1))
+        VAP=SATV*EXP(.018D0*G/UGAS/(TS(1)+273.16D0)*TOTPOT)
+        VAPDT=SATVDT*EXP(.018D0*G/UGAS/(TSDT(1)+273.16D0)*TOTPDT)
+      END IF
+C
+C
+      IF (ISHUTL .EQ. 0) THEN
+C
+C**** DETERMINE ENERGY BALANCE COEFF FOR THE CANOPY LAYERS
+        IF (NC .GT. 0) THEN
+C         ..DEFINE VAPOR DENSITY FOR THE LOWER BOUNDARY OF CANOPY
+          IF (NSP .GT. 0) THEN
+C           ..CANOPY IS OVERLYING SNOWPACK
+            CALL VSLOPE (DUMMY,SATV,TSP(1))
+            CALL VSLOPE (DUMMY,SATVDT,TSPDT(1))
+            TMP = TSP(1) + 273.16D0
+            TMPDT = TSPDT(1) + 273.16D0
+            VAPC(NC+1) = SATV*EXP(0.018D0/(UGAS*TMP)*LF*TSP(1)/TMP)
+            VAPCDT(NC+1)=SATVDT*
+     >                  EXP(0.018D0/(UGAS*TMPDT)*LF*TSPDT(1)/TMPDT)
+            TC(NC+1)=TSP(1)
+            TCDT(NC+1)=TSPDT(1)
+          ELSE IF (NR .GT. 0) THEN
+C           ..CANOPY IS OVERLYING RESIDUE
+            VAPC(NC+1) = VAPR(1)
+            VAPCDT(NC+1) = VAPRDT(1)
+            TC(NC+1) = TR(1)
+            TCDT(NC+1) = TRDT(1)
+          ELSE
+C           ..CANOPY IS OVERLYING BARE SOIL
+            VAPC(NC+1) = VAP
+            VAPCDT(NC+1) = VAPDT
+            TC(NC+1) = TS(1)
+            TCDT(NC+1) = TSDT(1)
+          END IF
+          CALL EBCAN (N,NC,NR,NSP,NS,TC,TCDT,TLC,TLCDT,TLCLWR,
+     +     VAPC,VAPCDT,WCAN,WCANDT,PCAN,PCANDT,MAT,MATDT,SWCAN,LWCAN,
+     +     TDIFFC,DIFKL,ITER,WT,WDT,DT,DCHAR,DRYCAN,
+     +     CANLAI,TOTLAI,ZC,CANMA,CANMB,ITYPE,IEVAP,
+     +     NPLANT,TRNSP,TPOTNL,XTRACT,ZMSUB,ZHSUB,ZERSUB,STABLE,WINDC,
+     +     RSTOM0,RSTEXP,PLEAF0,RLEAF0,TOTROT,RLEAF,RROOT,ROOTDN,
+     +     ATRANS,evapmx,A1,B1,C1,D1,ISTRESS,TLCSHAW,TLEAFU,TLEAFL,HOUR)
+          END IF
+C
+C**** DETERMINE ENERGY BALANCE COEFF FOR THE SNOW LAYERS
+        IF (NSP .GT. 0) THEN
+C         ..DEFINE VAPOR DENSITY FOR LOWER BOUNDARY OF SNOWPACK
+          IF (NR .GT. 0) THEN
+C           ..SNOW IS OVERLYING RESIDUE
+            VAPSP = VAPR(1)
+            VAPSPT = VAPRDT(1)
+            TSP(NSP+1) = TR(1)
+            TSPDT(NSP+1) = TRDT(1)
+          ELSE
+C           ..SNOW IS OVERLYING BARE SOIL
+            VAPSP = VAP
+            VAPSPT = VAPDT
+            TSP(NSP+1) = TS(1)
+            TSPDT(NSP+1) = TSDT(1)
+          END IF
+          CALL EBSNOW (N,NSP,NR,ICESPT,TSP,TSPDT,DLW,DLWDT,RHOSP,ZSP,
+     +                DZSP,QVSP,VAPSP,VAPSPT,SSP,ITER,WT,WDT,DT,PRESUR,
+     +                A1,B1,C1,D1,evapmx,istress)
+        END IF
+      END IF
+C
+C**** DETERMINE ENERGY BALANCE COEFF FOR THE RESIDUE LAYERS
+      IF (NR.GT.0 .AND. ISHUTL.NE.1) THEN
+         VAPR(NR+1)=VAP
+         VAPRDT(NR+1)=VAPDT
+         CALL EBRES (ISHUTL,N,NR,NSP,TR,TRDT,GMC,GMCDT,VAPR,VAPRDT,SR,
+     +   EVAPR,EVAPK,ITER,WT,WDT,DT,WINDR,RHOR,ZR,RESCOF,GMCMAX,RHOSP,
+     +   evapmx,presur,A1,B1,C1,D1,ISTRESS,RESTKB)
+      END IF
+C
+C**** DETERMINE THE AVERAGE VAPOR FLUX BETWEEN SOIL NODES
+C      IF (ITER .EQ. 1) CALL QVSOIL (NS,QSVT,TS,MAT,VLC,VIC,CONC,PRESUR,
+C     +                              CLAY,RHOB,SAT,ZS,NSALT)
+C      CALL QVSOIL (NS,QSVDT,TSDT,MATDT,VLCDT,VICDT,CONCDT,PRESUR,CLAY,
+C     +             RHOB,SAT,ZS,NSALT)
+C      CALL WEIGHT (NS-1,QSV,QSVT,QSVDT,WT,WDT)
+      IF (ISHUTL .EQ. 0) THEN
+!        DETERMINE THE AVERAGE VAPOR FLUX BETWEEN SOIL NODES   
+         IF (ITER.eq.1) CALL QVSOIL(NS,QSVT,TS,MAT,VLC,VIC,CONC,PRESUR,
+     &                         CLAY,RHOB,SAT,ZS,NSALT)
+!   
+         CALL QVSOIL(NS,QSVDT,TSDT,MATDT,VLCDT,VICDT,CONCDT,PRESUR,
+     &            CLAY,RHOB,SAT,ZS,NSALT)
+!   
+         CALL WEIGHT(NS-1,QSV,QSVT,QSVDT,WT,WDT)
+      ELSE
+!     	  DO NOT CONSIDER VAPOR FLUX IF UNLESS ISHULT = 0
+         DO I=1,NR
+            QSV(I)=0.0D0
+         END DO     	 
+      END IF
+C
+C**** SOLVE FOR ENERGY BALANCE COEFF OF SOIL
+c rma\gf
+      CALL EBSOIL (N,NS,TS,TSDT,MAT,MATDT,CONC,CONCDT,VLC,VLCDT,VIC,
+     +             VICDT,ICES,ICESDT,QSL,QSV,SS,ITER,WT,WDT,DT,A1,B1,
+     +             C1,D1,CS,SOILHP,NDXN2H,RHOB,ZS,NSALT,SALTKQ,
+     +             sand,silt,clay,om,gflux)
+C
+C-----------------------------------------------------------------------
+      IF (LEVEL(1) .GT. 3) THEN
+         WRITE (100,*) ' VAPOR FLUXES (KG/S)'
+         WRITE (100,*) (QSV(K), K=1,NS-1)
+         WRITE (100,*) ' LIQUID FLUXES (M/S)'
+         WRITE (100,*) (QSL(K), K=1,NS-1)
+         WRITE (100,*) ' JACOBIAN MATRIX'
+         DO 215 K=1,N
+            WRITE (100,*) A1(K),B1(K),C1(K),D1(K)
+  215    CONTINUE
+         WRITE (100,*)
+         WRITE (100,*) ' VALUES FOR ENERGY BALANCE ITERATION ',ITER
+      END IF
+C-----------------------------------------------------------------------
+C
+C**** SOLVE THE ENERGY BALANCE MATRIX
+      CALL TDMA (N,A1,B1,C1,D1,DELTA)
+C
+C**** SORT OUT THE SOLUTION OF THE MATRIX INTO THE PROPER MATERIALS
+      N=1
+      IEFLAG=0
+      IF (LEVEL(1) .GT. 3) WRITE (100,*) 'jday,hour,dt,ndt:',
+     +                                    jday,hour,dt,ndt
+C
+      IF (ISHUTL.EQ.0) THEN
+C      
+        IF (NC .GT. 0) THEN
+C****   CANOPY LAYERS
+          DO 220 I=1,NC
+C
+            IF (ABS(DELTA(N)) .GT. 25.  .AND.  NDT .LT. MAXNDT) THEN
+C             ..TOO LARGE OF A CHANGE -- CONVERGENCE WILL NOT LIKELY BE
+C               BE MET WITH CURRENT TIME STEP.  CUT TIME STEP IN HALF
+              IEFLAG=1
+              ITER=11
+              GO TO 350
+            END IF
+            IF (ABS(DELTA(N)) .GT. TOLER) IEFLAG = IEFLAG+1
+C
+            IF (ITER.GT.3 .AND. DELTA(N)*DELNRG(N).LT.0.D0) THEN 
+C             ..DELTA IS JUMPING BETWEEN NEG. AND POS. -- CUT DELTA IN HALF
+C               TO SUPPRESS TENDENCY TO JUMP BACK AND FORTH AROUND SOLUTION
+              DELTA(N)=DELTA(N)/2.D0
+            END IF
+            DELNRG(N)=DELTA(N)
+            TCDT(I)=TCDT(I)-DELTA(N)
+            IF (LEVEL(1) .GT. 3) WRITE (100,*) DELTA(N),TCDT(I),
+     +                                      VAPCDT(I),WCANDT(I)
+            N=N+1
+  220     CONTINUE
+        END IF
+C
+        IF (NSP .GT. 0) THEN
+C****   SNOW PACK LAYERS
+          DO 230 I=1,NSP
+C
+            IF (ABS(DELTA(N)) .GT. 25.0D0  .AND.  NDT .LT. MAXNDT) THEN
+C             ..TOO LARGE OF A CHANGE -- CONVERGENCE WILL NOT LIKELY BE
+C               BE MET WITH CURRENT TIME STEP.  CUT TIME STEP IN HALF
+              IEFLAG = 1
+              ITER=11
+              GO TO 350
+            END IF
+            IF (ICESPT(I) .EQ. 0) THEN
+C             ..NO LIQUID WATER IN CURRENT LAYER AT END OF TIME STEP
+              IF (ABS(DELTA(N)) .GT. TOLER) IEFLAG = IEFLAG + 1
+              IF (ITER.GT.3 .AND. DELTA(N)*DELNRG(N).LT.0.D0) THEN 
+C              ..DELTA IS JUMPING BETWEEN NEG. AND POS. -- CUT DELTA IN HALF
+C                TO SUPPRESS TENDENCY TO JUMP BACK AND FORTH AROUND SOLUTION
+                DELTA(N)=DELTA(N)/2.D0
+              END IF
+              DELNRG(N)=DELTA(N)
+              TSPDT(I) = TSPDT(I) - DELTA(N)
+C             ..CHECK IF LAYER HAS BEGUN MELTING
+              IF (TSPDT(I) .GT. 0.D0) THEN
+C               ..LAYER HAS GONE ABOVE 0 C - ADJUST WATER CONTENT IN LAYER
+                ICESPT(I) = 1
+                TSPDT(I) = 0.0D0
+              END IF
+C
+            ELSE
+C             ..LAYER CONTAINS LIQUID WATER
+C             CONVERT TOLERANCE FOR TEMPERATURE TO LIQUID EQUIVALENT
+C             (DELTA LIQUID FRACTION) => 0.001D0*(DELTA TEMP.)
+              IF (ABS(DELTA(N))/DZSP(I) .GT. 0.001D0*TOLER) THEN
+C                IF DELTA < E-07*DLWDT, PRECISION OF COMPUTER IS EXCEEDED,
+C                AND  ADDING DELTA TO DLWDT WILL NOT CHANGE DLWDT
+                IF (ABS(DELTA(N)) .GT. DLWDT(I)*10.D-07) IEFLAG=IEFLAG+1
+              END IF
+              IF (ITER.GT.3 .AND. DELTA(N)*DELNRG(N).LT.0.D0) THEN 
+C                DELTA IS JUMPING BETWEEN NEG. AND POS. -- CUT DELTA IN HALF
+C                TO SUPPRESS TENDENCY TO JUMP BACK AND FORTH AROUND SOLUTION
+                DELTA(N)=DELTA(N)/2.D0
+              END IF
+              DELNRG(N)=DELTA(N)
+              DLWDT(I) = DLWDT(I) - DELTA(N)
+C             ..CHECK IF ALL THE LIQUID HAS FROZEN
+              IF (DLWDT(I) .LT. 0.0D0) THEN
+C               ..LAYER HAS FROZEN COMPLETELY - ADJUST TEMPERATURE
+                ICESPT(I) = 0
+C                SUMDL = SUMDL + DLWDT(I) + DELTA(N)
+                DLWDT(I) = 0.0D0
+              ELSE
+C                SUMDL = SUMDL + DELTA(N)
+              END IF
+            END IF
+            IF (LEVEL(1) .GT. 3) WRITE (100,*) DELTA(N),TSPDT(I),
+     +                                    DLWDT(I),DZSP(I)
+            N=N+1
+  230     CONTINUE
+        END IF
+      END IF
+C
+      IF (NR.GT.0 .AND. ISHUTL.NE.1) THEN
+C**** RESIDUE LAYERS
+        DO 240 I=1,NR
+          IF (ABS(DELTA(N)) .GT. 25.0D0  .AND.  NDT .LT. MAXNDT) THEN
+C           ..TOO LARGE OF A CHANGE -- CONVERGENCE WILL NOT LIKELY BE
+C             BE MET WITH CURRENT TIME STEP.  CUT TIME STEP IN HALF
+            IEFLAG = 1
+            ITER=11
+            GO TO 350
+          END IF
+          IF (ABS(DELTA(N)) .GT. TOLER) IEFLAG = IEFLAG+1
+          IF (ITER.GT.3 .AND. DELTA(N)*DELNRG(N).LT.0.D0) THEN 
+C           ..DELTA IS JUMPING BETWEEN NEG. AND POS. -- CUT DELTA IN HALF
+C             TO SUPPRESS TENDENCY TO JUMP BACK AND FORTH AROUND SOLUTION
+            DELTA(N)=DELTA(N)/2.D0
+          END IF
+          DELNRG(N)=DELTA(N)
+          TRDT(I)=TRDT(I)-DELTA(N)
+          IF (LEVEL(1) .GT. 3) WRITE (100,*) DELTA(N),TRDT(I),VAPRDT(I),
+     +                                    GMCDT(I)
+C        Note: FORCHEK indicates parse error here (n=n+1)
+          N=N+1
+  240   CONTINUE
+      END IF
+C
+C**** SOIL LAYERS
+      DO 250 I=1,NS-1
+         IF (ABS(DELTA(N)) .GT. 25.0D0  .AND.  NDT .LT. MAXNDT) THEN
+C           ..TOO LARGE OF A CHANGE -- CONVERGENCE WILL NOT LIKELY BE
+C             BE MET WITH CURRENT TIME STEP.  CUT TIME STEP IN HALF
+            IEFLAG = 1
+            ITER=11
+            GO TO 350
+         END IF
+         IF (ABS(DELTA(N)) .GT. TOLER) IEFLAG = IEFLAG+1
+         IF (ITER.GT.3 .AND. DELTA(N)*DELNRG(N).LT.0.D0) THEN 
+C           ..DELTA IS JUMPING BETWEEN NEG. AND POS. -- CUT DELTA IN HALF
+C             TO SUPPRESS TENDENCY TO JUMP BACK AND FORTH AROUND SOLUTION
+            DELTA(N)=DELTA(N)/2.D0
+         END IF
+         DELNRG(N)=DELTA(N)
+         TSDT(I)=TSDT(I)-DELTA(N)
+C
+C        CHECK IF LAYER IS BELOW 0 C
+         IF (TSDT(I) .LE. 0.0D0) THEN
+C          ICE MAY BE PRESENT - CALL FROZEN TO DETERMINE IF ICE PRESENT
+           ICE=ICESDT(I)
+C
+           CALL FROZEN(I,NS,VLCDT,VICDT,MATDT,CONCDT,TSDT,SALTDT,ICESDT,
+     +                 SOILHP,NDXN2H,RHOB,NSALT,SALTKQ,SAT,Hmin)
+C
+C          ..CHECK IF LAYER HAS CROSSED THE FREEZING POINT AND ADJUST 
+C            THE TEMPERATURE FOR LATENT HEAT IF SO
+           IF (ICE .EQ. 0  .AND.  ICESDT(I) .EQ. 1)
+     +       CALL ADJUST(I,NS,VICDT,VLCDT,MATDT,CONCDT,TSDT,SALTDT,
+     +              ICESDT,CS,SOILHP,NDXN2H,RHOB,NSALT,SALTKQ,sat,Hmin)
+C
+         ELSE
+C          ..NO ICE IS PRESENT
+           IF (ICESDT(I) .EQ. 1) THEN
+C            ..CONVERT ANY REMAINING ICE TO WATER
+             VLCDT(I) = VLCDT(I) + VICDT(I)*RHOI/RHOL
+             IF (VLCDT(I) .GT. SAT(I)) VLCDT(I)=SAT(I)
+             VICDT(I) = 0.0D0
+             ICESDT(I) = 0
+             JH=NDXN2H(I)
+             HTMP = -(SOILHP(1,JH)+5.0D0)
+C LMA UPDATE WCH
+             MATDT(I) = WCH(HTMP,VLCDT(I),SOILHP(1,JH),JH,0)/1.0D2
+           END IF
+         END IF
+C
+         IF (LEVEL(1) .GT. 3) WRITE (100,*) DELTA(N),TSDT(I),VLCDT(I),
+     +                           VICDT(I),MATDT(I),CONCDT(1,I),ICESDT(I)
+         N=N+1
+  250 CONTINUE
+C
+      IF (NC .GT. 0) THEN
+C        ..DEFINE TEMPERATURE OF BOTTOM BOUNDARY OF CANOPY
+         IF (NSP .GT. 0) THEN
+C           ..SNOW IS UNDERLYING CANOPY
+            TCDT(NC+1) = TSPDT(1)
+         ELSE IF (NR .GT. 0) THEN
+C            ..RESIDUE IS UNDERLYING CANOPY
+             TCDT(NC+1) = TRDT(1)
+         ELSE
+C           ..SOIL IS UNDERLYING CANOPY
+            TCDT(NC+1) = TSDT(1)
+         END IF
+      END IF
+C
+      IF (NSP .GT. 0) THEN
+C        ..DEFINE TEMPERATURE OF BOTTOM BOUNDARY OF SNOWPACK
+         IF (NR .GT. 0) THEN
+C           ..SNOW IS OVERLYING RESIDUE
+            TSPDT(NSP+1) = TRDT(1)
+         ELSE
+C           ..SNOW IS OVERLYING BARE SOIL
+            TSPDT(NSP+1) = TSDT(1)
+         END IF
+      END IF
+C
+C     ..ENSURE THAT BOTTOM RESIDUE NODE IS EQUAL TO SOIL SURFACE TEMP
+      IF (NR .GT. 0) TRDT(NR+1) = TSDT(1)
+C
+      IWFLAG=0
+C
+C CHECK MBAL OF SNOW
+          CSTORSN = 0.0D0
+          DO 254 I = 1,NSP
+            CSTORSN = CSTORSN + RHOSP(I) * DZSP(I) / RHOL + DLWDT(I)
+ 254      CONTINUE
+C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
+C**** BEGIN CALCULATIONS FOR THE MOISTURE BALANCE OF THE SYSTEM
+      IF (ISHUTL.EQ.0 .AND. (NC.GT.0 .OR. NR.GT.0)) THEN
+        N = 1
+C
+C       ..GET SOIL VAPOR DENSITY FOR WBRES AND POSSIBLY FOR WBCAN
+        TLCONC=0.0D0
+        TLCNDT=0.0D0
+        DO 305 J=1,NSALT
+          TLCONC=TLCONC+CONC(J,1)
+          TLCNDT=TLCNDT+CONCDT(J,1)
+  305   CONTINUE
+        TOTPOT=MAT(1)-TLCONC*UGAS*(TS(1)+273.16D0)/G
+        TOTPDT=MATDT(1)-TLCNDT*UGAS*(TSDT(1)+273.16D0)/G
+        CALL VSLOPE (DUMMY,SATV,TS(1))
+        CALL VSLOPE (DUMMY,SATVDT,TSDT(1))
+        VAP=SATV*EXP(.018D0*G/UGAS/(TS(1)+273.16D0)*TOTPOT)
+        VAPDT=SATVDT*EXP(.018D0*G/UGAS/(TSDT(1)+273.16D0)*TOTPDT)
+        VAPR(NR+1)=VAP
+        VAPRDT(NR+1)=VAPDT
+C
+C       ..DETERMINE VAPOR DENSITY AT CANOPY LOWER BOUNDARY 
+C         (ASSUME ITS SOIL, THEN CHANGE AS NEEDED)
+        VAPC(NC+1)=VAP
+        VAPCDT(NC+1)=VAPDT
+        IF (NSP .GT. 0) THEN
+C         ..SNOW IS SURFACE MATERIAL
+          CALL VSLOPE (DUMMY,SATV,TSP(1))
+          CALL VSLOPE (DUMMY,SATVDT,TSPDT(1))
+C         ..CALCULATE THE SATURATED VAPOR DENSITY OVER ICE
+          TMP = TSP(1) + 273.16D0
+          TMPDT = TSPDT(1) + 273.16D0
+          VAP = SATV*EXP(0.018D0/(UGAS*TMP)*LF*TSP(1)/TMP)
+          VAPDT = SATVDT*EXP(0.018D0/(UGAS*TMPDT)*LF*TSPDT(1)/TMPDT)
+          VAPC(NC+1)=VAP
+          VAPCDT(NC+1)=VAPDT
+        ELSE IF (NR. GT. 0) THEN
+          VAPC(NC+1)=VAPR(1)
+          VAPCDT(NC+1)=VAPRDT(1)
+        ENDIF
+C      
+C****   SOLVE FOR WATER BALANCE COEFF FOR CANOPY LAYERS
+        IF (NC .GT. 0) THEN
+         CALL WBCAN (N,NC,NR,NSP,NS,TC,TCDT,TLC,TLCDT,TLCLWR,
+     +   VAPC,VAPCDT,WCAN,WCANDT,PCAN,PCANDT,MAT,MATDT,SWCAN,LWCAN,
+     +   TDIFFC,DIFKL,ITER,WT,WDT,DT,DCHAR,DRYCAN,
+     +   CANLAI,TOTLAI,ZC,CANMA,CANMB,ITYPE,IEVAP,NPLANT,TRNSP,TPOTNL,
+     +   XTRACT,ZMSUB,ZHSUB,ZERSUB,STABLE,WINDC,RSTOM0,RSTEXP,
+     +   PLEAF0,RLEAF0,RROOT0,TOTROT,RLEAF,RROOT,ROOTDN,QVC,ATRANS,
+     +   evapmx,A2,B2,C2,D2,ISTRESS,TLCSHAW,TLEAFU,TLEAFL,HOUR)
+        ELSE
+C         ..SET ROOT EXTRACTION TO ZERO
+          DO 310 I=1,NS
+             XTRACT(I)=0.0D0
+  310     CONTINUE
+        END IF
+C
+C****   SET BOUNDARY CONDITIONS IF THERE IS A SNOWPACK PRESENT
+C       (SNOWPACK IS NOT PART OF THE WATER BALANCE MATRIX - THE WATER
+C       BALANCE FOR THE SNOWPACK IS DONE AT THE END OF THE HOUR)
+        IF (NSP .GT. 0 .AND. NR.GT.0) THEN
+          A2(N) = 0.0D0
+          CALL SNOWBC (N,NSP,WDT,PRESUR,ZSP,TSPDT,QVSP,B2,D2)
+        END IF
+C       
+C****   SOLVE FOR WATER BALANCE COEFF OF THE RESIDUE LAYERS
+        IF (NR .GT. 0) THEN
+          CALL WBRES (N,NR,NSP,TR,TRDT,GMC,GMCDT,VAPR,VAPRDT,
+     +      EVAPR,EVAPK,WT,WDT,DT,WINDR,RHOR,ZR,RHOSP,ICESDT,ITER,
+     +      PRESUR,QVR,evapmx,A2,B2,C2,D2,ISTRESS,RESTKB)
+        ENDIF
+C       
+C       SOIL PROFILE NOT INCLUDED IN WATER BALANCE MATRIX - ADJUST NODE #
+        N=N-1
+C     
+C-----------------------------------------------------------------------
+      IF (LEVEL(1) .GT. 3) THEN
+         WRITE (100,*) ' VAPOR FLUXES (KG/S)'
+         WRITE (100,*) (QSV(K), K=1,NS-1)
+         WRITE (100,*) ' LIQUID FLUXES (M/S)'
+         WRITE (100,*) (QSL(K), K=1,NS-1)
+         WRITE (100,*) ' JACOBIAN MATRIX FOR WATER'
+         DO 315 K=1,N
+            WRITE (100,*) A2(K),B2(K),C2(K),D2(K)
+  315    CONTINUE
+         WRITE (100,*)
+         WRITE (100,*) ' VALUES FOR WATER BALANCE ITERATION ',ITER
+      END IF
+C-----------------------------------------------------------------------
+C****   SOLVE THE WATER BALANCE MATRIX
+        IF (N.GT.0) CALL TDMA (N,A2,B2,C2,D2,DELTA)
+C       
+C****   SORT OUT THE SOLUTION OF THE MATRIX INTO THE PROPER MATERIALS
+        N=1
+        IWFLAG=0
+C       
+        IF (NC .GT. 0) THEN
+C****   CANOPY LAYERS
+          DO 320 I=1,NC
+            IF (ABS(DELTA(N)/VAPCDT(I)) .GT. TOLER) IWFLAG = IWFLAG+1
+            IF (ITER.GT.3 .AND. DELTA(N)*DELWTR(N).LT.0.D0) THEN 
+C             ..DELTA IS JUMPING BETWEEN NEG. AND POS. -- CUT DELTA IN HALF
+C               TO SUPPRESS TENDENCY TO JUMP BACK AND FORTH AROUND SOLUTION
+              DELTA(N)=DELTA(N)/2.D0
+            END IF
+            DELWTR(N)=DELTA(N)
+            VAPCDT(I)=VAPCDT(I)-DELTA(N)
+            IF (LEVEL(1) .GT. 3) WRITE (100,*) DELTA(N),VAPCDT(I),
+     >                                        TCDT(I),WCANDT(I)
+            N=N+1
+  320     CONTINUE
+        END IF
+C       
+        IF (NR .GT. 0) THEN
+C****   RESIDUE LAYERS
+          DO 330 I=1,NR
+            IF (ABS(DELTA(N)/VAPRDT(I)) .GT. TOLER) IWFLAG = IWFLAG+1
+            IF (ITER.GT.3 .AND. DELTA(N)*DELWTR(N).LT.0.D0) THEN 
+C             ..DELTA IS JUMPING BETWEEN NEG. AND POS. -- CUT DELTA IN HALF
+C               TO SUPPRESS TENDENCY TO JUMP BACK AND FORTH AROUND SOLUTION
+              DELTA(N)=DELTA(N)/2.D0
+            END IF
+            DELWTR(N)=DELTA(N)
+            VAPRDT(I)=VAPRDT(I)-DELTA(N)
+            IF (LEVEL(1) .GT. 3) WRITE (100,*) DELTA(N),VAPRDT(I),
+     +                                     TRDT(I),GMCDT(I)
+            N=N+1
+  330     CONTINUE
+        END IF
+C     
+      END IF
+C     
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     
+  350 IF (IEFLAG.GT.0 .OR. IWFLAG.GT.0) THEN
+C        ..CONVERGENCE HAS NOT BEEN MET - IF ITERATIONS ARE UNDER 10, GO
+C          BACK AND START NEXT ITERATION
+         IF (ITER .LE. 10) GO TO 200
+C   
+C        ..HAVING PROBLEMS REACHING CONVERGENCE WITH CURRENT TIME STEP
+         IF (NDT .LT. MAXNDT) THEN
+C           ..CUT TIME STEP IN HALF AND TRY AGAIN
+            NDT=NDT*2
+            NTIMES=NTIMES*2 - 1
+            DT=DT*0.5D0
+C           ..REDEFINE END-OF-TIME-STEP VALUES
+            CALL BACKUP (NS,NR,NSP,NC,NPLANT,NSALT,ICES,ICESDT,TS,TSDT,
+     +      MAT,MATDT,CONC,CONCDT,VLC,VLCDT,VIC,VICDT,SALT,SALTDT,
+     +      TR,TRDT,VAPR,VAPRDT,GMC,GMCDT,TC,TCDT,TLC,TLCDT,VAPC,
+     +      VAPCDT,WCAN,WCANDT,PCAN,PCANDT,TSP,TSPDT,DLW,DLWDT,
+     +      ICESP,ICESPT)
+C           ..GO BACK AND CALCULATE BOUNDARY CONDITIONS FOR HALF TIME-STEP
+            GO TO 100
+         END IF
+C
+C        NDT > MAXNDT --> INDICATE CONVERGENCE PROBLEMS AND CONTINUE
+         PRINT*,' CONVERGENCE PROBLEMS in shawht; ndt>', MAXNDT
+         write(9,*)' CONVERGENCE PROBLEMS in shawht; ndt>',MAXNDT
+         ITER = 0
+         IF (LEVEL(1) .GE. 3) STOP 'croaked in shawht'
+      END IF
+C
+C**** END OF ITERATION FOR TIME STEP ***********************************
+C
+C     ..SUM THE NECESSARY FLUXES OCCURRING OVER THE TIME STEP
+      CALL SUMDT (NC,NSP,NR,NS,NPLANT,ISHUTL,QVC,QVSP,QVR,TRNSP,
+     +   TPOTNL,XTRACT,VFLUX,NTIMES,TOPSNO,TQVSP,EVAPS,TRANSP,TPOT,
+     +   ROOTXT,tswcan,tswsno,tswres,tswsoi,tlwcan,tlwsno,tlwres,tlwsoi,
+     +   swcan,swsnow,swres,swsoil,lwcan,lwsnow,lwres,lwsoil,
+     +   hsum,hflux,gsum,gflux,vLEsum,DT,srootxt,evap1)
+
+c      if (evaps.lt.0.0d0 .and. tsdt(1).gt.trdt(1)) then
+c        write(9,*) 'evaps<0',hour,evaps
+c        write(9,*) tspdt(nsp),trdt(1),tsdt(1),tr(1),ts(1)
+c        write(9,*) qvr(1),vaprdt(1),vaprdt(2),vapr(1),vapr(2)
+c      endif
+C
+C     ..UPDATE VARIABLE FOR NEXT TIME STEP
+      CALL UPDATE (NS,NR,NSP,NC,NPLANT,NSALT,ICES,ICESDT,TS,TSDT,
+     + MAT,MATDT,CONC,CONCDT,VLC,VLCDT,VIC,VICDT,SALT,SALTDT,
+     + TR,TRDT,VAPR,VAPRDT,GMC,GMCDT,TC,TCDT,TLC,TLCDT,VAPC,VAPCDT,
+     + WCAN,WCANDT,PCAN,PCANDT,TSP,TSPDT,DLW,DLWDT,ICESP,ICESPT)
+      IF (NTIMES .LT. NDT) THEN
+C        NOT REACHED END OF TIME STEP -- GO BACK THROUGH SUB-TIME-STEP
+         IF (MOD(NTIMES,2).EQ.0 .AND. (IEFLAG+IWFLAG).EQ.0) THEN
+C           CHECK IF IT'S WORTH IT TO TRY TO DOUBLE THE TIME STEP
+            IF (NDT .LE. MAXDBL) THEN
+               IF (NDT .LT. MAXDBL) MAXTRY=0
+               IF (NDT .LE. 8) MAXTRY=MAXTRY+2
+               MAXTRY=MAXTRY+1
+               MAXDBL=NDT
+            END IF
+            IF (NDT.GT.MAXDBL .OR. MAXTRY.LE.3 .OR. NDT.GE.MAXNDT) THEN
+C              ATTEMPT TO INCREASE LENGTH OF SUB-TIME-STEP
+               NDT=NDT/2
+               NTIMES=NTIMES/2
+               DT=DT*2.D0
+            END IF
+         END IF
+         NTIMES = NTIMES + 1
+         GO TO 100
+      else
+CXXXX
+      TEVAPS = TEVAPS + EVAPS
+c      TROOTXT = TROOTXT + SROOTXT
+
+CXXXX
+c      TROOTXT = TROOTXT*1000.d0   !mm/hr
+c      TEVAPS = TEVAPS*1000.d0     !mm/hr
+c       write (555,*) tevaps,trootxt
+      ENDIF
+C
+C     END OF THE TIME STEP - RESET TIME
+C     Note: does this alter the time control established in adjdt?
+      DT = NDT*DT
+C
+C     ..DETERMINE OUTFLOW FROM SNOW
+      IF (NSP .GT. 0) THEN
+C         CHECK MBAL OF SNOW
+          CSTORSN = 0.0D0
+          DO 454 I = 1,NSP
+            CSTORSN = CSTORSN + RHOSP(I) * DZSP(I) / RHOL + DLWDT(I)
+ 454      CONTINUE
+         NSPSAV = NSP
+         CALL WBSNOW (NSP,ICESPT,TSPDT,BDLW,DLWDT,RAIN,TRAIN,SCOUT,
+     +                DT,TOPSNO,TQVSP,RHOSP,DZSP,ZSP,STORSN)
+         EVAPSP = TOPSNO / RHOL
+         IF (NSP.NE.0) THEN
+           VSL2SN = TQVSP(NSP) / RHOL
+         ELSE
+C          ..SNOW MELTED - GET VAPOR CONDITION BEFORE MELTING
+           VSL2SN = TQVSP(NSPSAV) / RHOL
+         ENDIF
+C        ..CALCULATE WATER EQUIVALENT - IF SUFFICIENTLY SMALL, ASSUME
+C          ENTIRE SNOWPACK IS GONE
+         WE = 0.0D0
+         DO 400 I=1,NSP
+            WE = WE + DZSP(I)*RHOSP(I)/RHOL + DLWDT(I)
+  400    CONTINUE
+         IF (WE .LT. 5.0D-4) THEN
+C           ..WATER EQUIVALENT IS SUFFICIENTLY SMALL-ASSUME SNOWPACK GONE
+            SCOUT = SCOUT + WE
+            NSP = 0
+C           ..ADD WATER CURRENTLY BEING LAGGED TO SNOW COVER OUTFLOW
+            CALL SNOMLT (NSP,ICESPT,DZSP,RHOSP,TSPDT,DLWDT,SCOUT,DT,
+     +        STORSN,store)
+         END IF
+C
+C        ..DO MASS BALANCE ON SNOW
+         DELSNO = (OSTORSN + RAIN + EVAPSP - VSL2SN - SCOUT -
+     +            SUMDL - STORSN)*100.0D0
+         IF (ABS(DELSNO) .GT. 1.0D-12) THEN
+           WRITE (9,1000) HOUR,OSTORSN*100.0D0,RAIN*100.0D0,
+     +      EVAPSP*100.0D0,VSL2SN*100.0D0,SCOUT*100.0D0,
+     +      SUMDL*100.0D0,STORSN*100.0D0,DELSNO
+         ENDIF
+         OSTORSN = STORSN
+         RAIN = 0.0D0
+
+
+1000     FORMAT (//40('='),/'SNOW WATER MASS BALANCE (CM) AT TIME',
+     +     F12.6,/40('='),
+     +     /'INITAL WATER STORAGE IN PACK',T50,F12.6,
+     +     /'TOTAL ADDITIONS',
+     +     /'  RAIN ON SNOWPACK',T50,F12.6,
+     +     /'  EVAP FROM THE SNOWPACK',T50,F12.6,
+     +     /'TOTAL LOSSES',
+     +     /'  VAPOR FROM SOIL TO SNOWPACK',T50,F12.6,
+     +     /'  SEEPAGE OUT OF SNOWPACK',T50,F12.6,
+     +     /'  LOSS DUE TO TEMPERATURE CHANGE',T50,F12.6,
+     +     /'FINAL WATER STORAGE IN PACK',T50,F12.6,
+     +     /62('-'),/'WATER BALANCE ===>',T50,G12.6)
+      END IF
+C
+C     CONVERT SNOWMELT AND TOTAL EVAPORATION FROM SNOW SURFACE TO CM
+      IF (NNSP .GT. 0) THEN
+         EVAPSP=TOPSNO*1.0D2
+         SPMELT=SCOUT*1.0D2
+CKEJ  NO EVAP IF SNOWMELT?
+C         IF (SPMELT.GT.0.0D0) EVAPS = 0.0D0
+      ELSE
+         EVAPSP=0.0D0
+         SPMELT=0.0D0
+      END IF
+      NNSP = NSP
+C
+C     ..CONVERT SOIL EVAP FROM M TO CM/HR FOR REDIST ROUTINE
+      EVAPS = EVAPS * 3.6D5 / DT
+      EVAP1 = EVAP1 * 3.6D5 / DT
+      do i=1,ns
+      rootxt(i) = rootxt(i) * 3.6D5 / DT
+      enddo
+      do i=1,nplant
+      tpot(i)=tpot(i)*3.6D5/DT
+      enddo
+C
+C     ..DO NOT ALLOW DEW FORMATION ??
+      EVAPS = MAX(0.0D0,EVAPS)
+C
+      IF (NSALT .GT. 0) THEN
+C       ..SET CONCENTRATION TO IONIC POTENTIAL AND INITIALIZE CHEM. PARAMS
+C         CONVERT FROM MOLES/LITER to MG/L
+        DO 19 I=1,NS
+C
+C         ..conc of mobile ions h,ca,na,mg,cl,hco3,so4,al,no3,nh4,co3,urea
+           cc(i,1) = CONCDT(1,I)  * 10020.0d0
+           cc(i,2) = CONCDT(2,I)  * 40080.0d0
+           cc(i,3) = CONCDT(3,I)  * 23000.0d0
+           cc(i,4) = CONCDT(4,I)  * 24300.0d0
+           cc(i,5) = CONCDT(5,I)  * 35450.0d0
+           cc(i,6) = CONCDT(6,I)  * 61018.0d0
+           cc(i,7) = CONCDT(7,I)  * 96060.0d0
+           cc(i,8) = CONCDT(8,I)  * 26980.0d0
+           cc(i,9) = CONCDT(9,I)  * 14000.0d0
+          cc(i,10) = CONCDT(10,I) * 14000.0d0
+          cc(i,11) = CONCDT(11,I) * 60018.0d0
+          cc(i,12) = CONCDT(12,I) * 28000.0d0
+C
+C         ..set conc of pesticides
+          do 18 ip = 1,mxpest
+            cc(i,12+ip) = CONCDT(12+ip,I) * (pmw(ip)*1.0d3)
+ 18       continue
+   19   CONTINUE
+      END IF
+C        PRINT OUT FROST AND SNOW DEPTH
+            CALL FROST (NSP,NS,1,JDAY,
+     >      HOUR,iyyy,1,ZSP,RHOSP,DZSP,DLWDT,
+     >      ZS,VLCDT,VICDT,ICESDT,fdepth,tdepth)
+C
+c     if (nr .gt. 0) then                                              
+c        dres =  (ZR(2)-ZR(1))/DT*(VAPRDT(1)-BVAPR(1))                 
+c     end if                                                           
+c     if (nc .gt. 0) then                                              
+c        dcan =  (ZC(2)-ZC(1))*(VAPCDT(1)-BVAPC(1))/2.d0/DT            
+c        do j=2,nc                                                     
+c          dcan = dcan + (ZC(J+1)-ZC(J-1))*(VAPCDT(J)-BVAPC(J))/2.d0/DT
+c        end do                                                        
+c      else                                                            
+c       dcan = 0.0d0                                                   
+c     end if                                                           
+cc    write (555,555) jday,hour,dt,evaps*dt/3600,evap1*dt/3600., 
+cc   >                 atrans*dt/10.,vLEsum           
+cc555 format (i4,f6.2,f6.0,3f9.5,f10.1)                                         
+      RETURN
+      END

@@ -1,0 +1,31 @@
+C***********************************************************************
+C
+      SUBROUTINE SNOWBC(N,NSP,WDT,PRESUR,ZSP,TSPDT,QVSP,B2,D2)
+C
+C     THIS SUBROUTINE SETS UP THE UPPER BOUNDARY CONDITION FOR THE WATER
+C     BALANCE OF THE RESIDUE WHEN THERE IS A SNOWPACK
+C***********************************************************************
+C
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+C
+      PARAMETER (MXNOD=300, NODRES=10, nodcan=11, NODSNO=100, 
+     + NODTOT=MXNOD+NODCAN+NODRES+NODSNO)
+C
+      DOUBLE PRECISION QVSP(NODSNO),TSPDT(NODSNO),ZSP(NODSNO),
+     +  B2(NODTOT),D2(NODTOT)
+C
+      PARAMETER(P0=1.013D5,VDIFSP=9.0D-5,VAPSPX=14.0D0)
+      common /shawp/ pplastic,emitc,emitr(10),emitsp,emits,emitf
+     &      ,palbedo,ptransm
+C
+C**** DETERMINE THE VAPOR DIFFUSIVITY OF BOTTOM SNOWPACK NODE
+      VDIF= VDIFSP*(P0/PRESUR)*(1.d0+TSPDT(NSP)/273.16d0)**VAPSPX
+      CON = VDIF/(ZSP(NSP+1)-ZSP(NSP))
+      con=con*(1.0d0-pplastic)
+c      qvsp(nsp)=qvsp(nsp)*(1.0d0-pplastic)
+C
+C**** DEFINE MATRIX COEFFICIENTS FOR TOP OF RESIDUE
+      B2(N) = -WDT*CON
+      D2(N) = QVSP(NSP)
+      RETURN
+      END

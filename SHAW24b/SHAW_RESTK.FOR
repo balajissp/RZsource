@@ -1,0 +1,154 @@
+C
+      SUBROUTINE RESTK(NR,NSP,TKRES,CONVEC,TR,TRDT,GMC,GMCDT,WT,WDT,
+     +                  WINDR,RHOR,RHOSP,RESTKB,ZR)
+C
+C======================================================================
+C
+C       PURPOSE:
+C     THIS SUBROUTINE CALCULATES THE THERMAL CONDUCTANCE TERM BETWEEN
+C     RESIDUE NODES USING THE CALCULATED WINDSPEED AT A NODE FOR THE
+C     THE CONVECTIVE TRANSPORT TERM, AND THE THERMAL CONDUCTIVITIES OF
+C     OF THE RESIDUE AND WATER THE THERMAL CONDUCTIVITY TERM.
+C     CONVECTIVE AND CONDUCTIVE TERMS ARE THEN WEIGHTED ACCORDING TO
+C     THE VOLUMETRIC FRACTIONS OF AIR, WATER AND RESIDUE.
+C
+C       REF:
+C
+C       VARIABLE DEFINITIONS:
+C       VARIABLE  I/O   DESCRIPTION
+C       --------  ---   -----------
+C       AVGTMP     L    ave temperature of layer for time step
+C       CONVEC    I/O   conv heat transport coeff through residue (W/m^2-K)
+C       GMC        I    grav water content of i-th residue node at time t
+C       GMCDT      I    grav water content of i-th residue node at t+dt
+C       I          L    canopy, snow, residue or soil layer
+C       NR         I    num of matted residue layers
+C       NSP        I    num of layers in snowpack
+C       RESDEN     P    spec density of residue (without voids)  (kg/m^3)
+C       RESTKA     L    coeff relating wind to thermal cond in residue
+C       RESTKB     L    coeff relating wind to thermal cond in residue
+C       RHOL       P    density of liquid water  (kg/m^3)
+C       RHOR       I    density of residue in matted layer  (kg/m^3)
+C       RHOSP      I    density of ice fract of snowpack  (kg/m^3)
+C       TK         L    ave thermal cond over the time step
+C       TKA        P    thermal cond of air
+C       TKL        P    thermal cond of liquid
+C       TKRES     I/O   effective heat transfer coeff for residue (W/m^2-K)
+C       TKSP       L    thermal cond of snowpack layers
+C       TR         I    temp of residue layer at time t
+C       TRDT       I    temp of residue layer at time t + dt
+C       WDT        I    weighting factor for end of time step values
+C       WINDR      I    windspeed at the top of the residue
+C       WT         I    weightin factor for beginning of time step values
+C       TLD             distance between plastic and soil
+C       TKP             thermal cond of plastic
+C       RAY             Rayleigh number
+C       PR              Prandtl number
+C       GRAV            the acceleration of gravity (m s^-2), 
+C       TEXPAN          the thermal expansion coefficient of air (K^-1),
+C       TKVIS           the kinematics viscosity (m2 s^-1), 
+C       TDIFF           the thermal diffusivity (m2 s^-1),
+C
+C       COMMENTS:
+C
+C       EXTERNAL REFERENCES:
+C                       SNOWTK
+C
+C       CALLED FROM:
+C
+C       PROGRAMMER:
+C
+C       VERSION:
+C
+C======================================================================
+C
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+C
+      PARAMETER (NODRES=10, NODSNO=100)
+C
+      DOUBLE PRECISION CONVEC(NODRES),TKRES(NODRES),TKSP(NODSNO),
+     +  TR(NODRES),TRDT(NODRES),GMC(NODRES),GMCDT(NODRES),
+     +  RESTKA(NODRES),RESTKB(NODRES),RHOR(NODRES),RHOSP(NODSNO),
+     +  WINDR(NODRES),ZR(NODRES)
+      PARAMETER(RESDEN=1.7D2,TKR=5.D-2,RHOL=1.0D3,TKL=0.57D0,TKA=2.5D-2)
+      PARAMETER(GRAV=9.81D0, TEXPAN=3.5D-3, TKVIS=1.5D-5, TDIFF=2.2D-5,
+     +         PR=0.75D0,TKP=0.25D0)
+      SAVE RESTKA
+C
+      DATA  RESTKA/10*0.007D0/  ! RESTKB/10*4.0D0/
+      common /shawp/ pplastic,emitc,emitr(10),emitsp,emits,emitf
+     &      ,palbedo,ptransm
+
+C
+      TLD=MAX(0.01D0,ZR(NR+1))
+      IF (NSP .GT. 0) THEN
+C        ASSUME THE SNOW FILTERS DOWN INTO THE RESIDUE - THEREFORE
+C        REDEFINE THE THERMAL CONVECTION AS A CONDUCTION THRU SNOW
+         CALL SNOWTK (NSP,TKSP,RHOSP)
+      END IF
+C
+c Rayleigh number for convection beneath the plastic  LIWANG 2017
+c Ham and Kluitenberg (1994) Agric. Forest Meterol. 71:403-424
+c Yang et al. (2012) J. Hydrology, 452-453:102-118. 
+      IF (PPLASTIC.GT.0.0D0) THEN
+         RAY=TEXPAN*GRAV*(TRDT(NR+1)-TRDT(1))*TLD**3/TKVIS/TDIFF
+         IF (RAY.LT.1708D0) THEN
+           CONVECplastic=TKA                                  ! /TLD is accounted for in subroutine CONDUC
+         ELSE IF (RAY.GE.1708D0) THEN
+           CONVECplastic=TKA*RAY**0.333D0*PR**0.074D0/14.5d0  ! /TLD is accounted for in subroutine CONDUC
+         ENDIF
+      ENDIF
+C
+      DO 20 I=1,NR
+C
+C       AVERAGE THE TEMP AND WATER CONTENT OVER TIME
+        AVGTMP = WDT*TRDT(I) + WT*TR(I)
+        AVGGMC = WDT*GMCDT(I) + WT*GMC(I)
+C
+C       CALCULATE THE VOLUME FRACTION OF EACH MATERIAL
+C       RESVOL = min(RHOR(1)/RESDEN,RHOR(2)/RESDEN)
+        RESVOL = RHOR(I)/RESDEN
+        WATER = AVGGMC*RHOR(I)/RHOL
+        AIR = MAX(0.0D0,1.0D0 - RESVOL - WATER)
+        IF (NR.LE.1.AND.PPLASTIC.GT.0.0D0) THEN
+            RESVOL=0.0D0
+            AIR=1.0D0
+        ENDIF
+C
+C       IF SNOW IS PRESENT - DO NOT CALCULATE CONVECTION -- GO AROUND
+        IF (NSP .GT. 0) THEN
+          CONVECres = TKSP(NSP)
+        ELSE
+C
+C         CALCULATE THE CONVECTIVE HEAT TRANSFER COEFFICIENT
+          CONVECres = TKA*(1.0D0+RESTKA(I)*AVGTMP)*
+     +             (1.0D0+RESTKB(I)*WINDR(I))
+        END IF
+C
+C       ADJUST CONVECTIVE TRANSPORT FOR AIR POROSITY
+C       (IN THE CASE OF SNOW, AIR POROSITY IS THE FRACTION OF SNOW)
+        CONVECres = CONVECres*AIR
+C
+C       CALCULATE THERMAL CONDUCTIVITY THROUGH THE RESIDUE AND WATER
+        TK =  WATER*TKL + RESVOL*TKR
+C       CALCULATE THE EFFECTIVE HEAT TRANSFER COEFFICIENT
+        if (i .eq. 1 .AND. PPLASTIC .GT. 0.D0) then
+c          Use thermal conductivity of plastic ====>  convection across plastic layer where there is no plastic is essentially infinite
+           TKRES(I) = (CONVECres + TK)*(1.0D0-PPLASTIC) 
+     +              + (CONVECplastic + TKP)*PPLASTIC
+c          Weight convective transport for vapor under no plastic for vapor transport
+           CONVEC(I) = CONVECres    !    *(1.0D0-PPLASTIC)   Effect of plastic already accounted for in above material*(1.0D0-PPLASTIC) 
+          ELSE
+c          Use only thermal conductivity of residue
+           TKRES(I) = (CONVECres + TK)*(1.0D0-PPLASTIC) 
+     +              + (CONVECplastic + TK)*PPLASTIC
+c          Weight convective transport under no plastic for vapor transport
+           CONVEC(I) = CONVECres    !    *(1.0D0-PPLASTIC)   Effect of plastic already accounted for in above material
+        end if
+c       Weight convective transport under no plastic for vapor transport
+c       CONVEC(I) = CONVECres*(1.0D0-PPLASTIC) 
+c     +            + (CONVECplastic + TKP)*PPLASTIC
+   20 CONTINUE
+C
+      RETURN
+      END
