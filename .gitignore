@@ -4,6 +4,8 @@
 *.PLT
 */STATE.BIN
 */state.bin
+*.obj
+*.mod
 
-
-
+# IDE config files
+.vs/
