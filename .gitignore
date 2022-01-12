@@ -9,3 +9,6 @@
 
 # IDE config files
 .vs/
+
+# testing files
+temp/
