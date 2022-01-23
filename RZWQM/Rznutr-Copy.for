@@ -1343,6 +1343,7 @@ C
           TEMPN=DECDEN(I)-FRT(I)*DECDEN(I)
           RNADEN(I)=TEMPN*(1.0d0/CN(I)-EFFden/cn(9))/CONV
           RCADEN(I)=EFFDEN*tempn  !DECDEN(I)
+      PRINT *, "CALLING DENI_ADJ"
       Call DENI_ADJ(I,DENCON,RDEN,C,ANETNID,ANETNSUMD,
      &           ANETNsum,anetni,CONV,RCADEN,RNADEN,DECDEN,decay)
        enddo
@@ -1550,6 +1551,7 @@ C
           TEMPN=DECDEN(I)-FRT(I)*DECDEN(I)
           RNADEN(I)=TEMPN*(1.0d0/CN(I)-EFFden/cn(9))/CONV
           RCADEN(I)=EFFDEN*tempn  !DECDEN(I)
+      PRINT *, "CALLING DENI_ADJ"
       Call DENI_ADJ(I,DENCON,RDEN,C,ANETNID,ANETNSUMD,
      &           ANETNsum,anetni,CONV,RCADEN,RNADEN,DECDEN,decay)
 C

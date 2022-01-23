@@ -1218,6 +1218,7 @@ c     +    SLOPE,THETA(1),TMIN1,TMAX1,U1,WRES,LAI,XLAT,PP,ICRUST,RH1,
 c     +    SOILHP(7,1),SOILHP(9,1),IPL,HEIGHT,AS,ESN,RCS,PKTEMP,IRTYPE,
 c     +    TLAI,IPR,SDEAD_HEIGHT,SDEAD,IHOURLY,tdew,i,iwzone,hrts,co2r,
 c     +    trat,RTH,HRTH)
+        PRINT *, "CALLING REF_ET"
         Call REF_ET(I,hrt(I),hrt(I),hrts(I),hrh(I),hru(I),elev,xlat*R2D,
      +       Xlong*R2D,jday,ETr_hr_T,ETr_hr_S,trat,xw,ihourly,PA)
            CALL CDATE(JDAY,ID,IM,IYYY)
@@ -1237,10 +1238,12 @@ c     +    trat,RTH,HRTH)
      +   cor,i,iwzone,hrts,co2r,trat,rth1,hrth,0,tmcanopy,rtstot)
       else if (ipet.eq.1) then
         ETC=max(0.0d0,ETr_hr_T*CKCC/10.0d0)
+      PRINT *, "CALLING C_R_S_Cover"
       Call C_R_S_Cover(CCL,CR,CS,CO,RM,LAI,TLAI,CRES,IPR,
      +          ETC,PET,PES,PER)
       else if (ipet.eq.2) then
         ETC=max(0.0d0,ETr_hr_S*CKCC/10.0d0)
+      PRINT *, "CALLING C_R_S_Cover"
       Call C_R_S_Cover(CCL,CR,CS,CO,RM,LAI,TLAI,CRES,IPR,
      +          ETC,PET,PES,PER)
       endif
@@ -1277,6 +1280,7 @@ c     +    SOILHP(7,1),SOILHP(9,1),IPL,HEIGHT,AS,ESN,RCS,PKTEMP,IRTYPE,
 c     +    TLAI,IPR,SDEAD_HEIGHT,SDEAD,IHOURLY,tdew,1,iwzone,hrts,co2r,
 c     +    trat,RTH,HRTH)
         RESAGE=RESAGE+1.0d0
+        PRINT *, "CALLING REF_ET"
         Call REF_ET(I,Tmin,Tmax,RTS,rh,U*1.0d3/(24.0d0*3.6d3),elev,
      +     xlat*R2D,Xlong*R2D,jday,ETr_hr_T,ETr_hr_S,trat,xw,ihourly,PA)
         Ret_day_T=ETr_HR_T/10.0d0
@@ -1293,10 +1297,12 @@ c     +    trat,RTH,HRTH)
      +   cor,1,iwzone,hrts,co2r,trat,rth,hrth,0,tmcanopy,rts)
       else if (ipet.eq.1) then
         ETC=max(0.0d0,ETr_hr_T*CKCC/10.0d0)
+      PRINT *, "CALLING C_R_S_Cover"
       Call C_R_S_Cover(CCL,CR,CS,CO,RM,LAI,TLAI,CRES,IPR,
      +          ETC,PET,PES,PER)
       else if (ipet.eq.2) then
         ETC=max(0.0d0,ETr_hr_S*CKCC/10.0d0)
+      PRINT *, "CALLING C_R_S_Cover"
       Call C_R_S_Cover(CCL,CR,CS,CO,RM,LAI,TLAI,CRES,IPR,
      +          ETC,PET,PES,PER)
         Endif
@@ -1927,17 +1933,21 @@ c      if (ihflag) write (88,188) jday,idaytim,iyyy,tair,rh,uhr,hrts1
      +    stublw,pa,xlh,rhorb,hrm,cr,ar,unew,nsp,nr,rhosp,zsp,orts,delz,
      +    cor,idaytim,iwzone,hrts,co2r,trat,rth1,hrth,1,tmcanopy,rtstot)
       else if (ipet.eq.1) then
+      PRINT *, "CALLING REF_ET"
       Call REF_ET(I,hrt(Idaytim),hrt(Idaytim),hrts(Idaytim),
      +       hrh(Idaytim),hru(Idaytim),elev,xlat*R2D,
      +       Xlong*R2D,jday,ETr_hr_T,ETr_hr_S,trat,xw,ihourly,PA)
         ETC=max(0.0d0,ETr_hr_T*CKCC/10.0d0)
+      PRINT *, "CALLING C_R_S_Cover"
       Call C_R_S_Cover(CCL,CR,CS,CO,RM,LAI,TLAI,CRES,IPR,
      +          ETC,PET,PES,PER)
       else if (ipet.eq.2) then
+      PRINT *, "CALLING REF_ET"
       Call REF_ET(I,hrt(Idaytim),hrt(Idaytim),hrts(Idaytim),
      +       hrh(Idaytim),hru(Idaytim),elev,xlat*R2D,
      +       Xlong*R2D,jday,ETr_hr_T,ETr_hr_S,trat,xw,ihourly,PA)
         ETC=max(0.0d0,ETr_hr_S*CKCC/10.0d0)
+      PRINT *, "CALLING C_R_S_Cover"
       Call C_R_S_Cover(CCL,CR,CS,CO,RM,LAI,TLAI,CRES,IPR,
      +          ETC,PET,PES,PER)
       endif  

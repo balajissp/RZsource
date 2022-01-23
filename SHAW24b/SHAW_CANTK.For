@@ -16,10 +16,10 @@ C     PARAMETER (nodcan=11, CA=1.25D0 ,VONKRM=0.4D0 ,TKA=0.025D0,
 C
       DOUBLE PRECISION CON(NODCAN),ZC(NODCAN),TC(NODCAN),WINDC(NODCAN)
 C
-      RICHRD=STABLE
-      IF (RICHRD.GT. 1.0d0) RICHRD= 1.0
-      IF (RICHRD.LT. -2.d0) RICHRD= -2.d0
-      stabl = richrd
+C       RICHRD=STABLE
+      IF (STABLE.GT. 1.0d0) STABLE= 1.0
+      IF (STABLE.LT. -2.d0) STABLE= -2.d0
+C       stabl = richrd
 C
       DO 10 I=1,NC-1
          dudz = (windc(i)-windc(i+1))/(ZC(I+1)-ZC(I))

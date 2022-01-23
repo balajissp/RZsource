@@ -302,8 +302,9 @@
 		<File RelativePath="..\SHAW24b\SHAW_WBRES.FOR"/>
 		<File RelativePath="..\SHAW24b\SHAW_WBSNOW.FOR"/>
 		<File RelativePath="..\SHAW24b\SHAW_Weight.for"/>
-		<File RelativePath="..\RZWQM\Snowprms.for"/>
-		<File RelativePath="..\DSSAT40\Utilities\SoilNBal.FOR"/>
+    <File RelativePath="..\RZWQM\Snowprms.for"/>
+    <File RelativePath="..\RZWQM\RZinterrupt.for"/>
+    <File RelativePath="..\DSSAT40\Utilities\SoilNBal.FOR"/>
 		<File RelativePath="..\DSSAT40\Weather\SOLAR.FOR"/>
 		<File RelativePath="..\DSSAT40\Utilities\SPSUBS.for"/>
 		<File RelativePath="..\Pmodel\tillage.for"/>

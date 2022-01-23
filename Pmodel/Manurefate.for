@@ -147,6 +147,7 @@ C===============================================================================
        
        DO j= 1, Nsoil
            CALL KgHaToKg(Labp(j),Labp(j),Areap)
+           PRINT *, "CALLING KgHaToKg"
            Call KgHaToKg(Actp(j),Actp(j),Areap)
        END DO
        
@@ -236,6 +237,7 @@ C===============================================================================
         
       DO j= 1, Nsoil
            CALL KgToKgha(Labp(j),Labp(j),Areap)
+           PRINT *, "CALLING KgToKgha"
            Call KgToKgha(Actp(j),Actp(j),Areap)
       END DO
  
@@ -258,6 +260,7 @@ C===============================================================================
           
        DO j= 1, Nsoil
            CALL KgHaToKg(Labp(j),Labp(j),Areap)
+           PRINT *, "CALLING KgHaToKg"
            Call KgHaToKg(Actp(j),Actp(j),Areap)
        END DO  
           
@@ -330,6 +333,7 @@ C===============================================================================
       
        DO j= 1, Nsoil
            CALL KgToKgha(Labp(j),Labp(j),Areap)
+           PRINT *, "CALLING KgToKgha"
            Call KgToKgha(Actp(j),Actp(j),Areap)
        END DO
  

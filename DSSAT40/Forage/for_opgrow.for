@@ -417,6 +417,7 @@ C-----------------------------------------------------------------------
         
 !     VSH CSV output corresponding to PlantGro.OUT
       IF (FMOPT == 'C') THEN
+       PRINT *, "CALLING CsvOut_PlGroPrFrm"
        Call CsvOut_PlGroPrFrm(EXPNAME, RUN, CONTROL%TRTNO,
      & CONTROL%ROTNUM, CONTROL%REPNO, YEAR,
      & DOY, DAS, DAP, VSTAGE, RSTAGE, XLAI, WTLF, STMWT, STRWT, PSRSRFL,
@@ -479,6 +480,7 @@ C-----------------------------------------------------------------------
         END IF    ! VSH
         
         IF (FMOPT == 'C') THEN   ! VSH
+          PRINT *, "CALLING CsvOutPlNPrFrm"
           Call CsvOutPlNPrFrm(EXPNAME, RUN, CONTROL%TRTNO, 
      & CONTROL%ROTNUM, CONTROL%REPNO, YEAR, DOY, DAS, DAP, WTNCAN, 
      & WTNSD, WTNVEG, PCNSD, PCNVEG, WTNFX, WTNUP, WTNLF, WTNST, WTNSR, 

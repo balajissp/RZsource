@@ -76,6 +76,7 @@ C===============================================================================
                   CALL KgHaToKg(Stabip(j),Stabip(j),Areap)
                   CALL KgHaToKg(Frsop(j),Frsop(j),Areap)
                   CALL KgHaToKg(Stabop(j),Stabop(j),Areap)
+                  PRINT *, "CALLING KgHaToKg"
                   Call KgHaToKg(Crpres(j),Crpres(j),Areap)
                   CALL KgHaToKg(ResdueP0,ResdueP0,AreaP)
                   CALL KgHaToKg(ResdueP1(j),ResdueP1(j),AreaP)
@@ -159,6 +160,7 @@ C      Stabop(1) = Stabop(1) + Mansop(j)*Tillinceffi(Slnt) ! or  move manure Sta
       
       DO t=1,Nsoil 
           CALL KgToKgHa(Labp(t),Labp(t),Areap)
+          PRINT *, "CALLING KgToKgha"
           Call KgToKgha(Actp(t),Actp(t),Areap)
       END DO
           l=Nsoil  
@@ -180,6 +182,7 @@ C      Stabop(1) = Stabop(1) + Mansop(j)*Tillinceffi(Slnt) ! or  move manure Sta
       
        DO t= 1, Nsoil
            CALL KgHaToKg(Labp(t),Labp(t),Areap)
+           PRINT *, "CALLING KgHaToKg"
            Call KgHaToKg(Actp(t),Actp(t),Areap)
        END DO      
       
@@ -262,6 +265,7 @@ C      Mansop(j) = MAX(Mansop(j) - Mansop(j)*Tillinceffi(Slnt),0.0)  ! or move m
               
               DO j= 1, Nsoil
                  CALL KgToKgha(Labp(j),Labp(j),Areap)
+                 PRINT *, "CALLING KgToKgha"
                  Call KgToKgha(Actp(j),Actp(j),Areap)
                  CALL KgToKgHa(Stabip(j),Stabip(j),Areap)
                  CALL KgToKgHa(Frsop(j),Frsop(j),Areap)

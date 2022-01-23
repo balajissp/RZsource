@@ -1031,6 +1031,7 @@ c      CALL WEATHR(CONTROL, ISWITCH, WEATHER)
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)  !Output
       else IF (INDEX('FRMfrm',MODEL(3:5)) .GT.0) THEN
+       PRINT *, "CALLING FORAGE"
        Call FORAGE(CONTROL, ISWITCH, 
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
@@ -1117,6 +1118,7 @@ c
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)  !Output
       else IF (INDEX('FRMfrm',MODEL(3:5)) .GT.0) THEN
+       PRINT *, "CALLING FORAGE"
        Call FORAGE(CONTROL, ISWITCH, 
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
@@ -1201,6 +1203,7 @@ c        ENDIF   !ISWWAT = 'Y'
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)  !Output
       else IF (INDEX('FRMfrm',MODEL(3:5)) .GT.0) THEN
+       PRINT *, "CALLING FORAGE"
        Call FORAGE(CONTROL, ISWITCH, 
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
@@ -1245,6 +1248,7 @@ c---- START  DYNAMIC = INTEGR ------------------
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)  !Output
       else IF (INDEX('FRMfrm',MODEL(3:5)) .GT.0) THEN
+       PRINT *, "CALLING FORAGE"
        Call FORAGE(CONTROL, ISWITCH, 
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
@@ -1321,6 +1325,7 @@ c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)  !Output
       else IF (INDEX('FRMfrm',MODEL(3:5)) .GT.0) THEN
+       PRINT *, "CALLING FORAGE"
        Call FORAGE(CONTROL, ISWITCH, 
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
@@ -1784,6 +1789,7 @@ c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)  !Output
       else IF (INDEX('FRMfrm',MODEL(3:5)) .GT.0) THEN
+       PRINT *, "CALLING FORAGE"
        Call FORAGE(CONTROL, ISWITCH, 
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
