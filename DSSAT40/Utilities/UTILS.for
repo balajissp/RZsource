@@ -1245,7 +1245,8 @@ C-----------------------------------------------------------------------
         IF (COUNT > 0) THEN
 !         Run batch file - direct output to TEMP.BAK file
           BatchCommand = "TEMP.BAT >TEMP.BAK"
-          SYS = SYSTEM(BatchCommand)
+          CALL SYSTEM(BatchCommand, SYS)
+!		  SYS = SYSTEM(BatchCommand)   ! Balaji: to compile in linux
   
 !         Delete TEMP.BAT file
           OPEN (LUNTMP, FILE = "TEMP.BAT", STATUS = 'UNKNOWN')
