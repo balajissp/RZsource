@@ -6,6 +6,7 @@
 */state.bin
 *.obj
 *.mod
+fort.[0-9]+
 
 # IDE config files
 .vs/

@@ -1,4 +1,4 @@
-C   !LIBRARY WASSUBA ( Simulation Wasserhaushalt fÅr N-Modell )
+C   !LIBRARY WASSUBA ( Simulation Wasserhaushalt for N-Modell )
 C   ! Einbau von Luftmangel fuer Pflanzen am 16.12.98
 C   MODULE WASSUBA FROM HERMES MODEL, CONTRIBUTED BY CHRISTIAN KERSEBAUM
 C   DECLARE DEF ACOS

@@ -4174,7 +4174,6 @@ C     +             +XNU(1,4)/CN(4)+XNU(1,5)/CN(5))*TL(1)*BD(1)*0.1D0
         enddo
         CALL SGATE(TDAY,4,Soloss)                              !write out daily soil loss in kg/ha
         do i=1,6
-        PRINT *, "CALLING Sgate"
         Call Sgate(Tday,IndexScalar(I),ErodedMass(i))          !write out daily pesticide loss in mg/ha
         enddo
 C
