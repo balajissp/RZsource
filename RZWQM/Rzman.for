@@ -299,6 +299,7 @@ C
                   SUMRAIN2(JJ)=0.0D0
                   ENDDO
       endif
+      PRINT *, "RZMAN CALLING CDATE"
       CALL CDATE(JDAY,ID,IM,IYYY)
       JULDAY=JULDATE(ID,IM,IYYY)
       iyi=iyyy-iyb+1
@@ -346,6 +347,7 @@ C
               IF(ITOI(II).EQ.1.OR.ITOI(II).EQ.2) THEN
                 DO 10 K=1,MXAPP
                   IF(JDOI(II,K).EQ.JULDAY) THEN
+                    PRINT *, "RZMAN CALLING MANOUT"
                     CALL MANOUT(19,0,JDAY,0,IYYY)
                     WRITE(70,1000) IM,ID,IYYY,textmethod(ITOI(II))
 C=========================================================
@@ -424,6 +426,7 @@ c                TAWIRZ=TAWIRZ+(THETA(1)-XWP(II,1))*TL(1)
    50           IF(nint(SMDEP*100.d0).GT.nint(XMAD(II,NCOLM)*100.d0))
      &              GOTO 120
                 IF(JULDAY.LT.JDOPI+NDAIRR(II)) GOTO 120
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(19,0,JDAY,0,IYYY)
                 WRITE(70,1000) IM,ID,IYYY,textmethod(ITOI(II))
                 WRITE(70,1100) SMDEP*100.0D0,XMAD(II,NCOLM)*100.0D0
@@ -487,6 +490,7 @@ c                 SMDEP=sumAT1/sumPT1
                 IF(nint(SMDEP*100.0d0).GT.nint(XMAD(II,NCOLM)*100.d0))
      &              GOTO 120
                 IF(JULDAY.LT.JDOPI+NDAIRR(II)) GOTO 120
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(19,0,JDAY,0,IYYY)
                 WRITE(70,1000) IM,ID,IYYY,textmethod(ITOI(II))
                 WRITE(70,1400) SMDEP*100.d0,XMAD(II,NCOLM)*100.d0
@@ -574,6 +578,7 @@ C
   154           continue
                 IF(nint(CWSI).LT.nint(XMAD(II,NCOLM))) GOTO 120
                 IF(JULDAY.LT.JDOPI+NDAIRR(II)) GOTO 120
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(19,0,JDAY,0,IYYY)
                 WRITE(70,1000) IM,ID,IYYY,textmethod(ITOI(II))
                 WRITE(70,1400) CWSI,XMAD(II,NCOLM)
@@ -693,6 +698,7 @@ C
               IF(ITOI(II).EQ.1.OR.ITOI(II).EQ.2) THEN
                 DO 11 K=1,MXAPP
                   IF(JDOI(II,K).EQ.JULDAY) THEN
+                    PRINT *, "RZMAN CALLING MANOUT"
                     CALL MANOUT(19,0,JDAY,0,IYYY)
                     WRITE(70,1000) IM,ID,IYYY,textmethod(ITOI(II))
 C=========================================================
@@ -771,6 +777,7 @@ c                TAWIRZ=TAWIRZ+(THETA(1)-XWP(II,1))*TL(1)
    51           IF(nint(SMDEP*100.d0).GT.nint(XMAD(II,NCOLM)*100.d0))
      &             GOTO 120
                 IF(JULDAY.LT.JDOPI+NDAIRR(II)) GOTO 120
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(19,0,JDAY,0,IYYY)
                 WRITE(70,1000) IM,ID,IYYY,textmethod(ITOI(II))
                 WRITE(70,1100) SMDEP*100.0D0,XMAD(II,NCOLM)*100.0D0
@@ -833,6 +840,7 @@ c                 SMDEP=sumAT1/sumPT1
                 IF(nint(SMDEP*100.d0).GT.nint(XMAD(II,NCOLM)*100.d0))
      &               GOTO 120
                 IF(JULDAY.LT.JDOPI+NDAIRR(II)) GOTO 120
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(19,0,JDAY,0,IYYY)
                 WRITE(70,1000) IM,ID,IYYY,textmethod(ITOI(II))
                 WRITE(70,1400) SMDEP*100.d0,XMAD(II,NCOLM)*100.d0
@@ -916,6 +924,7 @@ C
   155       continue
                 IF(nint(CWSI).LT.nint(XMAD(II,NCOLM))) GOTO 120
                 IF(JULDAY.LT.JDOPI+NDAIRR(II)) GOTO 120
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(19,0,JDAY,0,IYYY)
                 WRITE(70,1000) IM,ID,IYYY,textmethod(ITOI(II))
                 WRITE(70,1400) CWSI,XMAD(II,NCOLM)
@@ -1545,9 +1554,11 @@ C
 C             ..CHECK IF USING  B M P  PRACTICES
 C
 C             ..DETERMINE HOW MUCH FERTLIZER TO ADD BASED ON BMP OPTIONS
+              PRINT *, "RZMAN CALLING BMPNIT"
               CALL BMPNIT(FRACOM,PLDEN(IRPL),TLT,NN,BD,CC(1,9),THETA,
      +            FUREIN,FNH4IN,FNO3IN,IR,BMPREC,IBMPAP,TAPMUN)
               SPLT1=.TRUE.
+              PRINT *, "RZMAN CALLING CDATE"
               CALL CDATE(JDAY,IDD,IMM,IYYY)
       WRITE(70,1001) IDD,IMM,IYYY,JDAY,BMPREC,BMPNAME(ISTATE),USAMDP
  1001 FORMAT(70('*')//'=> ESTIMATED BMP FERTLIZER ON ',I2,'/',I2,'/',I4,
@@ -1608,6 +1619,7 @@ C
               ELSE
 C
 C               ..NO INJECTOR IMP SPECIFIED
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(24,IR,JDAY,0,IYYY)
               ENDIF
             ELSEIF(AIRR.NE.0.0D0.AND.IFMETH(IR).EQ.5) THEN
@@ -1621,6 +1633,7 @@ C
 C             ..NO IRRIGATION EVENT COINSIDING SO
 C             .. SCHEDULE DEFAULT IRRIGATION APPLICATION
               IF(AIRR.EQ.0.0D0) THEN
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(19,0,JDAY,0,IYYY)
                 AIRR=BMPIRR
                 WRITE(70,1000) AIRR
@@ -1685,6 +1698,7 @@ C                 ..BUILD NEW TILLAGE OPERATION WITH INJECTOR
               ELSE
 C
 C               ..NO INJECTOR IMP SPECIFIED
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(25,IS,JDAY,0,IYYY)
               ENDIF
 C
@@ -1697,6 +1711,7 @@ C           ..CHECK FOR PRESENCE OF IRRIGATION EVENT
 C             ..NO IRRIGATION EVENT COINSIDING SO
 C             .. SCHEDULE DEFAULT IRRIGATION APPLICATION
               IF(AIRR.EQ.0.0D0) THEN
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(19,0,JDAY,0,IYYY)
                 AIRR=BMPIRR
                 WRITE(70,1000) AIRR
@@ -1764,6 +1779,7 @@ C                 .. DEFAULT TILLAGE IMP
               ELSE
 C
 C               ..NO INJECTOR IMP SPECIFIED
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(26,IR,JDAY,0,IYYY)
               ENDIF
             ELSEIF(AIRR.NE.0.0D0) THEN
@@ -1775,6 +1791,7 @@ C             .. HAVE IRRIGATION EVENT FOR SCHEDULE EVENT
 C             ..NO IRRIGATION EVENT COINSIDING SO
 C             .. SCHEDULE DEFAULT IRRIGATION APPLICATION
               IF(AIRR.EQ.0.0D0) THEN
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(19,0,JDAY,0,IYYY)
                 AIRR=BMPIRR
                 WRITE(70,1000) AIRR
@@ -2011,6 +2028,7 @@ C           ..CANCELS FERT APP'S FOR ALL IMPLIMENTS EXCEPT IRRIGATION.
      +    IWFERT(IR).EQ.4)) THEN
 C
 C       ..CONFIGURE QUE FOR BMP OPTIONS
+        PRINT *, "RZMAN CALLING BMPOPT"
         CALL BMPOPT(IBMPAP,IBMPMD,IR,ITQUE,IC,T3,ITT,BMPIRR,AIRR,JDAY,
      +      IYYY)
       ENDIF
@@ -2107,6 +2125,7 @@ C         ..BUILD NEW OPERATION WITH INJECTOR
 C
 C       ..IRRIGATION APPLICATION
         IF(AIRR.EQ.0.0D0) THEN
+          PRINT *, "RZMAN CALLING MANOUT"
           CALL MANOUT(19,0,JDAY,0,IYYY)
           AIRR=BMPIRR
           WRITE(70,1000) AIRR
@@ -2363,6 +2382,7 @@ C
       TARESC(2)=0.0D0
       TARESC(3)=0.0D0
       
+      PRINT *, "RZMAN CALLING CDATE"
       CALL CDATE(JDAY,ddd1,mmm1,IYYY)
 C
 C     ..CHECK QUE FOR TILLAGE EVENT
@@ -2382,8 +2402,10 @@ C
 c        if (tndx(it).eq.0.0d0) goto 200   !Liwang was trying to fix N balance problem, but this is the wrong place
 C         ..REPORT WHAT I'M DOING
           IF(IPRAC.EQ.20) THEN
+            PRINT *, "RZMAN CALLING MANOUT"
             CALL MANOUT(IPRAC,IT,JDAY,(JDAY-IQUE(3,IS)),IYYY)
           ELSE
+            PRINT *, "RZMAN CALLING MANOUT"
             CALL MANOUT(IPRAC,IMP(IT),JDAY,(JDAY-IQUE(3,IS)),IYYY)
           ENDIF
           
@@ -2784,6 +2806,7 @@ C     ..CONVERT FROM KG/HA ==> MG/L(WATER)
 C     FIRST LAYER THICKNESS = 1 CM
       CONV=10.0D0/THETA(1)
       
+       PRINT *, "RZMAN CALLING CDATE"
        CALL CDATE(JDAY,ddd1,mmm1,IYYY)
 
        
@@ -2802,6 +2825,7 @@ C       ..KICK OUT IF AT END OF GROUP
             ITT=IQUE(4,IS)
 C
 C           ..REPORT WHAT I'M DOING
+            PRINT *, "RZMAN CALLING MANOUT"
             CALL MANOUT(IPRAC,IA,JDAY,(JDAY-IQUE(3,IS)),IYYY)
             
               Countfert = Countfert + 1
@@ -3002,6 +3026,7 @@ c        IF(IQUE(1,IS).EQ.-1) GOTO 50
               IA=IQUE(2,IS)
 C
 C             ..REPORT WHAT I'M DOING
+              PRINT *, "RZMAN CALLING MANOUT"
               CALL MANOUT(IP+4,IA,JDAY,(JDAY-IQUE(3,IS)),IYYY)
             ENDIF
             ITT=IQUE(4,IS)
@@ -3039,6 +3064,7 @@ C             ..FOLIAGE APPLICATION
                 COPLNT(KR)=COPLNT(KR)+PSOIL
               ELSE
                 TAPAP(KR)=0.0D0
+                PRINT *, "RZMAN CALLING MANOUT"
                 CALL MANOUT(28,IA,JDAY,(JDAY-IQUE(3,IS)),IYYY)
               ENDIF
 C
@@ -3244,6 +3270,7 @@ C     ..INITIALIZE VARIABLES FOR CHECKING SOIL DAMPNESS
       TAMANR_bal=0.0D0
       TAMANC_bal=0.0D0
       
+      PRINT *, "RZMAN CALLING CDATE"
       CALL CDATE(JDAY,ddd1,mmm1,IYYY)
       
 
@@ -3261,6 +3288,7 @@ C           IK = IMTYPE(IA)
             ITT=IQUE(4,IS)
 C
 C           .. REPORT WHAT I'M DOING
+            PRINT *, "RZMAN CALLING MANOUT"
             CALL MANOUT(IM+12,IA,JDAY,(JDAY-IQUE(3,IS)),IYYY)
               Countman = Countman + 1
               Mday1(Countman)= ddd1
@@ -3500,6 +3528,7 @@ C
      +    'PESTICIDE APP CANCELLED NO FOLIAGE PRESENT'/
 C
       IF((KDAY.NE.JDAY).OR.(KYYY.NE.IYYY)) THEN
+        PRINT *, "RZMAN CALLING CDATE"
         CALL CDATE(JDAY,ID,IM,IYYY)
         WRITE(70,1000)
         WRITE(70,1600)
@@ -3988,6 +4017,7 @@ C     ..FIND NEW PLANT IF NEEDED
             IPM=IQUE(2,K)
             IPL=NPR(IPM)
 
+            PRINT *, "RZMAN CALLING MANOUT"
             CALL MANOUT(18,IPM,JDAY,(JDAY-IQUE(3,K)),IYYY)
             JGROW=0
             TTPLNT=0.0D0
@@ -4032,6 +4062,7 @@ C=================================================================
           JGST(1)=JGS(1)
           JGST(2)=JGS(2)
           TM=(TMAX+TMIN)*0.5D0
+          PRINT *, "RZMAN CALLING QUICKTURF"
           CALL QUICKTURF(FIRST11,JDAY,NN,CN,RDF,HEIGHT,LAI,TLAI,PLTSLV,
      +        PWRTS,DMDNIT,RM,RCN,RPOOL,PLDEN(IPM),JGS,TLT,TL,
      +        int(pldepth(IPM)),TADRT,TADRTC,iyyy,OMSEA,TM,RCO2,resage)
@@ -4203,6 +4234,7 @@ C=================================================================
             ENDIF            
           ENDIF
 c
+          PRINT *, "RZMAN CALLING QUICKPLANT"
           CALL QUICKPLANT(FIRST11,JDAY,NN,CN,RDF,HEIGHT,LAI,TLAI,PLTSLV,
      +        PWRTS,DMDNIT,RM,RCN,RPOOL,PLDEN(IPM),JGS,TM,PLNAME(IPL),
      +        TLT,TL,int(PLdepth(IPM)),TADRT,TADRTC,iyyy,OMSEA,RCO2,
@@ -4258,6 +4290,7 @@ C=================================================================
           JGST(1)=JGS(1)
           JGST(2)=JGS(2)
           TM=(TMAX+TMIN)*0.5D0
+          PRINT *, "RZMAN CALLING QUICKTREE"
           CALL QUICKTREE(FIRST11,JDAY,NN,CN,RDF,HEIGHT,LAI,TLAI,PLTSLV,
      +        PWRTS,DMDNIT,RM,RCN,RPOOL,PLDEN(IPM),JGS,TM,PLNAME(IPL),
      +        TLT,TL,int(PLdepth(IPM)),TADRT,TADRTC,iyyy,OMSEA,RCO2,
@@ -4597,6 +4630,7 @@ C              CGNH4(I) = REAL(CC(I,10))*THETA(I)*TL(I)*0.1D0
             ENDDO
             cxlat = xlat*180.d0/3.1415d0 
 !RMarquez 08-31-16 -> Current HERMES_SUCROS call header
+      PRINT *, "RZMAN CALLING HERMES_SUCROS"
       CALL HERMES_SUCROS(FIRST11,T,TM,THETA,GDUL,GLL,GSAT,            
      + RDF,C1,TUP,PE,RTS/2.d0,DAYL,LAI,pltpop,plden(ipm+1),             
      + OBMAS,WUMAS,TL/10.0D0,TLT/10.0D0,WORG,GORG,DGORG,WDORG,JGS,TLAI, 
@@ -4858,6 +4892,7 @@ cc      ENDIF
            END IF
 c
             FHARV=.FALSE.
+            PRINT *, "RZMAN CALLING CDATE"
             CALL CDATE(JDAY,ID,IM,IYYY)
             WRITE(70,1000)
             WRITE(70,1110) plname(ipl),ID,IM,IYYY,JDAY
@@ -4921,6 +4956,7 @@ C              CGBD(I) = real(soilpp(3,jh))
            ENDDO
 
 C         ..CALL PLANT GROWTH MODEL: GENERIC CROP
+          PRINT *, "RZMAN CALLING PGMAIN"
           CALL PGMAIN(RFDD,DAY,TMAX,TMIN,RTS,TPP,W,HEIGHT,LAI,THETA,H,T,
      +        TLT,SOILPP,SOILHP,NDXN2H,NN,RDF,JGS,NSC,PLTSLV,RPOOL,
      +        UPNIT,EWP,SDEAD,TLPLNT,XNIT,BASE,FIXN,IGPL,IPM,FIRST11,
@@ -5071,6 +5107,7 @@ C         ...DETERMINE LEAF AREA
 C====================== END OF ALFALFA CUTTING =================================
 C         ...DETERMINE IF WE HARVEST THE CROPS
 c add inxpl for soybean credit, Liwang Ma
+          PRINT *, "RZMAN CALLING TMHARV"
           CALL TMHARV(CLSIZE,FIRST11,GS,HEIGHT,JDAY,PSTATE,
      +        STEND(2,IGPL),RPOOL,PCN,RDF,SDEAD,NN,IPM,PNIT,TTPLNT,
      +        TADRT,CN,RM,RESAGE,RCN,SDCN,CORES,COPLNT,NPEST,JGS,IYYY,
@@ -5436,6 +5473,7 @@ c	     if (resage.eq.0) ipr=IPL
 C
 c-liwang ma          ELSE IF (CROPR .EQ. 'MZ'.OR.CROPR.EQ.'WH') THEN
 C         .. CALL CERES ROUTINES
+          PRINT *, "RZMAN CALLING DSSATDRV"
           CALL DSSATDRV(XLATR,TMAX,TMIN,RTS,XW,XW,
      &            CGTH,CGT,CGSAT,CGDUL,CGLL,DSLT,NN,CGNO3,CGNH4,CGTLT,
      &            ACTTRN,PET,ACTEVP,PER,PES,
@@ -5479,6 +5517,7 @@ C            PRINT*,' TOTAL ROOT FRACTION DIST: ', TRDF
 C
 C         .. CHECK FOR HARVEST AND REINITIALIZE
           IF (FIRST11) THEN
+            PRINT *, "RZMAN CALLING CDATE"
             CALL CDATE(JDAY,ID,IM,IYYY)
             WRITE(70,1000)
             WRITE(70,1100) plname(ipl),ID,IM,IYYY,JDAY
@@ -5726,6 +5765,7 @@ c             plname='Final-Alf'
 c             iharv(ipm)=4
 c          endif
 c
+        PRINT *, "RZMAN CALLING HARVST"
         CALL HARVST(PSTATE,IHARV,HRVEFF,YIELD,CLSIZE,STEND,GS,STUBHT,
      +      HEIGHT,SUMCL,FIRST12,PCN,RDF,JDAY,SDEAD,NN,IPM,RPOOL,PNIT,
      +      TADRT,CN,RM,RESAGE,RCN,SDCN,CORES,COPLNT,NPEST,IYYY,TMPLNT,
@@ -6216,6 +6256,7 @@ C     ..PRINTOUT YIELD TOTALS
       ELSE
         HI=0.0D0
       ENDIF
+      PRINT *, "RZMAN CALLING CDATE"
       CALL CDATE(JDAY,ID,IM,IYYY)
       WRITE(70,1000)
       WRITE(70,1100) plname,ID,IM,IYYY,JDAY

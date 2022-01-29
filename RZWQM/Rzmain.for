@@ -337,7 +337,7 @@ C
      +    CDSOIL(MXNOD),TQ(MXNOD),CPSOL(MXNOD),INXPL(MXSPEC),
      +    TUP(MXNOD),U(MXNOD),PPCO2(MXNOD),SPH(MXNOD),SATH(MXNOD),
      +    TSL2C(MXNOD,MXPEST),IQUE(4,MXAPP),EFFLUX(MXSPEC),
-     +    IRTYPE(MXSPEC),OMSEA(MXANA),NUTEQ(12),IRRTYP(MXAPP),
+     +    IRTYPE(MXSPEC),OMSEA(MXANA),NUTEQ(13),IRRTYP(MXAPP),
      +    TH3(MXNOD),POR(MXNOD),COBIND(MXNOD,MXPEST),NYRP(MXPEST),
      +    TSOTPDAY(MXPEST),TSOTP00(MXPEST),TSOTP0YR(MXPEST)
      +    ,wsi(mxspec),erodedmass(6),totaladd(100),ssurft(mhr)
@@ -424,10 +424,8 @@ C=====================================
 C     OPEN ALL THE INPUT FILES
 C=====================================
 C
-      PRINT *, "CALLING OPNINP"
       CALL OPNINP(INP1,INP2,INP3,INP4,INP5,INP6,INP7,JBDAY,JEDAY,IYYY,
      +    METMOD,JULBDAY,JULEDAY,IYB,IYE,iweather,scenname)
-      PRINT *, "CALLING CDATE"
       CALL CDATE(JBDAY,ID,IM,IYYY)
       OPEN(64,FILE='DAYJACK.OUT',STATUS='UNKNOWN')
       WRITE(64,'(I8,3I6)') 1,ID,IM,IYYY
@@ -437,7 +435,6 @@ C     READ IN ALL THE INPUT VALUES
 C===============================
 C
 c      Hmin=-35000.0D0          !use specified minimum water suction for plant uptake and water movement.
-      PRINT *, "CALLING INPUT"
       CALL INPUT(IRRTYP,INP1,INP2,NSC,TWL,INXPL,EFFLUX,IRTYPE,IBRKTH,
      +    ICHEM,IMAGIC,NOSTAR,NUTEQ,INP6,FTR,IPR,hydgrad,IHOURLY,ISHAW,
      +    IPENFLUX,iwzone,wsi,Hmin,iyb,istress,CO2A,JULBDAY,JULEDAY,niw,
@@ -488,7 +485,6 @@ c      if (ishaw.eq.1.or.ipenflux.eq.1) then
 	  INQUIRE (FILE = 'canopy.dat', EXIST = FEXIST)
         IF (FEXIST) THEN
           OPEN (UNIT=222, FILE='canopy.dat',STATUS='UNKNOWN')
-          PRINT *, "CALLING ECHO"
           CALL ECHO(222)
           READ (222,*) NPCPOINT,NUSE
           DO I=1,NPCPOINT
@@ -534,7 +530,6 @@ C======================================================
 C     INITIALIZE ANY OF THE GLOBAL VARIABLES
 C======================================================
 C
-      PRINT *, "CALLING INIT"
       CALL INIT(INP5,JBDAY,CC,XNU,COPLNT,CORES,PPCO2,RPOOL,BD,RM,FRACOM,
      +    RPOP,iwcinit,FRACON,CN)
 c      if (erosionactive) then
@@ -578,7 +573,6 @@ c      endif
         IF (FEXIST.and.IMAGIC.LE.0) THEN
          OPEN(65,FILE='GLEAMS.DAT',STATUS='UNKNOWN') 
          PRINT *, "CALLING Read_Gleams_Erosion_Input"
-         PRINT *, "CALLING Read_Gleams_Erosion_Input"
          Call Read_Gleams_Erosion_Input(65,ErosionActive)  !sab
          close (65)
          PRINT*,' ====>  GLEAMS Erosion Is Active'
@@ -590,7 +584,6 @@ C
       ENDDO
 C
 C     ... ADJUST HORIZONS FOR TILLAGE IMPLIMENTS
-      PRINT *, "CALLING TILADJ"
       CALL TILADJ(NSC,NHORZ,Hmin)
 C
 C adjust pori after tillage
@@ -629,12 +622,10 @@ c
         OPEN(UNIT=72,FILE='NUPTAK.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (72,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(72,IYYY)
         OPEN(UNIT=73,FILE='NUTRI.OUT',STATUS='UNKNOWN',ERR=20,RECL=300)
 c	WRITE (73,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(73,IYYY)
       ENDIF
 c changed by Liwang Ma to print out Accwat.out at any time, April 19, 2001
@@ -643,12 +634,10 @@ c     IF ((IMAGIC.LE.-1 .AND. IMAGIC.GE.-2).OR.IMAGIC.EQ.-10) THEN
         OPEN(UNIT=77,FILE='ACCWAT.OUT',STATUS='UNKNOWN',ERR=20)
 	  WRITE (77,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(77,IYYY)
         OPEN(UNIT=78,FILE='CLEACH.OUT',STATUS='UNKNOWN',ERR=20,RECL=255)
 	  WRITE (78,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(78,IYYY)
         OPEN(UNIT=79,FILE='MACRO.OUT',STATUS='UNKNOWN',ERR=20)
 	  WRITE (79,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
@@ -664,49 +653,40 @@ c     IF ((IMAGIC.LE.-1 .AND. IMAGIC.GE.-2).OR.IMAGIC.EQ.-10) THEN
         OPEN(UNIT=99,FILE='PROFILE.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (99,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(99,IYYY)
       ENDIF
       IF(IMAGIC.EQ.-7.OR.IMAGIC.EQ.-8) THEN
         OPEN(UNIT=90,FILE='PLANT0.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (90,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(90,IYYY)
         OPEN(UNIT=91,FILE='PLANT1.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (91,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(91,IYYY)
         OPEN(UNIT=92,FILE='PLANT2.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (92,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(92,IYYY)
         OPEN(UNIT=93,FILE='PLANT3.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (93,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(93,IYYY)
         OPEN(UNIT=94,FILE='PLANT4.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (94,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(94,IYYY)
         OPEN(UNIT=95,FILE='PLANT5.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (95,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(95,IYYY)
         OPEN(UNIT=96,FILE='PLPROD.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (96,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(96,IYYY)
         OPEN(UNIT=97,FILE='PLANT.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (97,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(97,IYYY)
       ENDIF
       IF(npest.gt.0) THEN
@@ -726,17 +706,14 @@ C       NAME = 'MBLP1_'+NMPEST[1]
         OPEN(UNIT=80,FILE='PEST1.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (80,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(80,IYYY)
         OPEN(UNIT=81,FILE='PEST2.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (81,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(81,IYYY)
         OPEN(UNIT=82,FILE='PEST3.OUT',STATUS='UNKNOWN',ERR=20)
 c	  WRITE (82,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-        PRINT *, "CALLING PRNTYR"
         CALL PRNTYR(82,IYYY)
       ENDIF
 c tested by Liwang Ma
@@ -837,7 +814,6 @@ c	  write (unit=88,fmt=288)
 	  INQUIRE (FILE = 'LOWERB.DAT', EXIST = FEXIST)
         IF (FEXIST) THEN
         OPEN(UNIT=188,FILE='LOWERB.DAT',STATUS='UNKNOWN',ERR=20)
-        PRINT *, "CALLING ECHO"
         CALL ECHO(188)
         ENDIF
 	  INQUIRE (FILE = 'EXPDATA.DAT', EXIST = FEXIST)
@@ -860,12 +836,10 @@ C  read the new addition to expdata.dat for horizon.out depth
              backspace (189)
              backspace (189)
           endif
-        PRINT *, "CALLING ECHO"
         CALL ECHO(189)
         read (189,*) idexp
 C
         IF (IDEXP.EQ.1) THEN
-        PRINT *, "CALLING ECHO"
         CALL ECHO(189)
 C
         read (189,fmt=1123) string
@@ -1096,71 +1070,40 @@ C
         QNO3(I)=CC(I,9)
    40 CONTINUE
       TDAY=DBLE(JBDAY-1)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,1,TLT)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,39,TUP)
       DO 50 IP=1,3
-        PRINT *, "CALLING VGATE"
         CALL VGATE(TDAY,25+IP,CDSOIL)
    50 CONTINUE
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,20,BD)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,21,XMP)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,29,CC(1,13))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,30,CC(1,14))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,31,CC(1,15))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,40,QF)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,41,TQ)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,2,THETA)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,42,CC(1,12))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,43,H)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,44,CC(1,2))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,45,CC(1,3))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,46,CC(1,4))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,47,CC(1,5))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,48,CC(1,6))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,49,CC(1,7))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,50,CC(1,8))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,52,FRACOM*0.58D0)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,59,FRACON)
 c     SEND ICE CONTENT AND POROSITY OUT  DO WE NEED TO CHANGE THE INTERFACE?  LIWANG MA
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,53,THETAI)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,54,PORI)   
 C  
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,3,T)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,10,QNO3)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,-1,QNO3)
-      PRINT *, "CALLING SGATE"
       CALL SGATE(TDAY,-1,QNO3(1))
-      PRINT *, "CALLING OUTIN2"
       CALL OUTIN2(NSC,IBRKTH,ICHEM,IMAGIC,NOSTAR,NUTEQ,INP1,IYYY,IPHOS)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,-2,QNO3)
-      PRINT *, "CALLING SGATE"
       CALL SGATE(TDAY,-2,QNO3(1))
       PRINT*,' ====>  OUTPUT SECTION INITIALIZED'
 C
@@ -1169,7 +1112,6 @@ C     ..UPDATE HYDRAULIC PROPERTIES
       IF(ITBL.EQ.1) CALL WATBL(NN,NDXN2H,MAXHOR,SOILHP,H,QF(NN),DELT,
      +    TLT,ZN,IREBOT,BOTHED,BOTFLX,H2OTAB,ALPH,AEF,CAPZONE,THETA)
 C
-      PRINT *, "CALLING HYDPAR"
       CALL HYDPAR(SOILHP,NDXN2H,NN,H,THETA,MAXHOR,AEF,ZN,H2OTAB,pori,
      +            Hmin)
         TSNO30=0.0d0
@@ -1189,7 +1131,6 @@ C     ..INITIALIZE CHEMISTRY SYSTEM
 C   commented out equilibrium chemstry by Liwang Ma, 12-25-2013
       IF(ICHEM.EQ.1) THEN
         PRINT*,' ====>    INITIALIZING INORGANIC CHEMISTRY'
-        PRINT *, "CALLING CHEM"
         CALL CHEM(NN,U,CC,BD,PPCO2,THETA,0.0D0,TLT)
         TSNO31=0.0D0
         TSNH41=0.0D0
@@ -1222,31 +1163,18 @@ C     ..INITIALIZE NUTRIENT CYCLING
           WTCC(I,J)=CC(I,J)*THETA(I)/BD(I)
    80   CONTINUE
    90 CONTINUE
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,16,XPH)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,4,XNU(1,1))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,5,XNU(1,2))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,6,XNU(1,3))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,7,XNU(1,4))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,8,XNU(1,5))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,9,WTCC(1,9))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,11,WTCC(1,10))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,17,XNU(1,7))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,18,XNU(1,9))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,19,XNU(1,8))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,52,FRACOM*0.58D0)
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,59,FRACON)
       JDAY=JBDAY-1
       JTRM=JDATE(31,12,IYYY)
@@ -1293,25 +1221,21 @@ c          write (299,199) jday,iyyy,tlt(i),((xnu(i,j)*conv1,cn(j)),j=1,5)
            HumusP3(ij) = thxnu(5)/CPini(5)       !DEBASIS
         ENDDO
 C     ..INITIALIZE NITROGEN MASS BALANCE ROUTINE
-      PRINT *, "CALLING NITBAL"
       CALL NITBAL(NN,BD,THETA,XNU,JDAY,TL,RPOOL,CC,TNITUP,TSPLNT,IMAGIC,
      +    JDAY,ANHYD,IYYY,OMSEA,NYR,TN,JNUM,FIXN,TSOTN0yr,tsotn00,
      +    tsotnday,tapmun,erodedmass,tsotn00_in,TNSORB)
 C
 C     ..INITIALIZE CARBON MASS BALANCE ROUTINE
-      PRINT *, "CALLING CARBAL"
       CALL CARBAL(NN,BD,THETA,XNU,JDAY,TL,RPOOL,CC,TNITUP,TSPLNT,IMAGIC,
      +    JDAY,IYYY,OMSEA,NYRC,TNC,JNUMC,RM,TSOTCDAY,TSOTC0YR,TSOTC00
      +   ,erodedmass)
 C     ..UPDATE KDSTAR FOR PESTICIDE PROCESSES
-      PRINT *, "CALLING KDSTAR"
       CALL KDSTAR(SLKS,CC,NN,FRACOM,THETA,BD)
 C
 C     ..INITIALIZE PESTICIDE MASS BALANCE ROUTINE
 C
 C     IF (IMAGIC .EQ. -9) THEN
       DO 100 IP=1,NPEST
-        PRINT *, "CALLING PESBAL"
         CALL PESBAL(NN,JDAY,IP,BD,THETA,TL,CC,CORES,COPLNT,SLKS,CONCX2,
      +      TSL2C,IYYY,JDAY,OMSEA,IMAGIC,COBIND,FREUND,
      +      TSOTP0YR,TSOTP00,TSOTPDAY,TPEST,NYRP,erodedmass)
@@ -1338,7 +1262,6 @@ c write down initial condition in the ANA file
         endif
       enddo
       OMSEA(2)=DTSTOR
-      PRINT *, "CALLING OUTMSEA"
       CALL OUTMSEA(OMSEA)
 C END OF INIITAL STATUS OUTPUT
 C
@@ -1440,7 +1363,6 @@ c	   OMSEA(41)=PLANTBIOMASS
 	   ENDIF      
 c   end of plant inputs to SHAW
         If (ErosionActive) then
-            PRINT *, "CALLING ResetGleamsOrganicFraction"
             CALL ResetGleamsOrganicFraction(FRACOM(1)) !sab
         Temperature_at_day_start = T(1)                !sab
         endif
@@ -1449,7 +1371,6 @@ c   end of plant inputs to SHAW
           IYYY=IYYY+1
           JTRM=JDATE(31,12,IYYY)
         ENDIF
-        PRINT *, "CALLING CDATE"
         CALL CDATE(JDAY,ID,IM,IYYY)
         WRITE(*,1100) ID,IM,IYYY,JDAY,MDAY-JBDAY+1
 C reset initial condition each year. Liwang Ma, 12-26-2007
@@ -1463,7 +1384,6 @@ c      if ((iwcinit.eq.2). and. (jday.eq.jbday)) then
          DO I=1,NN
           totheta1=totheta1+theta(i)*tl(i)
          ENDDO
-         PRINT *, "CALLING STATIN"
          CALL STATIN(XNU,NN,TL,BD,RPOOL,SOILHP,SOILPP,CC,
      +    CONCX2,THETA,T,RM,SDEAD,RCN,SDCN,NUTEQ,NDXN2H,H,AEF,SNOWPK,
      +    FRACOM,RPOP,FTR,FPW,SOLTP1,SOLTP2,FRACON,CN)  !,THETAI,PORI)
@@ -1489,7 +1409,6 @@ C       ..FIGURE MSEA DATE CODE
 C
         IF (Iweather.EQ.0) THEN
 C       ..INPUT DAILY METEOROLOGY
-        PRINT *, "CALLING INPDAY"
         CALL INPDAY(TMIN,TMAX,RTH,W,EPAN,ATMP,RH,INP3,JDAY,IYYY,IMAGIC,
      +      METMOD,RZPAR,CO2R,iswpar,CO2A)
 c        if (rzpar.eq.0.0d0) rzpar=rts*2.0d0  !convert from MJ/m2/d to mole/m2/d
@@ -1498,10 +1417,8 @@ C     +         W,RH,CO2R,RZPAR
 c estimate hourly weather using DSSAT approaches, LIWANG MA, RZ-PENFLUX, JUNE 2008
             CALL DAYLEN (JDAY, REAL(XLAT*R2D), DAYL, DEC, SNDN, SNUP) 
             CALL TWILIGHT (JDAY, REAL(XLAT*R2D), TWILEN)
-            PRINT *, "CALLING SOLAR"
             CALL SOLAR(DAYL, DEC, REAL(RTH), REAL(XLAT*R2D),     !Input
      &           CLOUDS_DSSAT, ISINB, S0N)                             !Output
-            PRINT *, "CALLING HMET"
             CALL HMET(CLOUDS_DSSAT, DAYL, DEC, ISINB, REAL(RZPAR),
      &    REAL(XW),SNDN, SNUP, S0N, REAL(RTH),           !Input
      &    real(TMIN), REAL(TMAX),REAL(TMIN),             !Input
@@ -1529,12 +1446,10 @@ C        Ret_day_S=Ret_day_S+ETr_HR_S/10.0d0
 C
         ELSEIF (Iweather.EQ.1) THEN
 C       ..INPUT HOURLY METEOROLOGY
-        PRINT *, "CALLING INPHOUR"
         CALL INPHOUR(TMIN,TMAX,RTH,W,EPAN,ATMP,RH,INP3,JDAY,IYYY,IMAGIC,
      +      METMOD,RZPAR,CO2R,iswpar,HRT,HRH,HRU,HRTH,HEPAN,hrzpar,CO2A)
             CALL DAYLEN (JDAY, REAL(XLAT*R2D), DAYL, DEC, SNDN, SNUP) 
             CALL TWILIGHT (JDAY, REAL(XLAT*R2D), TWILEN)
-            PRINT *, "CALLING SOLAR"
             CALL SOLAR(DAYL, DEC, REAL(RTH), REAL(XLAT*R2D),     !Input
      &           CLOUDS_DSSAT, ISINB, S0N)                             !Output
         ENDIF
@@ -1601,11 +1516,9 @@ c        OMSEA(88)=RTS
         OMSEA(89)=RH
         OMSEA(90)=W
 C       ..UPDATE KD FOR PESTICIDE PROCESSES
-        PRINT *, "CALLING KDSTAR"
         CALL KDSTAR(SLKS,CC,NN,FRACOM,THETA,BD)
 C
 C       ..MODIFY MANAGEMENT QUE
-        PRINT *, "CALLING MAQUE"
         CALL MAQUE(JDAY,THETA,NDXH2N,NDXN2H,SOILHP,TWL,JGS,IQUE,AIRR,NN,
      +      FRACOM,TLT,BD,CC,CHLRFL,INXPL,FT,IYYY,IRLOC,JGROW,RDF,IPL,
      +      pori,tapmun,iyb,irrtyp,airrtype,niw,ipsw_depth,TLCSHAW,
@@ -1639,7 +1552,6 @@ c      if ((iplp.eq.0).and.(ipl.eq.1).and.(iwcinit.eq.1)) then
          DO I=1,NN
           totheta1=totheta1+theta(i)*tl(i)
          ENDDO
-         PRINT *, "CALLING STATIN"
          CALL STATIN(XNU,NN,TL,BD,RPOOL,SOILHP,SOILPP,CC,
      +    CONCX2,THETA,T,RM,SDEAD,RCN,SDCN,NUTEQ,NDXN2H,H,AEF,SNOWPK,
      +    FRACOM,RPOP,FTR,FPW,SOLTP1,SOLTP2,FRACON,CN)  !,THETAI,PORI)
@@ -1657,22 +1569,18 @@ c      if ((iplp.eq.0).and.(ipl.eq.1).and.(iwcinit.eq.1)) then
 	  iplr=0
       endif
 C       ..MANAGE FERTILIZER APPLICATIONS
-        PRINT *, "CALLING MAFERT"
         CALL MAFERT(CC,THETA,AIRR,JDAY,NN,IQUE,NDXT2N,NITNHB,ANHYD,
      +             IYYY,subirr,cr,cs,ccl)
 C
 C       ..MANAGE PESTICIDE APPLICATIONS
-        PRINT *, "CALLING MAPEST"
         CALL MAPEST(FT,FTR,CC,THETA,JDAY,COPLNT,CORES,BD,SLKS,H,IQUE,
      +      AIRR,IYYY)
 C
 C       ..MANAGE MANURE APPLICATIONS
-        PRINT *, "CALLING MANURE"
         CALL MANURE(CC,THETA,AIRR,JDAY,NN,TL,TLT,IQUE,RPOOL,RM,RCN,CN,
      +      IYYY,ANHYD,xnu,NDXN2H,subirr,cr,cs,ccl)
 C
 C       ..MANAGE TILLAGE OPERATIONS
-        PRINT *, "CALLING MATILL"
         CALL MATILL(JDAY,SOILPP,RPOOL,SDEAD,SDCN,XNU,CC,THETA,SLKS,T,
      +      CONCX2,SOLTP1,SOILHP,IQUE,RM,RCN,EK2,CORES,BD,IYYY,FRACOM,
      +      FREUND,H,HWP,FRACON)
@@ -1685,12 +1593,10 @@ C This WATBL was added to adjust water table if water table is in the tillage zo
       IF(ITBL.EQ.1) CALL WATBL(NN,NDXN2H,MAXHOR,SOILHP,H,QF(NN),DELT,
      +    TLT,ZN,IREBOT,BOTHED,BOTFLX,H2OTAB,ALPH,AEF,CAPZONE,THETA)
 C       .. UPDATE HEAD AND THETA VALUES
-        PRINT *, "CALLING HYDPAR"
         CALL HYDPAR(SOILHP,NDXN2H,NN,H,THETA,MAXHOR,AEF,ZN,H2OTAB,pori,
      +              Hmin)
 C
 C       ..UPDATE KD FOR PESTICIDE PROCESSES
-        PRINT *, "CALLING KDSTAR"
         CALL KDSTAR(SLKS,CC,NN,FRACOM,THETA,BD)
 C
 c             KSS=1.0d0
@@ -1729,7 +1635,6 @@ cc       sumCropET=0.0d0
 cc        endif         
 C
 C       ..CALCULATE PHYSICAL PROCESSES
-        PRINT *, "CALLING PHYSCL"
         CALL PHYSCL(CC,TMIN,TMAX,EPAN,RTS,W,ATMP,INP4,JDAY,PTRANS,LAI,
      +      SLKS,TUP,COPLNT,CORES,FT,FTR,RDF,RFDD,IMAGIC,NSC,AIRR,TQ,
      +      IBRKTH,UPNIT,EWP,IRRTYP,MDAY,IPL,RH,IYYY,NOSTAR,XNU,ALPH,
@@ -1767,7 +1672,6 @@ c          SATH(I)=SOILHP(4,JN)
   110   CONTINUE
 C
 C       ..DETERMINE IRR-REVERSIBLE BOUND POOL OF PESTICIDES
-        PRINT *, "CALLING PEBIND"
         CALL PEBIND(BD,CC,COBIND,NN,TL,SLKS,THETA)
 C
 C       ..FIND THE DEGRADATION OF THE ACTIVE PESTICIDES
@@ -1785,7 +1689,6 @@ C LIWANG MA, 7-3-2006
   120     CONTINUE
 C
           IF(IPACTV(IP).EQ.1) THEN
-            PRINT *, "CALLING PEMAIN"
             CALL PEMAIN(IP,COPLNT,CORES,CC,NN,T,THETA,TH3,ZN,BD,FPW,
      +          SLKS,TL)
           ENDIF
@@ -1814,15 +1717,10 @@ C         ..DETERMINE AMOUNTS LOST TO DEGRADATION
           TLPCN(IP)=(TPL-COPLNT(IP))*1.0D-1
           TLPSL(IP)=TSL-TSL1
           IF(NSC.GE.1) THEN
-            PRINT *, "CALLING VGATE"
             CALL VGATE(TDAY,25+IP,CDSOIL)
-            PRINT *, "CALLING VGATE"
             CALL VGATE(TDAY,28+IP,CPSOL)
-            PRINT *, "CALLING SGATE"
             CALL SGATE(TDAY,25+IP,(CORES(IP)+COPLNT(IP))*0.1D0)
-            PRINT *, "CALLING SGATE"
             CALL SGATE(TDAY,28+IP,PSUR)
-            PRINT *, "CALLING SGATE"
             CALL SGATE(TDAY,31+IP,TSL1)
           ENDIF
   140   CONTINUE
@@ -1861,7 +1759,6 @@ C reset soil moisture if requested by users
           totalAdd(iyyy-iyb+1)=totalAdd(iyyy-iyb+1)+deltheta
 c          CALL WCHEAD(THETA,H,SOILHP,NN,NDXN2H,MAXHOR)
           OMSEA(115)=DELTHETA
-          PRINT *, "CALLING ADCONICE"
           CALL ADCONICE(SOILPP,THETA_old,theta,
      +           CC,SLKS,CONCX2,XNU,FREUND)
          ireset1=1
@@ -1880,77 +1777,45 @@ c end of reset soil moisture
 c        
 C
         IF(NSC.GE.1) THEN
-          PRINT *, "CALLING SGATE"
           CALL SGATE(TDAY,43,TQ(NN))
-          PRINT *, "CALLING SGATE"
           CALL SGATE(TDAY,82,1.0D0-FTR)
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,1,TLT)
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,20,BD)
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,21,XMP)
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,41,TQ)
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,2,THETA)
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,43,H)
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,3,T)
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,37,SATH)
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,38,U)
         ENDIF
 C
         IF(NSC.GE.1) THEN
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,16,XPH)
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,4,XNU(1,1))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,5,XNU(1,2))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,6,XNU(1,3))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,7,XNU(1,4))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,8,XNU(1,5))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,17,XNU(1,7))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,18,XNU(1,9))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,19,XNU(1,8))
           DO 170 I=1,NN
             DO 160 J=1,MXCHEM-3
               WTCC(I,J)=CC(I,J)*THETA(I)/BD(I)
   160       CONTINUE
   170     CONTINUE
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,9,WTCC(1,9))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,11,WTCC(1,10))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,42,WTCC(1,12))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,44,WTCC(1,2))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,45,WTCC(1,3))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,46,WTCC(1,4))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,47,WTCC(1,5))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,48,WTCC(1,6))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,49,WTCC(1,7))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,50,WTCC(1,8))
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,52,FRACOM*0.58D0)
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,59,FRACON)
         ENDIF
 C
@@ -1968,7 +1833,6 @@ C commented out by Liwang Ma, 12-25-2013
         TSNH40=TSNH40+CC(I,10)*TL(I)*THETA(I)*0.1D0
         enddo
           PRINT*,'==> UPDATING INORGANIC CHEMISTRY'
-          PRINT *, "CALLING CHEM"
           CALL CHEM(NN,U,CC,BD,PPCO2,THETA,RFDD,TLT)
         TSNO31=0.0D0
         TSNH41=0.0D0
@@ -1994,7 +1858,6 @@ C       ..DETERMINE DEGREE DAY FOR CURRENT DAY
 C
 C       ..UPDATE NUTRIENT CYCLING
         PRINT*,'==> UPDATING NUTRIENT CHEMISTRY'
-        PRINT *, "CALLING NUTRI"
         CALL NUTRI(NN,U,BD,PPCO2,T,THETA,XNU,CC,JDAY,NSC,FRACOM,TL,
      +      RPOOL,XPH,W,TLT,IMAGIC,SDEAD,SDCN,DEGD,NITNHB,ANHYD,FPW,
      +      NUTEQ,TH3,ROP,snowpk,DAYRAIN,FRACON)
@@ -2004,7 +1867,6 @@ c tested by Liwang Ma
       IF ((IMAGIC .EQ. -11) .OR. (IMAGIC .EQ. -7) .OR.
      +   (IMAGIC .EQ. -8)) then
 c      IF (IMAGIC .EQ. -11) THEN
-          PRINT *, "CALLING SIXAVG"
           CALL SIXAVG(NN,NPEST,JDAY,TL,TLT,THETA,SLKS,BD,CONCX2,CC,
      +         FREUND)
         ENDIF
@@ -2058,7 +1920,6 @@ c          omsea(43)=LAI
           endif
 c
 195     CONTINUE
-        PRINT *, "CALLING MAPLNT"
         CALL MAPLNT(RFDD,JDAY,IYYY,TMAX,TMIN,RTS,TPP,W,HEIGHT,LAI,T,
      +      SOILPP,NDXN2H,RDF,JGS,NSC,PLTSLV,RPOOL,UPNIT,EWP,SDEAD,
      +      TLPLNT,XNIT,BASE,FIXN,IPL,IPM,JGROW,IMAGIC,ODMDN,CN,RM,
@@ -2097,7 +1958,6 @@ c         PLANTBIOMASS=OMSEA(41)
          endif
                  
 C       ..CLEAN UP THIS DAY'S EVENTS FROM QUE
-        PRINT *, "CALLING MEQUE"
         CALL MEQUE(IQUE)
 C
 c        If (.not.UseEnrichment) enrich = 1.0d0                           !sab if inactive, set it to 1 (non-enrichment)
@@ -2120,7 +1980,6 @@ cgleamstest     &                          5.0d0,0.5d0)        !sab
         CALL DailyErosion (SOLOSS,ENRICH,iyyy*1000+jday,DayMeanTemp,     !sab arg=yyyyddd=sdate
      &                          RzRainFall+RzIrrigation,RzRunoff)        !sab
         If (.not.UseEnrichment) enrich = 1.0d0                           !sab if inactive, set it to 1 (non-enrichment)
-        PRINT *, "CALLING ApplyErosion_n_Report"
         CALL ApplyErosion_n_Report(Tday,SoLoss,Enrich,CC,SLKS,           !sab
      &         freund,CONCX2,COBIND,BD,TL,THETA,XNU,CN,erodedmass,ii)    !sab
         do ij=1,ii
@@ -2142,12 +2001,10 @@ C           XNU(I,3)=XNU(I,3)+NDTH*RDF(I)/C2BM*10.D0/TL(I)/BD(I)/0.1D0
 C       ENDDO
 C
 C       ..DO DAILY NITROGEN BALANCE
-        PRINT *, "CALLING NITBAL"
         CALL NITBAL(NN,BD,THETA,XNU,JDAY,TL,RPOOL,CC,TLPLNT,TSPLNT,
      +      IMAGIC,MDAY,ANHYD,IYYY,OMSEA,NYR,TN,JNUM,FIXN,TSOTN0yr,
      +      tsotn00,tsotnday,tapmun,erodedmass,tsotn00_in,TNSORB)
 C       ..DO DAILY CARBON BALANCE
-        PRINT *, "CALLING CARBAL"
         CALL CARBAL(NN,BD,THETA,XNU,JDAY,TL,RPOOL,CC,TLPLNT,TSPLNT,
      +      IMAGIC,MDAY,IYYY,OMSEA,NYRC,TNC,JNUMC,RM,TSOTCDAY,TSOTC0YR,
      +      TSOTC00,erodedmass)
@@ -2155,7 +2012,6 @@ C
 C       ..DO DAILY PESTICIDE BALANCE
 C       IF (IMAGIC .EQ. -9 .OR. IMAGIC.EQ.-12) THEN
         DO 180 IP=1,NPEST
-          PRINT *, "CALLING PESBAL"
           CALL PESBAL(NN,JDAY,IP,BD,THETA,TL,CC,CORES,COPLNT,SLKS,
      +         CONCX2,TSL2C,IYYY,MDAY,OMSEA,IMAGIC,COBIND,FREUND,
      +         TSOTP0YR,TSOTP00,TSOTPDAY,TPEST,NYRP,erodedmass)
@@ -2347,42 +2203,23 @@ c          write (299,199) jday,iyyy,tlt(i),((xnu(i,j)*conv1,cn(j)),j=1,5)
            ENDDO
            
       IF (IPHOS.EQ.1) THEN
-            
-           PRINT *, "CALLING WRITELOG"
            CALL WRITELOG(ID,IM,IYYY)
-           PRINT *, "CALLING TOTALP"
            CALL TOTALP(ID,IM,IYYY,IniSoilP)
-           PRINT *, "CALLING FERTILIZER"
            CALL FERTILIZER(ID,IM,IYYY)
-           PRINT *, "CALLING FERTILIZERFATE"
            CALL FERTILIZERFATE(ID,IM,IYYY)
-           PRINT *, "CALLING MANUREP"
            CALL MANUREP(ID,IM,IYYY)
-           PRINT *, "CALLING MANUREFATE"
            CALL MANUREFATE(ID,IM,IYYY) 
-           PRINT *, "CALLING TILLAGE"
            CALL TILLAGE(ID,IM,IYYY)
-           PRINT *, "CALLING PLANTPUPTAKE"
            CALL PLANTPUPTAKE(ID,IM,IYYY,OMSEA(45))      
-           PRINT *, "CALLING PFLUX"
            CALL PFLUX(ID,IM,IYYY)
-           PRINT *, "CALLING LABPLOSS"
            CALL LABPLOSS(ID,IM,IYYY)      
-           PRINT *, "CALLING DRPLOSSRUNOFF"
            CALL DRPLOSSRUNOFF(ID,IM,IYYY)   
-           PRINT *, "CALLING PPLOSSRUNOFF"
            CALL PPLOSSRUNOFF(ID,IM,IYYY)
-           PRINT *, "CALLING DRPLOSSTILE"
            CALL DRPLOSSTILE(ID,IM,IYYY)
-           PRINT *, "CALLING PPLOSSTILE"
            CALL PPLOSSTILE(ID,IM,IYYY)
-           PRINT *, "CALLING UPDATEPOOL"
            CALL UPDATEPOOL(ID,IM,IYYY)
-           PRINT *, "CALLING TOTALP"
            CALL TOTALP(ID,IM,IYYY,FinalSoilP)
-           PRINT *, "CALLING PBALANCE"
            CALL PBALANCE(ID,IM,IYYY)
-           PRINT *, "CALLING WRITEOUTPUT"
            CALL WRITEOUTPUT(ID,IM,IYYY)
         
         DO i =1,Slnf
@@ -2403,33 +2240,21 @@ c          write (299,199) jday,iyyy,tlt(i),((xnu(i,j)*conv1,cn(j)),j=1,5)
        else
        Pstress(Slnc) = 1.0d0
        ENDIF
-      PRINT *, "CALLING OUTMSEA"
       CALL OUTMSEA(OMSEA)   
         
 C
 C       ..DUMP REMAINING DATA IN VGATE AND SGATE
         IF(NSC.GE.1) THEN
-          PRINT *, "CALLING SGATE"
           CALL SGATE(TDAY,95,RM)
-          PRINT *, "CALLING SGATE"
           CALL SGATE(TDAY,96,RCN)
-          PRINT *, "CALLING SGATE"
           CALL SGATE(TDAY,97,SDEAD)
-          PRINT *, "CALLING SGATE"
           CALL SGATE(TDAY,98,SDCN)
-          PRINT *, "CALLING SGATE"
           CALL SGATE(TDAY,103,Drplossrnf*1000.0)
-          PRINT *, "CALLING SGATE"
           CALL SGATE(TDAY,104,PPlossrnf*1000.0)
-          PRINT *, "CALLING SGATE"
           CALL SGATE(TDAY,105,Drplosstdrain*1000.0 )
-          PRINT *, "CALLING SGATE"
           CALL SGATE(TDAY,106,PPlosstdrain*1000.0)
-          PRINT *, "CALLING SGATE"
           CALL SGATE(TDAY,107,ADDPLANTP)    
-          PRINT *, "CALLING VGATE"
           CALL VGATE(TDAY,-1,ZN)
-          PRINT *, "CALLING SGATE"
           CALL SGATE(TDAY,-1,0.0D0)
         ENDIF
         
@@ -2452,25 +2277,18 @@ c
 C
 C     .. FINISH OFF THE NITBAL WRITES
       IF(IMAGIC.LT.0.AND.IMAGIC.GT.-12) THEN
-        PRINT *, "CALLING CARBYR"
         CALL CARBYR(NYRC,IYYY+1,JNUMC,TNC,0,TSOTC0YR,TSOTCDAY)
-        PRINT *, "CALLING CARBYR"
         CALL CARBYR(NYRC,IYYY,JNUMC,TNC,1,TSOTC00,TSOTCDAY)
-        PRINT *, "CALLING NITBYR"
         CALL NITBYR(NYR,IYYY+1,JNUM,TN,0,TSOTN0yr,TSOTNday)
-        PRINT *, "CALLING NITBYR"
         CALL NITBYR(NYR,IYYY,JNUM,TN,1,TSOTN00,TSOTNday)
       DO IP=1,NPEST
-        PRINT *, "CALLING PESTBYR"
         CALL PESTBYR(NYRP,IYYY+1,JNUMC,TPEST,0,TSOTP0YR,TSOTPDAY,IP)
-        PRINT *, "CALLING PESTBYR"
         CALL PESTBYR(NYRP,IYYY,JNUMC,TPEST,1,TSOTP00,TSOTPDAY,IP)
       ENDDO
       ENDIF
 C
 C     ..CLOSE ALL OUTPUT FILES
           CLOSE (654)
-      PRINT *, "CALLING CLOSER"
       CALL CLOSER(2)
       CLOSE(UNIT=70)
       IF(IMAGIC.LT.0.AND.IMAGIC.GT.-12) THEN
@@ -2527,7 +2345,6 @@ C
 C     ..PRINTOUT RZINIT.DAT SPECIFIC INFORMATION FOR WATER, TEMPERATURE,
 C     AND NUTRIENT INITIALIZATION.  PARTICULARILY USEFUL FOR INITIALIZATION
 C     OF LONGTERM RUNS.
-      PRINT *, "CALLING NEWINIT"
       CALL NEWINIT(NHOR,NDXH2N,TL,HORTHK,THETA,T,XNU,RPOOL,CC,SOILPP,
      +    NHORZ,H)
       IF(NUTEQ(2).EQ.1) CALL STATOT(XNU,NN,BD,SOILHP,SOILPP,CC,CONCX2,
@@ -2565,7 +2382,6 @@ c       status=system(deldayjack)
 c         CALL DAYJACK(0,0,0,0)
 c
 c      CALL Horizon(NN,JBDAY,JULBDAY,JULEDAY,TLT,DRSPAC,BD,Ohorthk,NHORZ)
-      PRINT *, "CALLING COMP2EXP"
       CALL COMP2EXP(NN,JBDAY,JULBDAY,JULEDAY,TLT,DRSPAC,BD,scenname,
      &      Ohorthk,NHORZ)
 c
@@ -3426,13 +3242,11 @@ C==   R E A D   I N   S T A T E   V A R I A B L E S      ==
 C======================================================================
 C
 C ... INITIAL WATER AND TEMPERATURE STATE
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP5)
       READ(INP5,*) IWTYPE,IWCINIT
       READ(INP5,*) (WAT(I),TEM(I),I=1,NHOR)
 C
 C     ... INITIAL SOIL CHEMISTRY STATE
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP5)
       DO 10 I=1,NHOR
         READ(INP5,*) TPH(I),(TSCL(I,J),J=1,3),TCO2(I),TCEC(I),TCA(I),
@@ -3442,7 +3256,6 @@ C     ... INITIAL SOIL CHEMISTRY STATE
    10 CONTINUE
 C
 C     ... INITIAL NUTRIENT STATE
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP5)
         read (inp5,1110) string
         k=inumb(string)
@@ -3470,7 +3283,6 @@ C     ... INITIAL NUTRIENT STATE
       END DO
 C
 C     ... INITIAL PESTICIDE STATE
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP5)
       DO 30 I=1,NPEST
         READ(INP5,*) IDUM,COPLNT(I),CORES(I)
@@ -3585,25 +3397,16 @@ C       ..GET RESIDUE MASS AND CONVERT FROM UG-C/G-SOIL ==> G-C/CM**2
 C
   100 CONTINUE
 C
-      PRINT *, "CALLING VGATE"
       CALL VGATE(DBLE(JBDAY-1),-2,PH)
-      PRINT *, "CALLING SGATE"
       CALL SGATE(DBLE(JBDAY-1),-2,PH(1))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(DBLE(JBDAY-1),16,PH)
       DO 110 I=1,5
-        PRINT *, "CALLING VGATE"
         CALL VGATE(DBLE(JBDAY-1),I+3,XNU(1,I))
   110 CONTINUE
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,9,CONC(1,9))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(TDAY,11,CONC(1,10))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(DBLE(JBDAY-1),17,XNU(1,7))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(DBLE(JBDAY-1),18,XNU(1,9))
-      PRINT *, "CALLING VGATE"
       CALL VGATE(DBLE(JBDAY-1),19,XNU(1,8))
 C
       RETURN
@@ -3704,7 +3507,6 @@ c          CO2R=380.0D0  !change to 370 ppm
         ENDIF
 C
 C       .. APPLY METEOROLOGY MODIFIERS
-        PRINT *, "CALLING CDATE"
         CALL CDATE(JDAY,ID,IM,IYYY)
         TMIN=TMIN+METMOD(1,IM)
         TMAX=TMAX+METMOD(2,IM)
@@ -3882,7 +3684,6 @@ c accumulate daily solar radiation, windrun, humidity
         avg_T=0.0d0
 C
 C       .. APPLY METEOROLOGY MODIFIERS, SHOULD IT APPLY TO HOURLY?
-        PRINT *, "CALLING CDATE"
         CALL CDATE(JDAY,ID,IM,IYYY)
         do i=1,24
         hrT(i)=hrt(i)+(METMOD(1,IM)+METMOD(2,IM))/2.0d0
@@ -4541,7 +4342,7 @@ C
 C
       LOGICAL NCLY
       DIMENSION XMISC(3,1),INXPL(MXSPEC),EFFLUX(MXSPEC),IRTYPE(MXSPEC),
-     +    NUTEQ(12),wsi(mxspec),aim(12)
+     +    NUTEQ(13),wsi(mxspec),aim(12)
       DIMENSION IRRTYP(MXAPP)
       CHARACTER(len=1) UPCASE
       DOUBLE PRECISION,DIMENSION(:), ALLOCATABLE :: Bpemr,Bpmat,Bp50mat,
@@ -4560,13 +4361,11 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C
 C     ..READ SCENARIO NUMBER FOR OUTPUT SECTION
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP1)
       READ(INP1,*) NSC
       REWIND(UNIT=INP1)
 C
 C     ..INITIALIZE OUTPUT SECTION FOR INITIAL CONDITIONS
-      PRINT *, "CALLING OUTIN1"
       CALL OUTIN1(NSC,IBRKTH,ICHEM,IMAGIC,NOSTAR,NUTEQ,INP1,IPHOS)
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
@@ -4574,7 +4373,6 @@ C     --      P H Y S I O G R A P H I C   P R O P E R T I E S      --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
         read (inp2,1110) string
         k=inumb(string)
@@ -4601,7 +4399,6 @@ C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
 C     ... SOIL SYSTEM PHYSICAL CONFIGURATION
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) NHOR,PRODEP
       READ(INP2,*) (HORTHK(I),I=1,NHOR)
@@ -4634,14 +4431,11 @@ C     ... SOIL SYSTEM PHYSICAL CONFIGURATION
        Dsoil(i) = HORTHK(i)*0.01D0
       END DO
        Dimvly = Dsoil(Nsoil)
-       
-      PRINT *, "CALLING NODETHICK"
       CALL NODETHICK(Tsoil,Dsoil,Nsoil)                   !DEBASIS
       
       
 C
 C     ... DISCRETIZATION FOR MOISTURE AND HEAT MODELS
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) NN
       Nnode = NN                                       !debasis
@@ -4662,13 +4456,9 @@ C     ... DISCRETIZATION FOR MOISTURE AND HEAT MODELS
         Dnode(I) = XDUM*0.01D0  
                                                            !debasis
    10 CONTINUE
-      
-      
-       PRINT *, "CALLING NODETHICK"
        CALL NODETHICK(Tnode,Dnode,Nnode)              !debasis
 C
 C     ... SOIL HORIZON PHYSICAL PROPERTIES
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       DO 20 J=1,NHOR
         READ(INP2,'(A10)') SOLTYP(J)
@@ -4680,7 +4470,6 @@ C     ... SOIL HORIZON PHYSICAL PROPERTIES
    20 CONTINUE
 C
 C     ... SOIL HORIZON HYDRAULIC PROPERTIES
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       DO 30 J=1,NHOR
         READ(INP2,*) IDUM,(SOILHP(I,J),I=1,6)
@@ -4703,7 +4492,6 @@ c        IF (SOILPP(1,J).NE.0) CLAT(J)=SOILHP(4,J)   !IF MINIMUM DATA ARE USED, 
       END DO
 C
 C     ... SOIL HORIZON HEAT MODEL PARAMETERS
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       DO 40 I=1,NHOR
 C
@@ -4741,7 +4529,6 @@ C     --      M A C R O P O R E AND  I N F I L T R A T I O N      --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
         read (inp2,1110) string
         k=inumb(string)
@@ -4769,13 +4556,11 @@ C
       if (MAXITER_RICH.gt.10000) MAXITER_RICH=10000
 C
 C     ..READ INPUT FOR MICROPORES IN SOIL AND RUNOFF
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) NMICP,A,B
       READ(INP2,*) (MICP(J),J=1,NHOR)
 C
 C     .. READIN INFORMATION FOR MACROPORES, IF NEEDED
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) YESMAC,SFCT,XPRESF
       READ(INP2,*) EFFWR,EFFWC
@@ -4802,7 +4587,6 @@ C     --      P O T E N T I A L E V A P O R A T I O N       --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
 c      READ(INP2,*) A0,AW,AC,ARI,XW,FSUN,COEPAN,IHOURLY,ISHAW,IPENFLUX 
         read (inp2,1110) string
@@ -4912,7 +4696,6 @@ C     --      S U R F A C E     R E S I D U E         --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
         read (inp2,1110) string
         k=inumb(string)
@@ -4931,7 +4714,6 @@ C     ..DETERMINE RESIDUE COVER FOR FIRST DAY ONLY
       ENDIF
       FTR=EXP(-CRES*1.270D-2*RM/0.15D0)
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) NADLY,NSDLY,NAREC,NSREC,WORM
        IF ((WORM.GT.0.01D0).or.(worm.lt.0.0d0)) WORM=0.0004D0
@@ -4950,7 +4732,6 @@ C     --      S O I L   C H E M I S T R Y         --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) PBASE,EC
 C
@@ -4960,7 +4741,6 @@ C     --     R A I N   W A T E R  C H E M I S T R Y       --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) RAPH
       READ(INP2,*) (RAC(J),J=2,11)
@@ -4972,7 +4752,6 @@ C     --     I R R I G A T I O N  W A T E R  C H E M I S T R Y     --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) RRPH
       READ(INP2,*) (RRC(J),J=2,11)
@@ -4984,7 +4763,6 @@ C     --     P E S T I C I D E S           --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) NPEST
       DO 60 IP=1,NPEST
@@ -5109,14 +4887,12 @@ C     ----------------------------------------------------------------------
 C
 C     --READ IN VALUES FOR PLANT MODEL CONTROL
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) NPL
       ALLOCATE(Bpemr(NPL),Bpmat(NPL),Bp50mat(NPL),
      + BT(NPL),Pdp(NPL),Humat(NPL),Countcrop(NPL))
       
       NGNPL=0
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       DO 80 IPL=1,NPL
         NGPL(IPL)=0
@@ -5134,7 +4910,6 @@ C       CHECK FOR GENERIC PLANTS - OTHERS WILL HAVE SEPARATE INPUT
 C
 C     --READ USER-SPECIFIC PLANT PARAMETERS; THESE ARE THE ONLY
 C     PARAMETERS MOST USERS SHOULD MODIFY.
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       DO 90 IPL=1,NPL
         read (inp2,1110) string
@@ -5216,7 +4991,6 @@ C     ====================================================
 C     === READ IN INFORMATION FOR GENERIC PLANTS ONLY ====
 C     ====================================================
       NGNPL=MAX(NGNPL,1)
-      PRINT *, "CALLING PLREAD"
       CALL PLREAD(NGNPL,INXPL,INP6,CLBASE)
 C
 C     ----------------------------------------------------------------------
@@ -5233,7 +5007,6 @@ C     R53  -----> from slow soil humus pool to fast soil humus pool pool (not us
 C     R43  -----> from intermediate soil humus pool to fast soil humus pool pool (not used)
 C     R25  -----> from fast residue pool to slow soil humus pool pool 
 C     ----------------------------------------------------------------------
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) R14,R23,R34,R25,R45,R15
       IF ((R14+R15).GT.1.0D0) THEN
@@ -5250,7 +5023,6 @@ C     ----------------------------------------------------------------------
       Coefi15 = R15
 
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) O2LIM,EFFMAX,EFFNIT,EFFDEN,DENC,(RPOP(I),I=1,3)
         if (effden.eq.0.1d0) effden=effmax/2.0d0   !changed by Liwang Ma to avoid C balance. Make it half of effmax
@@ -5270,7 +5042,6 @@ C
         EFFMAX=0.267D0
       ENDIF
 c
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
         read (inp2,1110) string
         k=inumb(string)
@@ -5285,22 +5056,18 @@ c       FRN2O_DEN=0.02    !calculated based on Century model
       READ(INP2,*) ADCAY,ANIT,ADENIT,AUREA,AMETH,FRN2O_NIT !,FRN2O_DEN
        ENDIF
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) (ADCAYV(I),I=1,5)
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) (ADEATH(I),I=1,3)
       IF (ADEATH(1).LT.1.D-30.and.ADEATH(1).GT.0.D0) ADEATH(1)=3.44D-11
       IF (ADEATH(2).LT.1.D-30.and.ADEATH(2).GT.0.D0) ADEATH(2)=3.628D-20
       IF (ADEATH(3).LT.1.D-30.and.ADEATH(3).GT.0.D0) ADEATH(3)=4.97D-13
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) (XKP(I),I=1,3)
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
         read (inp2,1110) string
         k=inumb(string)
@@ -5334,7 +5101,6 @@ C     --       P L A N T   M A N A G E M E N T        --
 C     ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) NPGS
       IF(NPGS.GT.MXAPP) THEN
@@ -5429,7 +5195,6 @@ C     --      M A N U R E M A N A G E M E N T        --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) NAPPM
       IF(NAPPM.GT.MXAPP) THEN
@@ -5608,7 +5373,6 @@ C     --      F E R T I L I Z E R   M A N A G E M E N T       --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) NAPPF
       IF(NAPPF.GT.MXAPP) THEN
@@ -5691,7 +5455,6 @@ C     --      B M P   M A N A G E M E N T
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) ISTATE,YGOAL,OMADJ,USAMDP,ISOYB,UMISCC,SOYYLD,FMC,
      +    YGSF,BMPIRR,BMPTIL
@@ -5701,7 +5464,6 @@ C     --      P E S T I C I D E M A N A G E M E N T       --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) NAPP
       IF(NAPP.GT.MXAPP) THEN
@@ -5732,7 +5494,6 @@ C     --      T I L L A G E     M A N A G E M E N T        --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) NUMTL
       Ntill = NUMTL
@@ -5801,7 +5562,6 @@ C     --      M I S C E L L A N O U S M A N A G E M E N T      --
 C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
       READ(INP2,*) NUMTHG
       IF(NUMTHG.GT.MXTG) THEN
@@ -5824,7 +5584,6 @@ C     ----------------------------------------------------------------------
 C     ----------------------------------------------------------------------
 C
 C     ***    INPUT/CALCULATE IRRIGATION CONTROL DATA
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
         read (inp2,1110) string
         k=inumb(string)
@@ -5974,7 +5733,6 @@ c
         ENDIF
   200 CONTINUE
 C
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP2)
         read (inp2,fmt=1110,end=21) string
         k=inumb(string)
@@ -6088,7 +5846,6 @@ C     .. SET INITIAL TILE DRAINAGE EFFECTIVE DEPTH INDEX
 
 C
 C     ... SET UP THE INDEX VECTORS FOR INTERPOLATION PURPOSES
-      PRINT *, "CALLING INDEXR"
       CALL INDEXR(HORTHK,TLT,DSL,NHOR,NN,NSLT)
 C
 C     ... INITIALIZE SOIL HYDRAULIC PARAMETERS
@@ -6099,7 +5856,6 @@ C     ... INITIALIZE SOIL HYDRAULIC PARAMETERS
         TBD=SOILPP(3,J)
         SOILPP(4,J)=1.0D0-SOILPP(3,J)/SOILPP(2,J)
         ITYPE=INT(SOILPP(1,J))
-        PRINT *, "CALLING SOILPR"
         CALL SOILPR(J,SOILHP,TBD,PCLAY,PSAND,PSILT,ITYPE,SOILPP(2,J),0,
      +              HWP)
         SOILPP(4,J)=SOILHP(6,J)
@@ -6529,7 +6285,6 @@ C     ... INITIALIZE SOIL HYDRAULIC PARAMETERS WITH NEW HORIZONS
         BDHR(J)=SOILPP(3,J)
         ITYPE=INT(SOILPP(1,J))
         IF(ITYPE.NE.0) ITYPE=-1
-        PRINT *, "CALLING SOILPR"
         CALL SOILPR(J,SOILHP,TBD,PCLAY,PSAND,PSILT,ITYPE,SOILPP(2,J),1,
      +              HWP)
         SOILPP(4,J)=SOILHP(6,J)
@@ -6546,7 +6301,6 @@ C
   300 CONTINUE
 C
 C     ...SET UP THE INDEX VECTORS FOR INTERPOLATION PURPOSES
-      PRINT *, "CALLING INDEXR"
       CALL INDEXR(HORTHK,TLT,DSL,NHOR,NN,NSLT)
 C
       DO 310 I=1,2
@@ -6851,7 +6605,6 @@ C
         if (iwcinit1.eq.1) then
           dtadjN=tsotn0-tsotn00
        IF (tsotn0.NE.tsotn00) THEN
-        PRINT *, "CALLING CDATE"
         CALL CDATE(JDAY,ID,IM,IYYY)
         write(unit=666,fmt=673) JDAY,ID,IM,IYYY,tsotn0_in-tsotn00_in
         ENDIF
@@ -6938,7 +6691,6 @@ C         ..SUM UP FOR SUMMARY CALCULATIONS
 		  CALL NITBYR(NYR,IYYY,JNUM,TN,0,TSOTN0yr,TSOTN)
           endif
 C
-          PRINT *, "CALLING CDATE"
           CALL CDATE(JDAY,ID,IM,IYYY)
           WRITE(74,1000)ID,IM,IYYY,JDAY,TSOTN0,TOTR,TOTI,TOTF,TAMANR,
      +        TOTD,TOTT,FIXN,TOTA
@@ -6955,7 +6707,6 @@ c          OMSEA(80) = TSHP  ! TOTAL SOIL ORGANIC N (HUMUS POOLS)
 		  IYYYmxN=iyyy
         endif
           if (abs(bal).gt.1.0d-1) THEN !changed by Liwang Ma
-          PRINT *, "CALLING dayjack"
           CALL dayjack(0,0,0,3)!send message that N mass balance was bad
           WRITE (666,FMT=667) ID, IM, IYYY, jday,BAL !Liwang Ma
           if (abs(bal).gt.50.0d0) print*, 'SEVERE MASS BALANCE PROBLEM'
@@ -7007,13 +6758,9 @@ CZ-MA   Liwang Ma
       OMSEA(103)=TLGHGADS
       OMSEA(104)=TLGHGADSden
       OMSEA(135)=TNSORB
-      PRINT *, "CALLING SGATE"
       CALL SGATE(DBLE(MDAY),15,TSNO3)
-      PRINT *, "CALLING SGATE"
       CALL SGATE(DBLE(MDAY),74,TSNO3+TSNH4+TSUR)
-      PRINT *, "CALLING SGATE"
       CALL SGATE(DBLE(MDAY),86,TLRO(1))
-      PRINT *, "CALLING SGATE"
       CALL SGATE(DBLE(MDAY),87,TLRO(2))
 C
       RETURN
@@ -7308,13 +7055,11 @@ C          TNC(11)=OMSEA(41)/2.5D0
           TNC(26)=TNC(26)+ERODEDMASS(6)
           TNC(27)=TNC(27)+TOTCO2NI
       IF(NYRC.NE.IYYY) THEN
-         PRINT *, "CALLING CARBYR"
          CALL CARBYR(NYRC,IYYY,JNUMC,TNC,0,TSOTC0YR,TSOTC)
 c         RCO2=0.0D0
          YIELDC=0.0D0
       ENDIF
 C
-          PRINT *, "CALLING CDATE"
           CALL CDATE(JDAY,ID,IM,IYYY)
 C LIWANG MA ADD CARBON BALANCE
          WRITE(75,1001)ID,IM,IYYY,JDAY,TSOTC0,TACUREA,TAMANC,
@@ -7331,7 +7076,6 @@ C
 		  IYYYmxC=iyyy
         endif
           if (abs(bal).gt.1.0d-1) THEN !changed by Liwang Ma
-            PRINT *, "CALLING dayjack"
             CALL dayjack(0,0,0,4)!send message that C mass balance was bad
           WRITE (666,FMT=667) ID, IM, IYYY, jday,BAL !Liwang Ma
           if (abs(bal).gt.50.0d0) print*, 'SEVERE MASS BALANCE PROBLEM'
@@ -8029,7 +7773,6 @@ c        IF(npest.gt.0) THEN
           WRITE(59+IP,*) 'KD(1)==> ',SLKS(1,IP,1)
           IF(ABS(BAL).GT.0.01D0) WRITE(59+IP,1000)
           WRITE(79+IP,1400) MDAY,TSL1,TSL3,TSLX,TSLB,TSL2
-          PRINT *, "CALLING CDATE"
           CALL CDATE(JDAY,ID,IM,IYYY)
           WRITE(59+IP,1100) ID,IM,IYYY,JDAY,NMPEST(IP),TSOTP0(IP),
      +        TAPAP(IP),TAPAP(IP)
@@ -8042,7 +7785,6 @@ c        IF(npest.gt.0) THEN
 c        ENDIF
         TSOTP0(IP)=TSOTP(IP)
         TSOTPDAY(IP)=TSOTP(IP)
-        PRINT *, "CALLING VGATE"
         CALL VGATE(TDAY,31+IP,TSL2X)
       ENDIF
 	  if (abs(bal).ge.abs(balmxP)) then
@@ -8052,7 +7794,6 @@ c        ENDIF
 		  IYYYmxP=iyyy
         endif
           if (abs(bal).gt.1.0d-5) THEN !changed by Liwang Ma
-          PRINT *, "CALLING dayjack"
           CALL dayjack(0,0,0,5)!send message that pesticide mass balance was bad
           WRITE (666,FMT=667) ID, IM, IYYY, jday,BAL,ip !Liwang Ma
           if (abs(bal).gt.50.0d0) print*, 'SEVERE MASS BALANCE PROBLEM'
@@ -8285,13 +8026,11 @@ C     == THE GENERIC PLANT DATA BASE       ===
 C     =================================================================
 C
 C     ...READ NUMBER OF SPECIES IN FILE
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       READ(INP6,*) NUM
 C
 C     ...CHECK FOR MATCH BETWEEN DESIRED SPECIES AND THOSE IN DATABASE
 C     ...DEFINE POINTER (PTR(I,J))TO POINT TO PROPER RECORDS IN DATABASE
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       IPTR=0
       DO 20 J=1,NUM
@@ -8313,7 +8052,6 @@ C     === READ IN INFORMATION FOR GENERIC PLANTS ONLY ====
 C     ====================================================
 C
 C     ...READ IN VALUES FOR PLANT DIMENSIONS
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 30 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8334,7 +8072,6 @@ c
 C
 C     ...READ IN VALUES FOR NITROGEN MANAGEMENT
 C     ...WHOLE-PLANT
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 40 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8356,7 +8093,6 @@ C     ...WHOLE-PLANT
 C
  1110 FORMAT(A255)
 C     ...COMPONENTS
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 50 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8368,7 +8104,6 @@ C     ...COMPONENTS
    50 CONTINUE
 C
 C     ...READ IN VALUES FOR PHOTOSYNTHESIS
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 60 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8381,7 +8116,6 @@ C         ...CONVERT PMAX FROM MICROMOLES C/M2/SEC ==> MOLES C/M2/HOUR
    60 CONTINUE
 C
 C     ...READ IN VALUES FOR DROUGHT RESISTANCE
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 70 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8392,7 +8126,6 @@ C     ...READ IN VALUES FOR DROUGHT RESISTANCE
    70 CONTINUE
 C
 C     ...READ IN VALUES FOR RESPIRATION
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 80 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8403,7 +8136,6 @@ C     ...READ IN VALUES FOR RESPIRATION
    80 CONTINUE
 C
 C     ...READ IN VALUES FOR TEMPERATURE CONTROL
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 90 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8414,7 +8146,6 @@ C     ...READ IN VALUES FOR TEMPERATURE CONTROL
    90 CONTINUE
 C
 C     ...READ IN VALUES FOR PLANT RATIOS
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 100 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8425,7 +8156,6 @@ C     ...READ IN VALUES FOR PLANT RATIOS
   100 CONTINUE
 C
 C     ...READ IN VALUES FOR MISCELLANEOUS PLANT PROCESSES
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 110 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8436,7 +8166,6 @@ C     ...READ IN VALUES FOR MISCELLANEOUS PLANT PROCESSES
   110 CONTINUE
 C
 C     ...READ IN VALUES FOR GERMINATION CONTROL
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 120 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8448,7 +8177,6 @@ C     ...READ IN VALUES FOR GERMINATION CONTROL
   120 CONTINUE
 C
 C     ...READ IN VALUES FOR PLANT MORTALITY
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 130 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8467,7 +8195,6 @@ C     ...INITIALIZE P MATRIX TO ZERO
   140     CONTINUE
   150   CONTINUE
   160 CONTINUE
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 170 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8479,7 +8206,6 @@ C     ...INITIALIZE P MATRIX TO ZERO
   170 CONTINUE
 C
 C     ...READ IN VALUES FOR LODGING
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 180 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8490,7 +8216,6 @@ C     ...READ IN VALUES FOR LODGING
   180 CONTINUE
 C
 C     --READ IN VALUES FOR SEED DYNAMICS
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 190 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8502,7 +8227,6 @@ C     --READ IN VALUES FOR SEED DYNAMICS
   190 CONTINUE
 C
 C     ...READ IN VALUES FOR GROWING DEGREE DAYS
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 200 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8514,7 +8238,6 @@ C     ...READ IN VALUES FOR GROWING DEGREE DAYS
   200 CONTINUE
 C
 C     ...READ IN VALUES FOR GROWTH STAGE THRESHOLDS
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 210 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8525,7 +8248,6 @@ C     ...READ IN VALUES FOR GROWTH STAGE THRESHOLDS
   210 CONTINUE
 C
 C     ...READ IN VALUES FOR MINIMUM TIME SPENT IN EACH GROWTH STAGE
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 230 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -8557,7 +8279,6 @@ C why use 30 here?
   230 CONTINUE
 C
 C     ...READ THE ROOT GROWTH GENETIC PARAMETERS
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP6)
       DO 240 J=1,NUM
         IF(KEEPIT(PTR,NGNPL,J,K)) THEN
@@ -9009,7 +8730,7 @@ C
      +    SOLTP2(MAXSCT,MAXHOR,3),TSOLTP1(MAXHOR,5),FRACON(MXNOD),
      +    TSOLTP2(MAXSCT,MAXHOR,3),THETAI(MXNOD),PORI(MXNOD)
 C
-      INTEGER NDXN2H(MXNOD),NUTEQ(12)
+      INTEGER NDXN2H(MXNOD),NUTEQ(13)
 C
       OPEN(IFILE,FILE='STATE.DAT',STATUS='OLD',ERR=90
      +    )
@@ -9280,7 +9001,6 @@ C     ..  OPEN DAYMET.DAT DATAFILE
       OPEN(INP3,FILE=FILENAME,STATUS='UNKNOWN',ERR=60)
 C
 C     ..  INITIALIZE DAYMET FILE
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP3)
       read (inp3,1000) string
         k=inumb(string)
@@ -9302,7 +9022,6 @@ c	   xlong=104.6383D0   !GREELEY, COLORADO LOCATION
 c        xlat=xlat/r2d
 c        xlong=xlong/r2d
 c        if (iwzone.eq.0) iwzone=2   !=1 arid <10 in rainfall, =2 semi-arid, 10-20 in rainfall, =3 humid, >20 in rainfall
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP3)
 C
 C     ..  OPEN BRKPNT.DAT DATAFILE
@@ -9467,10 +9186,8 @@ C
 C     ..  OPEN DAYMET.DAT DATAFILE
       READ(IPNAME,1000) FILENAME
       OPEN(INP3,FILE=FILENAME,STATUS='UNKNOWN')
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP3)
       READ(INP3,1000) FILENAME
-      PRINT *, "CALLING ECHO"
       CALL ECHO(INP3)
 	READ (INP3,*) iday1, iyear1
 	READ (INP3,*) iday2, iyear2
