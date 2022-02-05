@@ -29,7 +29,8 @@
 		<File RelativePath="..\Input\COMGEN.BLK"/>
 		<File RelativePath="..\GLEAMS\Rz_Gleams.inc"/></Filter>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
-		<File RelativePath="..\Pmodel\Addnode.for"/>
+    <File RelativePath="..\RZWQM\MemoryDefs.for"/>
+    <File RelativePath="..\Pmodel\Addnode.for"/>
 		<File RelativePath="..\DSSAT40\CSCER\Alt_Plant.for"/>
 		<File RelativePath="..\DSSAT40\Generic-Pest\ASMDM.FOR"/>
 		<File RelativePath="..\DSSAT40\Utilities\AUTHAR.FOR"/>
