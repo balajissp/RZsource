@@ -43,15 +43,15 @@ C  10/08/2004 CHP Removed some unused variables.
 C=======================================================================
 
       SUBROUTINE Alt_PLANT(CONTROL, ISWITCH, 
-     &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
-     &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
-     &      YREND, YRPLT,wflf,turfac,                                 !Input
-     &      CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,      !Output
-     &      MDATE, NSTRES, PORMIN, RLV, RWUMX, SENESCE,   !Output
-     &      STGDOY, UNH4, UNO3, XHLAI, XLAI,              !Output
-     &    LFWT,STMWT,XSTAGE,DTT,BIOMAS,SDWT,GRNWT,EARS,    !OUTPUT
-     &    RTWT,STOVWT,STOVN,ROOTN,GRAINN,RTDEP,cwad,rtwts,             !Output
-     &    ISTAGE,TRNU,SWFAC,tfg,grwt,nupd,cnad,gnad,wfg,stwt)           
+     &      EOP, HARVFRAC, NH4, NO3, SNOW,                     !Input
+     &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,         !Input
+     &      YREND, YRPLT,wflf,turfac,                          !Input
+     &      CANHT, EORATIO, HARVRES, KSEVAP, KTRANS,           !Output
+     &      MDATE, NSTRES, PORMIN, RLV, RWUMX, SENESCE,        !Output
+     &      STGDOY, UNH4, UNO3, XHLAI, XLAI,                   !Output
+     &      LFWT,STMWT,XSTAGE,DTT,BIOMAS,SDWT,GRNWT,EARS,      !OUTPUT
+     &      RTWT,STOVWT,STOVN,ROOTN,GRAINN,RTDEP,cwad,rtwts,   !Output
+     &      ISTAGE,TRNU,SWFAC,tfg,grwt,nupd,cnad,gnad,wfg,stwt)     
 
 C-----------------------------------------------------------------------
 !     The following models are currently supported:
@@ -94,8 +94,8 @@ C-----------------------------------------------------------------------
       REAL, DIMENSION(NL) :: ST, SW, UNO3, UNH4
 C PARAMETERS NEED TO BE DEFINED/PASSED FOR CERES
       REAL LFWT,STMWT,XSTAGE,DTT,BIOMAS,SDWT,GRNWT,EARS
-	REAL RTWT,STOVWT,STOVN,ROOTN,GRAINN,RTDEP
-	REAL NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,turfac,wflf
+      REAL RTWT,STOVWT,STOVN,ROOTN,GRAINN,RTDEP
+      REAL NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,turfac,wflf
       real trnu,swfac,grwt,cwad,tfg,wfg,cnad,stwt,nupd,gnad,rtwts
       integer istage
       LOGICAL FixCanht
@@ -131,6 +131,15 @@ c      TYPE (FloodNType)   FLOODN
       TMIN   = WEATHER % TMIN  
       TWILEN = WEATHER % TWILEN
 
+!----------------------------------------------------------------------
+C        Retrieve local variables from memory
+C       CALL Alt_Plant_Memory('GET', NVALP0, YREMRG, MDATE, STGDOY, 
+C      +  CANHT, EORATIO, KCAN, KEP, KSEVAP, KTRANS, NSTRES, PORMIN, 
+C      +  RWUEP1, RWUMX, XLAI, XHLAI, RLV, UNO3, UNH4, LFWT, STMWT, 
+C      +  XSTAGE, DTT, BIOMAS, SDWT, GRNWT, EARS, RTWT, STOVWT, STOVN, 
+C      +  ROOTN, GRAINN, RTDEP, NFIXN, TOPWT, WTLF, PCNL, PCNST, PCNRT, 
+C      +  PCNSD, trnu, swfac, grwt, cwad, tfg, wfg, cnad, stwt, nupd, 
+C      +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)      
 !***********************************************************************
 !***********************************************************************
       IF (DYNAMIC .EQ. RUNINIT) THEN
@@ -144,12 +153,14 @@ c      TYPE (FloodNType)   FLOODN
         ISWITCH % MEPHO = 'C'
 !       Put ISWITCH data where it can be retreived 
 !         by other modules as needed.
+      prINT *, "ALT_PLANT CaLLING GETPUT_ISWITCH"
         CALL GETPUT_ISWITCH('PUT',ISWITCH)
 
 !       Write message to WARNING.OUT file
         WRITE(MESSAGE(1),110) 
         WRITE(MESSAGE(2),120) CROP
         WRITE(MESSAGE(3),130) 
+      PRINT *, "Alt_Plant CALLING WARNING"
         CALL WARNING(3, ERRKEY, MESSAGE)
       ENDIF
 
@@ -162,6 +173,7 @@ c      TYPE (FloodNType)   FLOODN
         ISWITCH % MEEVP = 'R'
 !       Put ISWITCH data where it can be retreived 
 !         by other modules as needed.
+      PRINT *, "Alt_Plant CALLING GETPUT_ISWITCH"
         CALL GETPUT_ISWITCH('PUT',ISWITCH)
 
 !       Write message to WARNING.OUT file
@@ -169,6 +181,7 @@ c      TYPE (FloodNType)   FLOODN
         WRITE(MESSAGE(2),220) CROP
         WRITE(MESSAGE(3),230) 
         WRITE(MESSAGE(4),240) 
+      PRINT *, "Alt_Plant CALLING WARNING"
         CALL WARNING(4, ERRKEY, MESSAGE)
       ENDIF
       
@@ -187,6 +200,7 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
         WRITE(MESSAGE(2),320) 
         WRITE(MESSAGE(3),330) CROP
         WRITE(MESSAGE(4),340) 
+      PRINT *, "Alt_Plant CALLING WARNING"
         CALL WARNING(4, ERRKEY, MESSAGE)
         !Trigger to set canopy height upon emergence
         FixCanht = .TRUE.
@@ -254,6 +268,7 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
 !-----------------------------------------------------------------------
 ! MAIZE
        IF (INDEX(MODEL,'MZCER') .GT. 0) THEN
+      PRINT *, "Alt_Plant CALLING MZ_CERES "
           CALL MZ_CERES (CONTROL, ISWITCH,              !Input
      &    WEATHER % CO2, DAYL, EOP, HARVFRAC, NH4, NO3, SNOW,  !Input
      &    SOILPROP, WEATHER % SRAD, SW, WEATHER % TMAX,   !INPUT
@@ -276,6 +291,7 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
         
 ! Sugarbeet
        ELSE IF (INDEX(MODEL,'BSCER') .GT. 0) THEN
+      PRINT *, "Alt_Plant CALLING BS_CERES "
           CALL BS_CERES (CONTROL, ISWITCH,              !Input
      &    WEATHER % CO2, DAYL, EOP, HARVFRAC, NH4, NO3, SNOW,  !Input
      &    SOILPROP, WEATHER % SRAD, SW, WEATHER % TMAX,   !INPUT
@@ -298,6 +314,7 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
 
 !     Potato 
       ELSEIF (INDEX(MODEL,'PTSUB') > 0) THEN 
+      PRINT *, "Alt_Plant CALLING SUBSTOR"
         CALL SUBSTOR(CONTROL, ISWITCH, 
      &    CO2, EOP, HARVFRAC, NH4, NO3, SOILPROP, SRAD,   !Input
      &    ST, SW, TMAX, TMIN, TRWUP, TWILEN, YREND, YRPLT,!Input
@@ -315,6 +332,7 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
       ELSEIF ((INDEX(MODEL,'SGCER') .GT. 0).or.
      &        (INDEX(MODEL,'MOCER') .GT. 0).or.
      &        (INDEX(MODEL,'MXCER') .GT. 0)) THEN
+      PRINT *, "Alt_Plant CALLING SG_CERES "
         CALL SG_CERES (CONTROL, ISWITCH, 
      &     CO2, DAYL, EOP, HARVFRAC, NH4, NO3,            !Input
      &     SNOW, SOILPROP, SRAD, SW, TMAX, TMIN,          !Input
@@ -336,6 +354,7 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
 
 !     Millet 
       ELSEIF (INDEX(MODEL,'MLCER') .GT. 0) THEN
+      PRINT *, "Alt_Plant CALLING ML_CERES "
         CALL ML_CERES (CONTROL, ISWITCH, 
      &     CO2, DAYL, EOP, HARVFRAC, NH4, NO3,            !Input
      &     SNOW, SOILPROP, SRAD, SW, TMAX, TMIN,          !Input
@@ -359,6 +378,7 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
       ELSEIF ((INDEX(MODEL,'WHCER') .GT. 0).or. 
      &       (INDEX(MODEL,'BACER') .GT. 0).or.
      &       (INDEX(MODEL,'TRCER') .GT. 0))  THEN
+      PRINT *, "Alt_Plant CALLING CSCERES_Interface "
         CALL CSCERES_Interface (CONTROL, ISWITCH,          !Input
      &     CO2, DAYL, EOP, YREND, NH4, NO3, SNOW, SOILPROP,!Input
      &     SRAD, SRFTEMP, ST, SW, TMAX, TMIN, TRWUP, TWILEN,!Input
@@ -374,6 +394,7 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
           XHLAI = XLAI
         ENDIF
        ELSEIF (INDEX(MODEL,'SFCER') .GT. 0) THEN
+      PRINT *, "Alt_Plant CALLING SF_CERES "
           CALL SF_CERES (CONTROL, ISWITCH,              !Input
      &    WEATHER % CO2, DAYL, EOP, HARVFRAC, NH4, NO3, SNOW,  !Input
      &    SOILPROP, WEATHER % SRAD, SW, WEATHER % TMAX,   !INPUT
@@ -533,7 +554,15 @@ c        ENDIF
 
 !-----------------------------------------------------------------------
       ENDIF
-!-----------------------------------------------------------------------
+!----------------------------------------------------------------------
+C        Store local variables from memory
+C       CALL Alt_Plant_Memory('PUT', NVALP0, YREMRG, MDATE, STGDOY, 
+C      +  CANHT, EORATIO, KCAN, KEP, KSEVAP, KTRANS, NSTRES, PORMIN, 
+C      +  RWUEP1, RWUMX, XLAI, XHLAI, RLV, UNO3, UNH4, LFWT, STMWT, 
+C      +  XSTAGE, DTT, BIOMAS, SDWT, GRNWT, EARS, RTWT, STOVWT, STOVN, 
+C      +  ROOTN, GRAINN, RTDEP, NFIXN, TOPWT, WTLF, PCNL, PCNST, PCNRT, 
+C      +  PCNSD, trnu, swfac, grwt, cwad, tfg, wfg, cnad, stwt, nupd, 
+C      +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)      
 
 !***********************************************************************
       RETURN

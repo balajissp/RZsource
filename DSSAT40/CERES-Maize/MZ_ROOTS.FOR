@@ -51,7 +51,7 @@ C----------------------------------------------------------------------
       INTEGER     NLAYR       
       REAL        NO3(20)     
       REAL        PLTPOP 
-	REAL        PORMIN     
+      REAL        PORMIN     
       REAL        RLDF(20)    
                               
       REAL        RLNEW      
@@ -62,13 +62,13 @@ C----------------------------------------------------------------------
       REAL        RNLF       
                              
       REAL        RTDEP 
-	REAL        RTEXF     
-	REAL        RTSURV
+      REAL        RTEXF     
+      REAL        RTSURV
       REAL        SDEPTH     
       REAL        SHF(20)    
       INTEGER     STGDOY(20) 
       REAL        SW(20)     
-	REAL        SAT(20)
+      REAL        SAT(20)
       REAL        SWDF       
       REAL        SWEXF                       
       REAL        SWFAC      
@@ -197,7 +197,7 @@ c** wdb 10/22/03
               DO L = 1, L1
                   RLV(L) = RLV(L) + RLDF(L)*RNLF/DLAYR(L)-0.005*RLV(L)
                   !Round off to nearest 1/1000th place
-	            RLV(L) = RLV(L) * RTSURV
+                  RLV(L) = RLV(L) * RTSURV
                   RLV(L) = REAL(INT(RLV(L)*1000.))/1000.  
                   RLV(L) = AMAX1 (RLV(L),0.0)
                   RLV(L) = AMIN1 (RLV(L),4.0)

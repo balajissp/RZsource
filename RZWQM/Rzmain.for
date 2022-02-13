@@ -572,7 +572,6 @@ c      endif
 	  INQUIRE (FILE = 'GLEAMS.DAT', EXIST = FEXIST)
         IF (FEXIST.and.IMAGIC.LE.0) THEN
          OPEN(65,FILE='GLEAMS.DAT',STATUS='UNKNOWN') 
-         PRINT *, "CALLING Read_Gleams_Erosion_Input"
          Call Read_Gleams_Erosion_Input(65,ErosionActive)  !sab
          close (65)
          PRINT*,' ====>  GLEAMS Erosion Is Active'
@@ -9133,10 +9132,11 @@ C     THIS SIMPLE ROUTINE WRITES THE THE YEAR OUT TO ANY FILE
       PARAMETER (NUMNDK=5)
       INTEGER ID,IM,IYYY,ICODE
       INTEGER LID,LIM,LIYYY,JSEQDAY,FLAG
-      LOGICAL cURSTATE(NUMNDK)
+      LOGICAL CURSTATE(NUMNDK)
       SAVE LID,LIM,LIYYY,JSEQDAY,CURSTATE
       DATA JSEQDAY/0/,LID/0/,LIM/0/,LIYYY/0/,CURSTATE/NUMNDK*.FALSE./
 
+      CALL DAYJACK_Memory('GET',LID,LIM,LIYYY,JSEQDAY,CURSTATE)
       IF (ID.GT.0) THEN
         IF (LID.NE.ID) JSEQDAY=JSEQDAY+1
         LID=ID
@@ -9168,6 +9168,7 @@ c      if (jseqday.eq.1000) curstate(2)=.true. !4 testing only
       OPEN(64,FILE='DAYJACK.OUT',STATUS='UNKNOWN')
       WRITE(64,'(I8,4I6)') JSEQDAY,LID,LIM,LIYYY,FLAG
       CLOSE(64)
+      CALL DAYJACK_Memory('PUT',LID,LIM,LIYYY,JSEQDAY,CURSTATE)
       RETURN
       END
 C

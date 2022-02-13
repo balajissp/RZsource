@@ -159,8 +159,8 @@ c      common/stress/istress !,oldstress1, oldstress2
       COMMON/SOILTEMP/TDSOIL,TMSOIL, TNSOIL
       common /wsi/ wsi, alaireset, heightset, iresetlai, iresetht1
       common asimulated
-      save oldhgt,PLHGHT,PLALFA
-!     ------------------------------------------------------------------
+C       save oldhgt,PLHGHT,PLALFA
+C      ------------------------------------------------------------------
       INTERFACE 
         SUBROUTINE OPSTRESS(C, I, E, P, W)
           USE ModuleDefs
@@ -186,9 +186,12 @@ C-----------------------------------------------------------------------
 C    CERES Input variables
 C-----------------------------------------------------------------------
 c
-      PRINT *, "RZMAN CALLING Y2K_DOY"
+      CALL DSSATDRV_Memory('GET', oldhgt,PLHGHT,PLALFA)
+      CALL GETPUT_ISWITCH('GET', ISWITCH)
+      CALL GETPUT_CONTROL('GET', CONTROL)
+!     PRINT *, "DSSATDRV CALLING Y2K_DOY"
       CALL Y2K_DOY(YRSIMR)
-      PRINT *, "RZMAN CALLING Y2K_DOY"
+      PRINT *, "DSSATDRV CALLING Y2K_DOY"
       CALL Y2K_DOY(YRSIMRS)
 C      if (iresetht1.eq. 1) userht=height
       IF (FIRST) THEN
@@ -452,7 +455,7 @@ C-----------------------------------------------------------------------
 C    Get Additional Planting Information from RZWQM
 C-----------------------------------------------------------------------
 c          ROWSPC  = REAL(RWSPCR) / 100    'it is correct for GRO model
-           PRINT *, "RZMAN CALLING GETPUT_PLANTVAR"
+           PRINT *, "DSSATDRV CALLING GETPUT_PLANTVAR"
            CALL GETPUT_PLANTVAR('GET',PLANTVAR)
           PLANTVAR%HDATE(1) = HDATE(1)
           if ((iharvr.eq.1).or.(iharvr.eq.3).or.(iharvr.eq.5)) then
@@ -487,7 +490,7 @@ c          ROWSPC  = REAL(RWSPCR) / 100    'it is correct for GRO model
          PLANTVAR%SDWTPL = sdwtpl
          PLANTVAR%SDAGE = sdage
          PLANTVAR%SPRLAP = sprlap
-          PRINT *, "RZMAN CALLING GETPUT_PLANTVAR"
+          PRINT *, "DSSATDRV CALLING GETPUT_PLANTVAR"
           CALL GETPUT_PLANTVAR('PUT',PLANTVAR)
 C-----------------------------------------------------------------------
       NYRS = 1
@@ -536,17 +539,17 @@ C added by Liwang Ma, Oct. 22, 2004 to limit RZWQM layers to DS(dslayer)
 c      NLAYRI  = NNR
 10    CALL LYRSET (NLAYRI, TLTR, SOILPROP % NLAYR, SOILPROP % DS, 
      &             SOILPROP % DLAYR, DEPMAX)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,LLR,SOILPROP % NLAYR, SOILPROP % DS)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,DULR,SOILPROP % NLAYR, SOILPROP % DS)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,SATR,SOILPROP % NLAYR, SOILPROP % DS)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,BDR,SOILPROP % NLAYR, SOILPROP % DS)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,CGPH,SOILPROP % NLAYR, SOILPROP % DS)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,RZOC,SOILPROP % NLAYR, SOILPROP % DS)
 c      CALL realMATCH (NLAYRI,TLTR,RZON,SOILPROP % NLAYR, SOILPROP % DS)
 
@@ -569,7 +572,7 @@ C          SOILPROP % DLAYR(I) = DLAYR(I)
 c liwang ma 8/13/2003
           FAC(i)     = 1.0/(SOILPROP % BD(i)*1.E-01*SOILPROP % DLAYR(i))
         ENDDO
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (SOILPROP % NLAYR,SOILPROP % DS,RZOC,NLAYRI,TLTR)
 C-GH
 C-----------------------------------------------------------------------
@@ -637,19 +640,19 @@ C
 C-----------------------------------------------------------------------
 C    Pass soil layer variables
 C-----------------------------------------------------------------------
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,SWR,SOILPROP % NLAYR, SOILPROP %DS)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,STR,SOILPROP % NLAYR, SOILPROP %DS)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,NO3R,SOILPROP % NLAYR, SOILPROP %DS)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,NH4R,SOILPROP % NLAYR, SOILPROP %DS)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,RZOC,SOILPROP % NLAYR, SOILPROP % DS)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,RZON,SOILPROP % NLAYR, SOILPROP % DS)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (NLAYRI,TLTR,RZrwu,SOILPROP % NLAYR, SOILPROP % DS)
 c      CALL realMATCH (NLAYRI,TLTR,TOTPUP,SOILPROP % NLAYR, SOILPROP %DS)
       TSW = 0.0
@@ -761,16 +764,16 @@ c      write (666,*) trwu, ep, es, eo, et
       TIMMOBILIZE = real(totimm)
       TNOX = real(totden) 
       TOTNAP = REAL(TOTFERT)
-        PRINT *, "RZMAN CALLING GetPutSPAM"
+        PRINT *, "DSSATDRV CALLING GetPutSPAM"
         CALL GetPutSPAM ("PUT", CEO, CEP, CES, EP)
-        PRINT *, "RZMAN CALLING GetPutIRRIG"
+        PRINT *, "DSSATDRV CALLING GetPutIRRIG"
         CALL GetPutIRRIG("PUT", EFFIRR, TOTIR)
 C-----------------------------------------------------------------------
       IF (FIRST) THEN
 C-----------------------------------------------------------------------
 C    Read file names from IPDSSAT.DAT
 C-----------------------------------------------------------------------
-      PRINT *, "RZMAN CALLING READRZX"
+      PRINT *, "DSSATDRV CALLING READRZX"
       CALL READRZX (CONTROL % CROP, EFINOC, EFNFIX, 
      + FILES, FILEE, FILEC,
      + CONTROL % FROP, ISWITCH % IDETC, ISWITCH % IDETD, 
@@ -820,16 +823,16 @@ c
         TURFAC = 1.0
       ENDIF
 c
-          PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+          PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
           CALL GETPUT_CONTROL('PUT',CONTROL)
-          PRINT *, "RZMAN CALLING GETPUT_ISWITCH"
+          PRINT *, "DSSATDRV CALLING GETPUT_ISWITCH"
           CALL GETPUT_ISWITCH('PUT',ISWITCH)
-          PRINT *, "RZMAN CALLING GETPUT_SOILPROP"
+          PRINT *, "DSSATDRV CALLING GETPUT_SOILPROP"
           CALL GETPUT_SOILPROP('PUT',SOILPROP)
-          PRINT *, "RZMAN CALLING GETPUT_PLANTVAR"
+          PRINT *, "DSSATDRV CALLING GETPUT_PLANTVAR"
           CALL GETPUT_PLANTVAR('PUT',PLANTVAR)
 C-----------------------------------------------------------------------
-        PRINT *, "RZMAN CALLING IPVARC"
+        PRINT *, "DSSATDRV CALLING IPVARC"
         CALL IPVARC (FILEC,NSENS,CONTROL%RNMODE,VARNO,
      &                  VARTY,VRNAME,
      &                  PATHCR,ECONO,CONTROL%CROP,PHINT,HTMAX,BIOHALF)
@@ -920,7 +923,7 @@ C-----------------------------------------------------------------------
       CROPD = CROPS(CRID)
 c           CALL GETPUT_SOILPROP('GET',SOILPROP)
 
-      PRINT *, "RZMAN CALLING OPGEN"
+      PRINT *, "DSSATDRV CALLING OPGEN"
       CALL OPGEN (CUMDEP,TPESW,VRNAME,ANO3,ANH4,TLL,TDUL,TSAT,
      &     TSWINI,CONTROL%RUN,CONTROL%MODEL,CONTROL%CROP,CROPD,
      &     TITLET,ECONO,VARTY,
@@ -938,16 +941,16 @@ C     &   ECONAM,ECONO,SLNF,NOUTDO,ISWWAT,NYRS)
 C
             WEATHER % CO2 = REAL(CO2R)
             IF (WEATHER%TDEW.LE.0.0) WEATHER%TDEW=WEATHER%TMIN
-            PRINT *, "RZMAN CALLING YR_DOY"
+            PRINT *, "DSSATDRV CALLING YR_DOY"
             CALL YR_DOY(CONTROL % YRDOY, YR, DOY)
-            PRINT *, "RZMAN CALLING DAYLEN"
+            PRINT *, "DSSATDRV CALLING DAYLEN"
             CALL DAYLEN (DOY, WEATHER % XLAT, DAYL, DEC, SNDN, SNUP) 
-            PRINT *, "RZMAN CALLING TWILIGHT"
+            PRINT *, "DSSATDRV CALLING TWILIGHT"
             CALL TWILIGHT (DOY, WEATHER % XLAT, TWILEN)
             CALL SOLAR(DAYL, DEC, weather%SRAD, weather%XLAT,     !Input
      &    weather%CLOUDS, ISINB, S0N)                             !Output
           if (iweather.eq.0) then         !convert from daily to hourly weather
-            PRINT *, "RZMAN CALLING HMET"
+            PRINT *, "DSSATDRV CALLING HMET"
             CALL HMET(weather%CLOUDS, DAYL, DEC, ISINB, weather%PAR,
      &    weather%REFHT,SNDN, SNUP, S0N, weather%SRAD,           !Input
      &    weather%TDEW, weather%TMAX,weather%TMIN,              !Input
@@ -988,11 +991,11 @@ C       Calculate real and solar time.
         HS = REAL(i)    !* TINCR
 
 C       Calculate sun angles and hourly weather variables.
-        PRINT *, "RZMAN CALLING HANG"
+        PRINT *, "DSSATDRV CALLING HANG"
         CALL HANG(
      &    DEC, HS, weather%XLAT,                                  !Input
      &    weather%AZZON(i), weather%BETA(i))                              !Output
-       PRINT *, "RZMAN CALLING FRACD"
+       PRINT *, "DSSATDRV CALLING FRACD"
        CALL FRACD(
      &    weather%BETA(i), weather%CLOUDS, HS, weather%RADHR(i), 
      &     S0N, SNDN,SNUP,                                              !Input
@@ -1039,9 +1042,9 @@ C-----------------------------------------------------------------------
 C     CALL PLANT GRWOTH MODULES
 C-----------------------------------------------------------------------
 
-      PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
       CALL GETPUT_CONTROL('PUT', CONTROL) 
-      PRINT *, "RZMAN CALLING GETPUT_ISWITCH"
+      PRINT *, "DSSATDRV CALLING GETPUT_ISWITCH"
       CALL GETPUT_ISWITCH('PUT', ISWITCH)    
 c---- START  DYNAMIC = RUNINIT --------------------
        if (control % dynamic .eq. runinit) then
@@ -1049,7 +1052,7 @@ c---- START  DYNAMIC = RUNINIT --------------------
 c      CALL WEATHR(CONTROL, ISWITCH, WEATHER)
 
         IF (ISWITCH % MEPHO .EQ. 'L') THEN
-          PRINT *, "RZMAN CALLING ETPHOT"
+          PRINT *, "DSSATDRV CALLING ETPHOT"
           CALL ETPHOT(CONTROL, ISWITCH,
      &    PORMIN, RLV, RWUMX, SOILPROP, ST, SW,           !Input
      &    WEATHER, XHLAI,                                 !Input
@@ -1058,7 +1061,7 @@ c      CALL WEATHR(CONTROL, ISWITCH, WEATHER)
 
 ! CROPGRO
       IF (INDEX('GROgro',MODEL(3:5)) .GT.0) THEN
-        PRINT *, "RZMAN CALLING CROPGRO"
+        PRINT *, "DSSATDRV CALLING CROPGRO"
         CALL CROPGRO(CONTROL, ISWITCH, 
      &    EOP, YREND, HARVFRAC, NH4, NO3, SOILPROP,       !Input
      &    ST, SW, TRWUP, WEATHER, YRPLT,                  !Input
@@ -1068,8 +1071,7 @@ c      CALL WEATHR(CONTROL, ISWITCH, WEATHER)
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)  !Output
       else IF (INDEX('FRMfrm',MODEL(3:5)) .GT.0) THEN
-       PRINT *, "CALLING FORAGE"
-       PRINT *, "RZMAN CALLING FORAGE"
+       PRINT *, "DSSATDRV CALLING FORAGE"
        CALL FORAGE(CONTROL, ISWITCH, 
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
@@ -1079,7 +1081,7 @@ c      CALL WEATHR(CONTROL, ISWITCH, WEATHER)
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)    !Output
       else     
-      PRINT *, "RZMAN CALLING Alt_PLANT"
+      PRINT *, "DSSATDRV CALLING Alt_PLANT"
       CALL Alt_PLANT(CONTROL, ISWITCH, 
      &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
      &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
@@ -1094,16 +1096,16 @@ c      CALL WEATHR(CONTROL, ISWITCH, WEATHER)
        endif
 C
 !      IF (IDETS .EQ. 'Y' .OR. IDETS .EQ. 'A') THEN
-        PRINT *, "RZMAN CALLING OPSUM"
+        PRINT *, "DSSATDRV CALLING OPSUM"
         CALL OPSUM (CONTROL, ISWITCH, YRPLT,
      &     EXPER,CG, ENAME)                !LIWANG MA, RZWQM-DSSAT
 !      ENDIF
 	endif
       IF (FIRST) then
-	      PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+	      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
 	      CALL GETPUT_CONTROL('get', CONTROL) 
              control % dynamic = seasinit
-            PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('PUT', CONTROL) 
       endif
 c---- END OF  DYNAMIC = RUNINIT --------------------
@@ -1113,20 +1115,20 @@ c---- START  DYNAMIC = SEASINIT --------------------
 C
 c      CALL WEATHR(CONTROL, ISWITCH, WEATHER)
 
-      PRINT *, "RZMAN CALLING OPWBAL"
+      PRINT *, "DSSATDRV CALLING OPWBAL"
       CALL OPWBAL(CONTROL, ISWITCH, 
      &    CRAIN, soilprop%DLAYR, IRRAMT, soilprop%LL,             !Input
      &    soilprop%NLAYR, SW, TDRAIN, TRUNOF, WTDEP)               !Input
-      PRINT *, "RZMAN CALLING OpSoilNC"
+      PRINT *, "DSSATDRV CALLING OpSoilNC"
       CALL OpSoilNC(CONTROL, ISWITCH, 
      &    AMTNIT, CUMRES, DSNC, HUMC, HUMN, NH4, NO3, 
      &    THUMC, THUMN, TLCH, TNH4, TNH4NO3, TNO3, 
      &    TOTAML, TMINERALIZE, TIMMOBILIZE, TNOX)
-      PRINT *, "RZMAN CALLING OPSTEMP"
+      PRINT *, "DSSATDRV CALLING OPSTEMP"
       CALL OPSTEMP(CONTROL, ISWITCH, DOY, ST)
 
 !     Water balance output initialization
-      PRINT *, "RZMAN CALLING Wbal"
+      PRINT *, "DSSATDRV CALLING Wbal"
       CALL Wbal(CONTROL, ISWITCH, 
 c     &    DRAIN, ES, FLOODWAT, IRRAMT, weathre%RAIN, RUNOFF, SNOW,
 c     &    SWDELTS, SWDELTU, SWDELTX, soilprop%DLAYR, soilprop%NLAYR,
@@ -1142,14 +1144,14 @@ C-----------------------------------------------------------------------
 C    Calculate potential root water uptake
 C-----------------------------------------------------------------------
 c
-      PRINT *, "RZMAN CALLING ROOTWU"
+      PRINT *, "DSSATDRV CALLING ROOTWU"
       CALL ROOTWU(CONTROL % DYNAMIC,SOILPROP % DLAYR,     !INPUT
      &     SOILPROP % LL, SOILPROP % NLAYR,               !INPUT
      &      PORMIN, RLV, RWUMX, SOILPROP % SAT, SW,       !Input
      &      RWU, SATFAC, TRWUP)                             !Output
 c
         IF (ISWITCH % MEPHO .EQ. 'L') THEN
-          PRINT *, "RZMAN CALLING ETPHOT"
+          PRINT *, "DSSATDRV CALLING ETPHOT"
           CALL ETPHOT(CONTROL, ISWITCH,
      &    PORMIN, RLV, RWUMX, SOILPROP, ST, SW,           !Input
      &    WEATHER, XHLAI,                                 !Input
@@ -1157,7 +1159,7 @@ c
         ENDIF
 ! CROPGRO
       IF (INDEX('GROgro',MODEL(3:5)) .GT.0) THEN
-        PRINT *, "RZMAN CALLING CROPGRO"
+        PRINT *, "DSSATDRV CALLING CROPGRO"
         CALL CROPGRO(CONTROL, ISWITCH, 
      &    EOP, YREND, HARVFRAC, NH4, NO3, SOILPROP,       !Input
      &    ST, SW, TRWUP, WEATHER, YRPLT,                  !Input
@@ -1167,8 +1169,7 @@ c
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)  !Output
       else IF (INDEX('FRMfrm',MODEL(3:5)) .GT.0) THEN
-       PRINT *, "CALLING FORAGE"
-       PRINT *, "RZMAN CALLING FORAGE"
+       PRINT *, "DSSATDRV CALLING FORAGE"
        CALL FORAGE(CONTROL, ISWITCH, 
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
@@ -1178,7 +1179,7 @@ c
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)    !Output
       else
-      PRINT *, "RZMAN CALLING Alt_PLANT"
+      PRINT *, "DSSATDRV CALLING Alt_PLANT"
       CALL Alt_PLANT(CONTROL, ISWITCH, 
      &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
      &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
@@ -1196,7 +1197,7 @@ C       ENDIF
 c          KTRANS = KEP        !KJB/WDB/CHP 10/22/2003
 c          KSEVAP = KEP        ! from Alt_plant
       IF (ISWITCH % IDETS .EQ. 'Y' .OR. ISWITCH%IDETS .EQ. 'A') THEN
-        PRINT *, "RZMAN CALLING OPSUM"
+        PRINT *, "DSSATDRV CALLING OPSUM"
         CALL OPSUM (CONTROL, ISWITCH, YRPLT,
      &     EXPER,CG, ENAME)                !LIWANG MA, RZWQM-DSSAT
       ENDIF
@@ -1205,32 +1206,32 @@ C-----------------------------------------------------------------------
 c---- END OF  DYNAMIC = SEASINIT  --------------------
 c---------- START  DYNAMIC = RATE --------------------
 C       CALL GETPUT_WEATHER('PUT', WEATHER)    
-	      PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+	      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
 	      CALL GETPUT_CONTROL('get', CONTROL) 
              CONTROL % DYNAMIC = RATE
-            PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('PUT', CONTROL) 
 C
-      PRINT *, "RZMAN CALLING OPSTRESS"
+      PRINT *, "DSSATDRV CALLING OPSTRESS"
       CALL OPSTRESS(CONTROL, W=WEATHER)
 C-----------------------------------------------------------------------
 C    Calculate potential root water uptake
 C-----------------------------------------------------------------------
-      PRINT *, "RZMAN CALLING AUTHAR"
+      PRINT *, "DSSATDRV CALLING AUTHAR"
       CALL AUTHAR(CONTROL, ISWITCH %ISWWAT, 
      &    SOILPROP%DLAYR, SOILPROP%DUL, ISWITCH%IDETO, 
      &    ISWITCH%IHARI, SOILPROP%LL, STGDOY,           !Input
      &    SW, MDATE, YRPLT,                               !Input
      &    YREND, HARVFRAC, HDATE, NHAR)                   !Output
 
-      PRINT *, "RZMAN CALLING ROOTWU"
+      PRINT *, "DSSATDRV CALLING ROOTWU"
       CALL ROOTWU(CONTROL % DYNAMIC,SOILPROP % DLAYR,     !INPUT
      &     SOILPROP % LL, SOILPROP % NLAYR,               !INPUT
      &      PORMIN, RLV, RWUMX, SOILPROP % SAT, SW,       !Input
      &      RWU, SATFAC, TRWUP)                             !Output
 c
         IF (ISWITCH % MEPHO .EQ. 'L') THEN
-          PRINT *, "RZMAN CALLING ETPHOT"
+          PRINT *, "DSSATDRV CALLING ETPHOT"
           CALL ETPHOT(CONTROL, ISWITCH,
      &    PORMIN, RLV, RWUMX, SOILPROP, ST, SW,           !Input
      &    WEATHER, XHLAI,                                 !Input
@@ -1252,7 +1253,7 @@ c        CALL realMATCH (SOILPROP % NLAYR,SOILPROP % DS,qsr,NNR,TLTR)
 c        ENDIF   !ISWWAT = 'Y'
 ! CROPGRO
       IF (INDEX('GROgro',MODEL(3:5)) .GT.0) THEN
-        PRINT *, "RZMAN CALLING CROPGRO"
+        PRINT *, "DSSATDRV CALLING CROPGRO"
         CALL CROPGRO(CONTROL, ISWITCH, 
      &    EOP, YREND, HARVFRAC, NH4, NO3, SOILPROP,       !Input
      &    ST, SW, TRWUP, WEATHER, YRPLT,                  !Input
@@ -1262,8 +1263,7 @@ c        ENDIF   !ISWWAT = 'Y'
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)  !Output
       else IF (INDEX('FRMfrm',MODEL(3:5)) .GT.0) THEN
-       PRINT *, "CALLING FORAGE"
-       PRINT *, "RZMAN CALLING FORAGE"
+       PRINT *, "DSSATDRV CALLING FORAGE"
        CALL FORAGE(CONTROL, ISWITCH, 
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
@@ -1273,7 +1273,7 @@ c        ENDIF   !ISWWAT = 'Y'
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)    !Output
       else
-      PRINT *, "RZMAN CALLING Alt_PLANT"
+      PRINT *, "DSSATDRV CALLING Alt_PLANT"
       CALL Alt_PLANT(CONTROL, ISWITCH, 
      &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
      &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
@@ -1287,15 +1287,15 @@ c        ENDIF   !ISWWAT = 'Y'
 
        endif
 C
-	      PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+	      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
 	      CALL GETPUT_CONTROL('get', CONTROL) 
                  CONTROL % DYNAMIC = INTEGR
-            PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('PUT', CONTROL) 
 c---- END OF DYNAMIC = RATE --------------------
 c---- START  DYNAMIC = INTEGR ------------------
         IF (ISWITCH % MEPHO .EQ. 'L') THEN
-          PRINT *, "RZMAN CALLING ETPHOT"
+          PRINT *, "DSSATDRV CALLING ETPHOT"
           CALL ETPHOT(CONTROL, ISWITCH,
      &    PORMIN, RLV, RWUMX, SOILPROP, ST, SW,           !Input
      &    WEATHER, XHLAI,                                 !Input
@@ -1303,7 +1303,7 @@ c---- START  DYNAMIC = INTEGR ------------------
         ENDIF
 ! CROPGRO
       IF (INDEX('GROgro',MODEL(3:5)) .GT.0) THEN
-        PRINT *, "RZMAN CALLING CROPGRO"
+        PRINT *, "DSSATDRV CALLING CROPGRO"
         CALL CROPGRO(CONTROL, ISWITCH, 
      &    EOP, YREND, HARVFRAC, NH4, NO3, SOILPROP,       !Input
      &    ST, SW, TRWUP, WEATHER, YRPLT,                  !Input
@@ -1313,8 +1313,7 @@ c---- START  DYNAMIC = INTEGR ------------------
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)  !Output
       else IF (INDEX('FRMfrm',MODEL(3:5)) .GT.0) THEN
-       PRINT *, "CALLING FORAGE"
-       PRINT *, "RZMAN CALLING FORAGE"
+       PRINT *, "DSSATDRV CALLING FORAGE"
        CALL FORAGE(CONTROL, ISWITCH, 
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
@@ -1324,7 +1323,7 @@ c---- START  DYNAMIC = INTEGR ------------------
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)    !Output
       else
-      PRINT *, "RZMAN CALLING Alt_PLANT"
+      PRINT *, "DSSATDRV CALLING Alt_PLANT"
       CALL Alt_PLANT(CONTROL, ISWITCH, 
      &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
      &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
@@ -1338,41 +1337,41 @@ c---- START  DYNAMIC = INTEGR ------------------
 
        endif
 C
-      PRINT *, "RZMAN CALLING AUTHAR"
+      PRINT *, "DSSATDRV CALLING AUTHAR"
       CALL AUTHAR(CONTROL, ISWITCH %ISWWAT,      !check here for YREND
      &    SOILPROP%DLAYR, SOILPROP%DUL, ISWITCH%IDETO, 
      &    ISWITCH%IHARI, SOILPROP%LL, STGDOY,           !Input
      &    SW, MDATE, YRPLT,                               !Input
      &    YREND, HARVFRAC, HDATE, NHAR)                   !Output
-      PRINT *, "RZMAN CALLING OPWBAL"
+      PRINT *, "DSSATDRV CALLING OPWBAL"
       CALL OPWBAL(CONTROL, ISWITCH, 
      &    CRAIN, soilprop%DLAYR, IRRAMT,soilprop%LL,             !Input
      &    soilprop%NLAYR, SW, TDRAIN, TRUNOF, WTDEP)               !Input
 c---- END OF DYNAMIC = INTEGR --------------------
 c---- START  DYNAMIC = OUTPUT --------------------
 
-	      PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+	      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
 	      CALL GETPUT_CONTROL('get', CONTROL) 
                  CONTROL % DYNAMIC = OUTPUT
-            PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('PUT', CONTROL) 
 c
-      PRINT *, "RZMAN CALLING OPWBAL"
+      PRINT *, "DSSATDRV CALLING OPWBAL"
       CALL OPWBAL(CONTROL, ISWITCH, 
      &    CRAIN, soilprop%DLAYR, IRRAMT,soilprop%LL,             !Input
      &    soilprop%NLAYR, SW, TDRAIN, TRUNOF, WTDEP)               !Input
 
-      PRINT *, "RZMAN CALLING OpSoilNC"
+      PRINT *, "DSSATDRV CALLING OpSoilNC"
       CALL OpSoilNC(CONTROL, ISWITCH, 
      &    AMTNIT, CUMRES, DSNC, HUMC, HUMN, NH4, NO3, 
 c     &    RESLEFT, RESLEFTN,
      &    THUMC, THUMN, TLCH, TNH4, TNH4NO3, TNO3, 
      &    TOTAML, TMINERALIZE, TIMMOBILIZE, TNOX)
-      PRINT *, "RZMAN CALLING OPSTEMP"
+      PRINT *, "DSSATDRV CALLING OPSTEMP"
       CALL OPSTEMP(CONTROL, ISWITCH, DOY, ST)
 
 !     Water balance daily output 
-      PRINT *, "RZMAN CALLING Wbal"
+      PRINT *, "DSSATDRV CALLING Wbal"
       CALL Wbal(CONTROL, ISWITCH, 
      &    DRAIN, ES, IRRAMT, weather%RAIN, RUNOFF, SNOW,
      &    soilprop%DLAYR, soilprop%NLAYR,
@@ -1384,7 +1383,7 @@ c     &    NBUND, NLAYR, RESLEFTN, TFON, THUMN, TLCH, TNH4,!Input
 c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
 
         IF (ISWITCH % MEPHO .EQ. 'L') THEN
-          PRINT *, "RZMAN CALLING ETPHOT"
+          PRINT *, "DSSATDRV CALLING ETPHOT"
           CALL ETPHOT(CONTROL, ISWITCH,
      &    PORMIN, RLV, RWUMX, SOILPROP, ST, SW,           !Input
      &    WEATHER, XHLAI,                                 !Input
@@ -1392,7 +1391,7 @@ c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
         ENDIF
 ! CROPGRO
       IF (INDEX('GROgro',MODEL(3:5)) .GT.0) THEN
-        PRINT *, "RZMAN CALLING CROPGRO"
+        PRINT *, "DSSATDRV CALLING CROPGRO"
         CALL CROPGRO(CONTROL, ISWITCH, 
      &    EOP, YREND, HARVFRAC, NH4, NO3, SOILPROP,       !Input
      &    ST, SW, TRWUP, WEATHER, YRPLT,                  !Input
@@ -1402,8 +1401,7 @@ c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)  !Output
       else IF (INDEX('FRMfrm',MODEL(3:5)) .GT.0) THEN
-       PRINT *, "CALLING FORAGE"
-       PRINT *, "RZMAN CALLING FORAGE"
+       PRINT *, "DSSATDRV CALLING FORAGE"
        CALL FORAGE(CONTROL, ISWITCH, 
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
@@ -1413,7 +1411,7 @@ c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)    !Output
       else
-      PRINT *, "RZMAN CALLING Alt_PLANT"
+      PRINT *, "DSSATDRV CALLING Alt_PLANT"
       CALL Alt_PLANT(CONTROL, ISWITCH, 
      &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
      &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
@@ -1429,7 +1427,7 @@ c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
 C
 c---- END OF  DYNAMIC = OUTPUT --------------------
 
-      PRINT *, "RZMAN CALLING AUTHAR"
+      PRINT *, "DSSATDRV CALLING AUTHAR", ISWITCH
       CALL AUTHAR(CONTROL, ISWITCH %ISWWAT, 
      &    SOILPROP%DLAYR, SOILPROP%DUL, ISWITCH%IDETO, 
      &    ISWITCH%IHARI, SOILPROP%LL, STGDOY,           !Input
@@ -1438,10 +1436,10 @@ c---- END OF  DYNAMIC = OUTPUT --------------------
 
       if (first) first=.false.
 c
-      PRINT *, "RZMAN CALLING OPSTRESS"
+      PRINT *, "DSSATDRV CALLING OPSTRESS"
       CALL OPSTRESS(CONTROL, E=ET)
 C
-       PRINT *, "RZMAN CALLING GETPUT_PlantStres"
+       PRINT *, "DSSATDRV CALLING GETPUT_PlantStres"
        CALL GETPUT_PlantStres('GET',PlantStres)
 C       SWFAC = PlantStres % SWFAC
 c       TURFAC = PLANTSTRES % TURFAC
@@ -1475,7 +1473,7 @@ cc            ENDIF
           qsr(l) = 0.0
         ENDDO
       ENDIF
-        PRINT *, "RZMAN CALLING realMATCH"
+        PRINT *, "DSSATDRV CALLING realMATCH"
         CALL realMATCH (SOILPROP % NLAYR,SOILPROP % DS,qsr,NNR,TLTR)
 C ========================================================================
       IF (NDEM .LT. 0.0) THEN
@@ -1483,7 +1481,7 @@ C ========================================================================
       ENDIF
 c      DMDNIT = DBLE(NDEM)
 C  DMDNIT nitrogen demand from plant (g-n/plant)
-           PRINT *, "RZMAN CALLING GETPUT_PLANTVAR"
+           PRINT *, "DSSATDRV CALLING GETPUT_PLANTVAR"
            CALL GETPUT_PLANTVAR('GET',PLANTVAR)
           ROWSPC  = PLANTVAR%ROWSPC
           PLTPOP  = PLANTVAR%PLTPOP
@@ -1587,13 +1585,13 @@ c liwang Ma 8/13/2003
            UNUPR(i) = (UNO3(i)+UNH4(i))/(SOILPROP % DLAYR(I))
       ENDDO
 c      if (troot.gt.0.0) then
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (SOILPROP % NLAYR,SOILPROP % DS,RLVR,NLAYRI,TLTR)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (SOILPROP % NLAYR,SOILPROP % DS,NO3R,NLAYRI,TLTR)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (SOILPROP % NLAYR,SOILPROP % DS,NH4R,NLAYRI,TLTR)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (SOILPROP % NLAYR,SOILPROP % DS,UNUPR,NLAYRI,TLTR)
 C           TRNO3R= dble(TRNU)   !MOVE TO LATER
 c     endif
@@ -1718,9 +1716,9 @@ C      PCN = DBLE((RTWT/2.5)/(PCNRTR*RTWT))
          OMSEA(69)=DBLE(TOPRES/PLTPOP)/10.0D0
          OMSEA(71)=DBLE(TOTRTRES/PLTPOP)/10.0D0
 C
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (SOILPROP % NLAYR,SOILPROP % DS,RTRES,NLAYRI,TLTR)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (SOILPROP % NLAYR,SOILPROP % DS,WTNRRS,NLAYRI,TLTR)
 c limit to NLAYRI DS(20)      DO 90 I = 1, NNR
       DO 95 I = 1, NLAYRI
@@ -1837,27 +1835,27 @@ c pass yield to RZWQM
          yieldr(3) = DBLE(RTWT*PLTPOP*10.0D0)
          TRWUP=0.0
 c
-	      PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+	      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
 	      CALL GETPUT_CONTROL('get', CONTROL) 
  	           CONTROL % DYNAMIC = FINAL
-            PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('PUT', CONTROL) 
 c
-      PRINT *, "RZMAN CALLING OPWBAL"
+      PRINT *, "DSSATDRV CALLING OPWBAL"
       CALL OPWBAL(CONTROL, ISWITCH, 
      &    CRAIN, soilprop%DLAYR, IRRAMT,soilprop%LL,             !Input
      &    soilprop%NLAYR, SW, TDRAIN, TRUNOF, WTDEP)               !Input
-      PRINT *, "RZMAN CALLING OpSoilNC"
+      PRINT *, "DSSATDRV CALLING OpSoilNC"
       CALL OpSoilNC(CONTROL, ISWITCH, 
      &    AMTNIT, CUMRES, DSNC, HUMC, HUMN, NH4, NO3, 
 c     &    RESLEFT, RESLEFTN,
      &    THUMC, THUMN, TLCH, TNH4, TNH4NO3, TNO3, 
      &    TOTAML, TMINERALIZE, TIMMOBILIZE, TNOX)
-      PRINT *, "RZMAN CALLING OPSTEMP"
+      PRINT *, "DSSATDRV CALLING OPSTEMP"
       CALL OPSTEMP(CONTROL, ISWITCH, DOY, ST)
 !     Water balance seasonal output 
 
-      PRINT *, "RZMAN CALLING Wbal"
+      PRINT *, "DSSATDRV CALLING Wbal"
       CALL Wbal(CONTROL, ISWITCH, 
      &    DRAIN, ES, IRRAMT, weather%RAIN, RUNOFF, SNOW,
      &    soilprop%DLAYR, soilprop%NLAYR,
@@ -1869,7 +1867,7 @@ c     &    NBUND, NLAYR, RESLEFTN, TFON, THUMN, TLCH, TNH4,!Input
 c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
 
         IF (ISWITCH % MEPHO .EQ. 'L') THEN
-          PRINT *, "RZMAN CALLING ETPHOT"
+          PRINT *, "DSSATDRV CALLING ETPHOT"
           CALL ETPHOT(CONTROL, ISWITCH,
      &    PORMIN, RLV, RWUMX, SOILPROP, ST, SW,           !Input
      &    WEATHER, XHLAI,                                 !Input
@@ -1877,7 +1875,7 @@ c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
         ENDIF
 ! CROPGRO
       IF (INDEX('GROgro',MODEL(3:5)) .GT.0) THEN
-        PRINT *, "RZMAN CALLING CROPGRO"
+        PRINT *, "DSSATDRV CALLING CROPGRO"
         CALL CROPGRO(CONTROL, ISWITCH, 
      &    EOP, YREND, HARVFRAC, NH4, NO3, SOILPROP,       !Input
      &    ST, SW, TRWUP, WEATHER, YRPLT,                  !Input
@@ -1887,8 +1885,7 @@ c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)  !Output
       else IF (INDEX('FRMfrm',MODEL(3:5)) .GT.0) THEN
-       PRINT *, "CALLING FORAGE"
-       PRINT *, "RZMAN CALLING FORAGE"
+       PRINT *, "DSSATDRV CALLING FORAGE"
        CALL FORAGE(CONTROL, ISWITCH, 
      &    EOP, HARVFRAC, NH4, NO3, SOILPROP,              !Input
      &    ST, SW, TRWUP, WEATHER, YREND, YRPLT,           !Input
@@ -1898,7 +1895,7 @@ c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)    !Output
       else
-      PRINT *, "RZMAN CALLING Alt_PLANT"
+      PRINT *, "DSSATDRV CALLING Alt_PLANT"
       CALL Alt_PLANT(CONTROL, ISWITCH, 
      &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
      &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
@@ -1915,13 +1912,13 @@ C
        write(unit=101,fmt=*) yrplt,asimulated(25),asimulated(1),
      &                       asimulated(4),control%crop
 !      IF (IDETS .EQ. 'Y' .OR. IDETS .EQ. 'A') THEN
-        PRINT *, "RZMAN CALLING OPSUM"
+        PRINT *, "DSSATDRV CALLING OPSUM"
         CALL OPSUM (CONTROL, ISWITCH, YRPLT,
      &     EXPER,CG, ENAME)                !LIWANG MA, RZWQM-DSSAT
-	      PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+	      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
 	      CALL GETPUT_CONTROL('GET', CONTROL) 
  	           CONTROL % DYNAMIC = SEASINIT
-            PRINT *, "RZMAN CALLING GETPUT_CONTROL"
+            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('PUT', CONTROL) 
 !      ENDIF
       gs=0.0d0
@@ -1959,9 +1956,9 @@ C      PCN = DBLE((RTWT/2.5)/(PCNRTR*RTWT))
          WTNRRS(I) = HARVRES % ResE(I,1)/SOILPROP%DLAYR(I)
 93    CONTINUE
 C
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (SOILPROP % NLAYR,SOILPROP % DS,RTRES,NLAYRI,TLTR)
-      PRINT *, "RZMAN CALLING realMATCH"
+      PRINT *, "DSSATDRV CALLING realMATCH"
       CALL realMATCH (SOILPROP % NLAYR,SOILPROP % DS,WTNRRS,NLAYRI,TLTR)
 c limit to NLAYRI DS(20)      DO 90 I = 1, NNR
       DO 90 I = 1, NLAYRI
@@ -2003,10 +2000,11 @@ c need to check if qckplnt and qckturf need this mass balance or not. Liwang Ma,
         END IF
    90 CONTINUE
 C
-
+      CALL DSSATDRV_Memory('PUT', oldhgt,PLHGHT,PLALFA)
       RETURN
       endif
       FIRST15 = .FALSE.
+      CALL DSSATDRV_Memory('PUT', oldhgt,PLHGHT,PLALFA)
 CZ-MA
       RETURN
 C500   PRINT*,' -- ERROR -- ERROR -- UNABLE TO OPEN IPDSSAT --'

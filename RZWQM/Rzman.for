@@ -3975,11 +3975,11 @@ C-GH    Liwang Ma
       common /wsi/ wsi, alaireset, heightset, iresetlai, iresetht1
       DATA VARNOR/'     '/
       DATA VRNAME/'                '/
-      save nreps
+C       save nreps
 C-GH   Liwang Ma
       LOGICAL FIRST11,CHLRFL,first15,FHARV,FEXIST
-      SAVE FIRST11,first15
-      SAVE PCN,TTPLNT,TMPLNT,TXPLNT,IJ
+C       SAVE FIRST11,first15
+C       SAVE PCN,TTPLNT,TMPLNT,TXPLNT,IJ
 C
       DATA FIRST11 /.TRUE./,istage/1/,lukrit/10*0.0d0/,IPLS/2/,ij/0/
 C-MA Liwang
@@ -3990,6 +3990,8 @@ C      TNITUP = DMDNIT
 C      TONIT = TONIT + TNITUP
 C      PRINT*,' TOTAL NITROGEN UPTAKEN',TONIT
 C
+      CALL MAPLNT_Memory('GET',nreps,FIRST11,first15,PCN,TTPLNT,
+     +  TMPLNT,TXPLNT,IJ)  
       DAY=DBLE(JDAY)
       TLPLNT=0.0D0
       TADRT(1)=0.0D0
@@ -5589,6 +5591,8 @@ C find the soil layer where roots are grown.
            endif
         enddo
 C
+      CALL MAPLNT_Memory('PUT',nreps,FIRST11,first15,PCN,TTPLNT,
+     +  TMPLNT,TXPLNT,IJ)  
       RETURN
  1000 FORMAT(70('*'))
  1100 FORMAT(/4('-'),'DSSAT Crop Harvest','----',A30,/

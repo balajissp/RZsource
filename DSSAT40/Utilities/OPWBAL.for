@@ -19,7 +19,7 @@ C=======================================================================
       USE FloodModule    ! which contain control information, soil
                          ! parameters, hourly weather data.
       IMPLICIT NONE
-      SAVE
+C       SAVE
 
       CHARACTER*1 IDETW, ISWWAT, RNMODE
       CHARACTER*12 OUTWAT
@@ -51,7 +51,9 @@ C=======================================================================
 !     The variable "ISWITCH" is of type "SwitchType".
       TYPE (SwitchType) ISWITCH
 c      TYPE (FloodWatType) FLOODWAT
-
+      CALL OPWBAL_Memory('GET', IDETW, ISWWAT, RNMODE, DAS, DOY, 
+     +  DYNAMIC, ERRNUM, FROP, NAVWB, NAP, NOUTDW, RUN, YEAR, 
+     +  YRDOY, REPNO, AVWTD, PESW, TLL, TOTBUNDRO, TOTIR, TSW)
       DAS     = CONTROL % DAS
       DYNAMIC = CONTROL % DYNAMIC
       FILEIO  = CONTROL % FILEIO
@@ -154,6 +156,7 @@ C-----------------------------------------------------------------------
      &      (DYNAMIC .EQ. FINAL  .AND. MOD(DAS, FROP) .NE. 0)) THEN
 
           CALL YR_DOY(YRDOY, YEAR, DOY) 
+          PRINT *, AVWTD, NAVWB 
           AVWTD = AVWTD / NAVWB
 
           WRITE (NOUTDW,1300)YEAR, DOY,MOD(DAS,100000), 
@@ -196,8 +199,11 @@ C-----------------------------------------------------------------------
 !***********************************************************************
       ENDIF
 !***********************************************************************
+      CALL OPWBAL_Memory('PUT', IDETW, ISWWAT, RNMODE, DAS, DOY, 
+     +  DYNAMIC, ERRNUM, FROP, NAVWB, NAP, NOUTDW, RUN, YEAR, 
+     +  YRDOY, REPNO, AVWTD, PESW, TLL, TOTBUNDRO, TOTIR, TSW)
       RETURN
-      END !SUBROUTINE OPWBAL
+      END SUBROUTINE OPWBAL
 !***********************************************************************
 !-----------------------------------------------------------------------
 !     OPWBAL VARIABLE DEFINITIONS:  updated 2/19/2004

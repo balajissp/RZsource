@@ -56,7 +56,7 @@ C----------------------------------------------------------------------
 
       USE ModuleDefs
       IMPLICIT  NONE
-      SAVE
+C       SAVE
 C----------------------------------------------------------------------
 C                         Variable Declaration
 C----------------------------------------------------------------------
@@ -327,6 +327,26 @@ C LIWANG MA, RZWQM-DSSAT
       TYPE (PLANTVARType) PLANTVAR
 C END OF MODIFICATION
 
+!----------------------------------------------------------------------
+      CALL GETPUT_MZ_GROSUB('GET', SECTION, FILEIO, C80, FILECC, 
+     +  AREALF, ASMDOT, BD, CANHT, CANWH, CARBOT, CO2X, CO2Y, 
+     +  DUMMY, EP1, pp1, pp2, FSLFW, FSLFN, GRF, GROEAR, GROGRN, 
+     +  GROLF, GROSTM, HI, HIP, LAIDOT, LEAFNOE, CumLeafSenes, 
+     +  CumLeafSenesY, CumLfNSenes, LFWTE, LIFAC, TAW, DTAW, NDEF3, 
+     +  NFAC, NPOOL, NPOOL1, NPOOL2, NSDR, NSINK, P3, PAR, 
+     +  PARSR, PC, PCARB, PCNGRN, PCNL, PCNRT, PCNSD, PCNST, PCO2, 
+     +  PRFTC, SLPF, PLAE, PLAS, PODNO, PODWT, PPLTD, PRFT, RANC, 
+     +  RANCE, RGFILL, RGFIL, RLWR, RMNC, RNLAB, RNOUT, RSGR, RSGRT, 
+     +  RTWO, RTWTE, RTWTO, RUE, RWUMX, SATFAC, SDSIZE, SDSZ, SDWT, 
+     +  SEEDNO, SEEDRV, SEEDRVE, SFAC, SHELPC, SI1, SI2, SI3, SI4, 
+     +  SLAN, SLA, SLFC, SLFN, SLFT, SLFW, Stg2CLS, STMWTO, STMWTE, 
+     +  SUMEX, SUMRL, SWEXF, SWIDOT, SWMAX, SWMIN, TANCE, 
+     +  TAVGD, TCNP, TEMPM, TFAC, TI, TMNC, TNLAB, TOPWT, TSS, 
+     +  VANC, VSTAGE, WLIDOT, WRIDOT, WSIDOT, WTLF, XANC, XLFWT, 
+     +  XNF, YIELDB, RZrwu, RZtrwup, AVG_HROOT, WTDEP, qsr, TRWUP1, 
+     +  CMAT, EMAT, FOUND, I, ICOLD, ISECT, L, LINC, LNUM, LUNCRP, 
+     +  LUNIO, NWSD, RSTAGE, PATHL, yrplt, ISTRESS, iresetlai,iresetht1,
+     +  alaireset, WSI, heightset)   
 C----------------------------------------------------------------------
 C                     DYNAMIC = RUNINIT
 C----------------------------------------------------------------------
@@ -344,6 +364,7 @@ C RESET LAI 12-16-2018
       IF(DYNAMIC.EQ.RUNINIT.OR.DYNAMIC.EQ.SEASINIT) THEN
 
 C   MODIFIED BY LIWANG MA, RZWQM-DSSAT
+      PRINT *, "MZ_GROSUB CALLING GETPUT_CONTROL"
           CALL GETPUT_CONTROL('GET',CONTROL)
           FILEC = CONTROL % FILEC
           FILEE = CONTROL % FILEE
@@ -352,6 +373,7 @@ C   MODIFIED BY LIWANG MA, RZWQM-DSSAT
           PATHCR = CONTROL % PATHCR
           PATHER = CONTROL % PATHER
 
+      PRINT *, "MZ_GROSUB CALLING GETPUT_PLANTVAR"
           CALL GETPUT_PLANTVAR('GET',PLANTVAR)
           VARNO = PLANTVAR% VARNO
           VRNAME = PLANTVAR% VRNAME
@@ -362,7 +384,7 @@ C   MODIFIED BY LIWANG MA, RZWQM-DSSAT
           G2 = PLANTVAR% G2
           G3 = PLANTVAR% G3
           PHINT = PLANTVAR% PHINT
-	    PLTPOP = PLANTVAR% PLTPOP
+          PLTPOP = PLANTVAR% PLTPOP
           ROWSPC = PLANTVAR% ROWSPC
 C          SDEPTH = PLANTVAR% SDEPTH
 
@@ -428,6 +450,7 @@ C-KEN         FILEGG = PATHGE(1:(PATHL-1)) // FILEG
 
 
 C      FILECC =  TRIM(PATHSR) // FILES
+      PRINT *, "MZ_GROSUB CALLING GETLUN"
       CALL GETLUN('FILEC', LUNCRP)
       OPEN (LUNCRP,FILE = FILECC, STATUS = 'OLD',IOSTAT=ERR)
       IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,0)
@@ -437,15 +460,19 @@ C      FILECC =  TRIM(PATHSR) // FILES
       !----------------------------------------------------------------
 
       SECTION = '*TEMPE'
+      PRINT *, "MZ_GROSUB CALLING FIND"
       CALL FIND(LUNCRP, SECTION, LNUM, FOUND)
       IF (FOUND .EQ. 0) THEN
+      PRINT *, "MZ_GROSUB CALLING ERROR"
         CALL ERROR(SECTION, 42, FILECC, LNUM)
       ELSE
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(7X,4(1X,F5.2))',IOSTAT=ERR)
      &       PRFTC(1),PRFTC(2),PRFTC(3),PRFTC(4)
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(7X,4(1X,F5.2))',IOSTAT=ERR) RGFIL(1),
      &     RGFIL(2),RGFIL(3),RGFIL(4)
@@ -456,20 +483,25 @@ C      FILECC =  TRIM(PATHSR) // FILES
       !         Find and Read PHOTOSYNTHESIS section
       !---------------------------------------------------------------
       SECTION = '*PHOTO'
+      PRINT *, "MZ_GROSUB CALLING FIND"
       CALL FIND(LUNCRP, SECTION, LNUM, FOUND)
       IF (FOUND .EQ. 0) THEN
+      PRINT *, "MZ_GROSUB CALLING ERROR"
         CALL ERROR(SECTION, 42, FILECC, LNUM)
       ELSE
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(8X,F6.3)',IOSTAT=ERR) PARSR ! RM removed extra paren in format.
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(7X,10(1X,F5.0))',IOSTAT=ERR) CO2X(1),CO2X(2),
      &   CO2X(3), CO2X(4),CO2X(5), CO2X(6),CO2X(7),CO2X(8),
      &   CO2X(9),CO2X(10)
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(7X,10(1X,F5.2))',IOSTAT=ERR) CO2Y(1),CO2Y(2),
      &   CO2Y(3), CO2Y(4),CO2Y(5), CO2Y(6),CO2Y(7),CO2Y(8),
@@ -482,14 +514,18 @@ C      FILECC =  TRIM(PATHSR) // FILES
       !        Find and Read Stress Response
       !----------------------------------------------------------------
       SECTION = '*STRES'
+      PRINT *, "MZ_GROSUB CALLING FIND"
       CALL FIND(LUNCRP, SECTION, LNUM, FOUND)
       IF (FOUND .EQ. 0) THEN
+      PRINT *, "MZ_GROSUB CALLING ERROR"
         CALL ERROR(SECTION, 42, FILECC, LNUM)
       ELSE
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F6.3)',IOSTAT=ERR) FSLFW
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F6.3)',IOSTAT=ERR) FSLFN
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
@@ -499,23 +535,29 @@ C      FILECC =  TRIM(PATHSR) // FILES
       !        Find and Read Seed Growth Parameters
       !----------------------------------------------------------------
       SECTION = '*SEED '
+      PRINT *, "MZ_GROSUB CALLING FIND"
       CALL FIND(LUNCRP, SECTION, LNUM, FOUND)
       IF (FOUND .EQ. 0) THEN
+      PRINT *, "MZ_GROSUB CALLING ERROR"
         CALL ERROR(SECTION, 42, FILECC, LNUM)
       ELSE
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(8X,F6.4)',IOSTAT=ERR) SDSZ
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(8X,F6.3)',IOSTAT=ERR) RSGR
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(8X,F6.3)',IOSTAT=ERR) RSGRT
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(8X,F6.3)',IOSTAT=ERR) CARBOT
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
@@ -526,30 +568,38 @@ C      FILECC =  TRIM(PATHSR) // FILES
       !        Find and Read Emergence Initial Conditions
       !----------------------------------------------------------------
       SECTION = '*EMERG'
+      PRINT *, "MZ_GROSUB CALLING FIND"
       CALL FIND(LUNCRP, SECTION, LNUM, FOUND)
       IF (FOUND .EQ. 0) THEN
+      PRINT *, "MZ_GROSUB CALLING ERROR"
         CALL ERROR(SECTION, 42, FILECC, LNUM)
       ELSE
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F6.3)',IOSTAT=ERR) STMWTE
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F6.3)',IOSTAT=ERR) RTWTE
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F6.3)',IOSTAT=ERR) LFWTE
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F6.3)',IOSTAT=ERR) SEEDRVE
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F6.3)',IOSTAT=ERR) LEAFNOE
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F6.3)',IOSTAT=ERR) PLAE
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
@@ -561,22 +611,28 @@ C      FILECC =  TRIM(PATHSR) // FILES
       !        Find and Read Plant Nitrogen Parameters
       !----------------------------------------------------------------
       SECTION = '*NITRO'
+      PRINT *, "MZ_GROSUB CALLING FIND"
       CALL FIND(LUNCRP, SECTION, LNUM, FOUND)
       IF (FOUND .EQ. 0) THEN
+      PRINT *, "MZ_GROSUB CALLING ERROR"
         CALL ERROR(SECTION, 42, FILECC, LNUM)
       ELSE
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F8.4)',IOSTAT=ERR) TMNC
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F8.3)',IOSTAT=ERR) TANCE
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F8.4)',IOSTAT=ERR) RCNP
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F8.3)',IOSTAT=ERR) RANCE
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
@@ -587,22 +643,28 @@ C      FILECC =  TRIM(PATHSR) // FILES
       !        Find and Read Root parameters
       !----------------------------------------------------------------
       SECTION = '*ROOT '
+      PRINT *, "MZ_GROSUB CALLING FIND"
       CALL FIND(LUNCRP, SECTION, LNUM, FOUND)
       IF (FOUND .EQ. 0) THEN
+      PRINT *, "MZ_GROSUB CALLING ERROR"
         CALL ERROR(SECTION, 42, FILECC, LNUM)
       ELSE
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F6.3)',IOSTAT=ERR) PORMIN
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F6.3)',IOSTAT=ERR) RWUMX
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F6.3)',IOSTAT=ERR) RLWR
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
+      PRINT *, "MZ_GROSUB CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F6.3)',IOSTAT=ERR) RWUEP1
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
@@ -759,6 +821,7 @@ C      FILECC =  TRIM(PATHSR) // FILES
           YIELDB = 0.0
 
           IF (ISWNIT .NE. 'N') THEN
+      PRINT *, "MZ_GROSUB CALLING MZ_NFACTO"
              CALL MZ_NFACTO(DYNAMIC,ISTAGE,TANC,TCNP,TMNC,
      %       AGEFAC,NDEF3,NFAC,NSTRES)         
           ELSE
@@ -769,6 +832,7 @@ C      FILECC =  TRIM(PATHSR) // FILES
           ENDIF
 
 
+      PRINT *, "MZ_GROSUB CALLING MZ_NUPTAK"
           CALL MZ_NUPTAK(
      %      RANC, ROOTN,RTWT,TANC,STOVN,STOVWT,TRNU,NLAYR,
      %      RLV,NO3,NH4,PDWI,TCNP,UNO3,UNH4,
@@ -951,6 +1015,7 @@ c          TMNC = TMNCO    !Where is TMNCO given value?
           !        Compute Nitrogen Stress Factors 
           !-------------------------------------------------------------
           IF (ISWNIT .NE. 'N' .AND. ISTAGE .LT. 7) THEN
+      PRINT *, "MZ_GROSUB CALLING MZ_NFACTO"
               CALL MZ_NFACTO(DYNAMIC,                 !Control
      %        ISTAGE,TANC,TCNP,TMNC,                  !Inputs
      %        AGEFAC,NDEF3,NFAC,NSTRES)               !Outputs
@@ -1367,6 +1432,7 @@ C-SPE             RGFILL = 1.4-0.003*(TEMPM-27.5)**2                  !
                       ELSE                                            !
                           SUMDTT = P5                                 !
                           WRITE(MESSAGE(1),2700) DOY                  !
+      PRINT *, "MZ_GROSUB CALLING WARNING1, ",ERRKEY, MESSAGE
                           CALL WARNING(1,ERRKEY, MESSAGE)             !
                           WRITE (     *,2700) DOY                     !
                           IF (IDETO .EQ. 'Y') THEN                    !
@@ -1381,6 +1447,7 @@ C-SPE             RGFILL = 1.4-0.003*(TEMPM-27.5)**2                  !
                   IF (CMAT.GE.CARBOT) THEN
                   SUMDTT = P5                                         !
                   WRITE(MESSAGE(1),2700) DOY                          !
+      PRINT *, "MZ_GROSUB CALLING WARNING2, ",ERRKEY, MESSAGE
                   CALL WARNING(1,ERRKEY, MESSAGE)                     !
                   WRITE (     *,2700) DOY                             !
                   IF (IDETO .EQ. 'Y') THEN                            !
@@ -1529,6 +1596,7 @@ C ** JIL Better use a parameter instead of 6.0 (read in Ecotype file?)
           IF (LEAFNO .GT. 4 .AND. LAI .LE. 0.0 .AND. ISTAGE .LE. 4
      &                  .AND. ICOLD .GT. 6) THEN
               WRITE(MESSAGE(1),2800) yrdoy-yrplt
+      PRINT *, "MZ_GROSUB CALLING WARNING3, ",ERRKEY, MESSAGE
               CALL WARNING(1,ERRKEY, MESSAGE)
               WRITE (*,2800) yrdoy-yrplt
               IF (IDETO .EQ. 'Y') THEN
@@ -1539,6 +1607,7 @@ C ** JIL Better use a parameter instead of 6.0 (read in Ecotype file?)
           ELSE
               IF (ICOLD .GE. 15) THEN
                   WRITE(MESSAGE(1),2800) yrdoy-yrplt
+      PRINT *, "MZ_GROSUB CALLING WARNING4, ",ERRKEY, MESSAGE
                   CALL WARNING(1,ERRKEY, MESSAGE)
                   WRITE (*,2800) yrdoy-yrplt
                   IF (IDETO .EQ. 'Y') THEN
@@ -1565,6 +1634,7 @@ C ** JIL Better use a parameter instead of 6.0 (read in Ecotype file?)
           IF (LAI .LE. 0.1 .AND. ISTAGE .LT. 4
      &                 .AND. NWSD .GT. 10) THEN
               WRITE(MESSAGE(1),2801) yrdoy-yrplt
+      PRINT *, "MZ_GROSUB CALLING WARNING5, ",ERRKEY, MESSAGE
               CALL WARNING(1,ERRKEY, MESSAGE)
               WRITE (*,2801) yrdoy-yrplt
               IF (IDETO .EQ. 'Y') THEN
@@ -1633,6 +1703,7 @@ C--------------------------------------------------------------
                 PGRORT = PCARB*GRORT/CARBO
               ENDIF
 
+      PRINT *, "MZ_GROSUB CALLING MZ_NUPTAK"
               CALL MZ_NUPTAK(
      %        RANC, ROOTN,RTWT,TANC,STOVN,STOVWT,TRNU,NLAYR,
      %        RLV,NO3,NH4,PDWI,TCNP,UNO3,UNH4,
@@ -1656,8 +1727,10 @@ C--------------------------------------------------------------
           EARWT = MAX(0.0,EARWT)
           PLTPOP = MAX(0.0,PLTPOP)
           EARS = MAX(0.0,EARS)
+      PRINT *, "MZ_GROSUB CALLING GETPUT_PLANTVAR"
            CALL GETPUT_PLANTVAR('GET',PLANTVAR)
             PLANTVAR%PLTPOP  = PLTPOP
+      PRINT *, "MZ_GROSUB CALLING GETPUT_PLANTVAR"
            CALL GETPUT_PLANTVAR('PUT',PLANTVAR)
 
           RTWT = MAX(0.0,RTWT)
@@ -1917,6 +1990,26 @@ C----------------------------------------------------------------------
 
       ENDIF       !Endif for DYNAMIC LOOP
 
+      CALL GETPUT_MZ_GROSUB('PUT', SECTION, FILEIO, C80, FILECC, 
+     +  AREALF, ASMDOT, BD, CANHT, CANWH, CARBOT, CO2X, CO2Y, 
+     +  DUMMY, EP1, pp1, pp2, FSLFW, FSLFN, GRF, GROEAR, GROGRN, 
+     +  GROLF, GROSTM, HI, HIP, LAIDOT, LEAFNOE, CumLeafSenes, 
+     +  CumLeafSenesY, CumLfNSenes, LFWTE, LIFAC, TAW, DTAW, NDEF3, 
+     +  NFAC, NPOOL, NPOOL1, NPOOL2, NSDR, NSINK, P3, PAR, 
+     +  PARSR, PC, PCARB, PCNGRN, PCNL, PCNRT, PCNSD, PCNST, PCO2, 
+     +  PRFTC, SLPF, PLAE, PLAS, PODNO, PODWT, PPLTD, PRFT, RANC, 
+     +  RANCE, RGFILL, RGFIL, RLWR, RMNC, RNLAB, RNOUT, RSGR, RSGRT, 
+     +  RTWO, RTWTE, RTWTO, RUE, RWUMX, SATFAC, SDSIZE, SDSZ, SDWT, 
+     +  SEEDNO, SEEDRV, SEEDRVE, SFAC, SHELPC, SI1, SI2, SI3, SI4, 
+     +  SLAN, SLA, SLFC, SLFN, SLFT, SLFW, Stg2CLS, STMWTO, STMWTE, 
+     +  SUMEX, SUMRL, SWEXF, SWIDOT, SWMAX, SWMIN, TANCE, 
+     +  TAVGD, TCNP, TEMPM, TFAC, TI, TMNC, TNLAB, TOPWT, TSS, 
+     +  VANC, VSTAGE, WLIDOT, WRIDOT, WSIDOT, WTLF, XANC, XLFWT, 
+     +  XNF, YIELDB, RZrwu, RZtrwup, AVG_HROOT, WTDEP, qsr, TRWUP1, 
+     +  CMAT, EMAT, FOUND, I, ICOLD, ISECT, L, LINC, LNUM, LUNCRP, 
+     +  LUNIO, NWSD, RSTAGE, PATHL, yrplt, ISTRESS, iresetlai,iresetht1,
+     +  alaireset, WSI, heightset)
+      PRINT *, "EXITING GROSUB"
       RETURN
 
 C----------------------------------------------------------------------

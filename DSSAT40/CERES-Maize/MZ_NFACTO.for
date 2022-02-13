@@ -22,7 +22,7 @@ C----------------------------------------------------------------------
       
       USE ModuleDefs
       IMPLICIT NONE
-      SAVE
+C       SAVE
 C----------------------------------------------------------------------
 C                     Variable Declaration
 C----------------------------------------------------------------------
@@ -37,7 +37,7 @@ C----------------------------------------------------------------------
       INTEGER     DYNAMIC     
 C     ----------------------------------------------------------------
 
-
+      CALL GETPUT_MZ_NFACTO('GET', AGEFAC, NDEF3, NFAC, NSTRES)
       IF(DYNAMIC.EQ.RUNINIT) THEN
           NSTRES = 1.0    
           AGEFAC = 1.0    
@@ -97,6 +97,8 @@ C     ----------------------------------------------------------------
       ENDIF
 
  
+      CALL GETPUT_MZ_NFACTO('PUT', AGEFAC, NDEF3, NFAC, NSTRES)
+      PRINT *, 'EXITING MZ_NFACTO'
       RETURN
 
       END SUBROUTINE MZ_NFACTO

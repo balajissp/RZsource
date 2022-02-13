@@ -67,15 +67,18 @@ C    Input and Initialization
 C***********************************************************************
       IF (DYNAMIC .EQ. INIT) THEN
 C-----------------------------------------------------------------------
+      PRINT *, "AUTHAR CALLING IPAHAR"
       CALL IPAHAR(CONTROL,
      &    HPC, HBPC, HDATE, HDLAY, HLATE, HSTG,           !Output
      &    NHAR, SWPLTL, SWPLTH, SWPLTD)                   !Output
 
+      PRINT *, "AUTHAR CALLING GETLUN"
       CALL GETLUN('OUTO', NOUTDO)
 
 C-----------------------------------------------------------------------
 C     Adjust for multi year runs
 C-----------------------------------------------------------------------
+      PRINT *, "AUTHAR ADJUSTING MULTI YR RUNS"
       IF (MULTI .GT. 1) THEN
         IF (NHAR .GT. 0 .AND. IHARI .NE. 'D') THEN
           DO I = 1, NHAR
@@ -92,6 +95,7 @@ C-----------------------------------------------------------------------
 C     Adjust for crop rotations
 C-----------------------------------------------------------------------
 !      IF (RNMODE .EQ. 'Q') THEN
+      PRINT *, "AUTHAR adjust crop rotations"
       IF (INDEX('FQ',RNMODE) > 0) THEN
         IF (NHAR .GT. 0 .AND. HDATE(1) .LT. YRSIM .AND. 
      &          IHARI .NE. 'D') THEN
@@ -125,6 +129,7 @@ C***********************************************************************
 C***********************************************************************
 C     Daily integration
 C***********************************************************************
+      PRINT *, "AUTHAR daily integration"
       ELSEIF (DYNAMIC .EQ. INTEGR) THEN
 
       YREND = -99
@@ -216,6 +221,7 @@ C           to account for harvest loss of the crop;
 
 !         Today is within harvest window.
 
+          PRINT *, "AUTHAR harvest clauses complete"
           IF (ISWWAT .EQ. 'Y') THEN
 C           Compute average soil moisture as percent, AVGSW***
             I = 1

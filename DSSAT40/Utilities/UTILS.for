@@ -924,7 +924,7 @@ c Liwang Ma        IPX = INDEX(PATHX,' ')
 !       Last, check for file in C:\DSSAT4 directory
          pathsr=control % pathsr
         datax = trim(pathsr) // filecde
-c       DATAX = "C:\RZWQM2\databases\dssat\" // FILECDE   !temp fix, Liwang Ma
+        DATAX = "C:\RZWQM2\databases\dssat\" // FILECDE   !temp fix, Liwang Ma
         INQUIRE (FILE = DATAX, EXIST = FEXIST)
       ENDIF
 

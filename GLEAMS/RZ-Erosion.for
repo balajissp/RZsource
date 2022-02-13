@@ -24,24 +24,17 @@ C======================================================================
    20  AtEOF = .true.                                 !AtEOF takes precedence over ReadError 
    30  ReadError = .true.
    40 If (AtEOF) then
-        PRINT *, "CALLING LogMessage"
         Call LogMessage('Erosion Model is inactive')  !notify non-function 
       Else If (ReadError) then
-        PRINT *, "CALLING LogMessage"
         Call LogMessage('Error during scan for Gleams parameters') !error message to screen
 	  Call LogMessage('STOP')                       !kill run 
       Else
-        PRINT *, "CALLING Echo"
         Call Echo(Io)                                 ! skip the rest of the descriptive block
         ErosionisActive = .true.                        !set to an active erosion model state	 
-        PRINT *, "CALLING LogMessage"
         Call LogMessage('GLEAMS EROSION/SEDIMENT YIELD- Version 3.0')
         Call PrepareToReadErosionParameters
-        PRINT *, "CALLING ReadErosionParameters"
         Call ReadErosionParameters(Io,Xtemp,Sltemp)
-        PRINT *, "CALLING ReportErosionParameters"
         Call ReportErosionParameters(Io,Xtemp,Sltemp,DnYear)
-        PRINT *, "CALLING ProcessErosionParameters"
         Call ProcessErosionParameters(DnYear)
       endif
       return
@@ -85,17 +78,13 @@ C======================================================================
       Character I_4*4, Astr*255
       LOGICAL UseEnrichment,ErosionActive ! RM - had to define the types.
        NCARD  = 0   !card 0 = triplet of Gleams hydrology parameters
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        Read (Io,'(A)',Err=290) Astr
        UseEnrichment = (Astr(1:1) .eq. 'T')
        Write(Astr,'(A,L2)')'Use Enrichment Factor = ',UseEnrichment
-       PRINT *, "CALLING Logmessage"
        Call Logmessage(Astr)
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        Read (Io,'(A)',Err=290) Astr
-       PRINT *, "CALLING RemoveComments"
        Call RemoveComments(Astr)
        READ (Astr,*,Err=290) Dacre_temp,CHS_temp,WLW   !Christopher Demar reads only WLW. He may have changed the input format
 c       READ (Astr,*,Err=290) WLW   !Christopher Demar reads only WLW. He may have changed the input format
@@ -110,7 +99,6 @@ c       READ (Astr,*,Err=290) EROOUT
        metflg=1                                                       ! metric system only
        Call Initialize 
        NCARD  = 5
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        READ (IO,*,Err=290) SSCLY 
        NPART  = 5
@@ -119,12 +107,10 @@ c       READ (Astr,*,Err=290) EROOUT
    20    DIA(K) = DIA(K)/MillimetersPerFoot
 C READ VALUES FOR OVERLAND FLOW THAT WILL REMAIN CONSTANT WITH RESPECT TO TIME
        NCARD  = 6                                        
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        READ (IO,*,Err=290) NPTSO,DAOVR
        if (daovr.le.0.0d0) then
            erosionactive=.false.   !no erosion if drainage area is zero.
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('DRAINAGE AREA IS ZERO <===================')
        endif
 c
@@ -132,11 +118,9 @@ c
        READ  (IO,*,Err=290) (XTEMP(I),SLTEMP(I), I=1,NPTSO)
        if (sltemp(1).le.0.0d0) then
            erosionactive=.false.   !no erosion if slope is zero.
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('SOIL SLOPE IS ZERO <======================')
        endif
        NCARD  = 8                                        
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        READ (IO,*,Err=290) NXK,(XSOIL(I),KSOIL(I),I=1,NXK)
       Goto 300                                                    !if here, all is ok, so hop and exit
@@ -155,7 +139,6 @@ c      include 'Rz_Params.inc'  !sab 6/2002
       double precision Xtemp,Sltemp
       Integer DNYEAR(40),FLAGP(10),IO,SetReportFlag
        IF (XSOIL(NXK) .NE. 1.0d0) THEN
-          PRINT *, "CALLING LogMessage"
           Call LogMessage('  LAST XSOIL VALUE READ IN WAS NOT 1.0,'//
      &      ' BUT WAS RESET TO 1.0')
           XSOIL(NXK) = 1.0d0
@@ -222,18 +205,15 @@ c      include 'Rz_Params.inc'  !sab 6/2002
       integer CTLO,Flags,FlagC,idwn,NPTSC
       character I_4*4
        NCARD  =  9                        
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        READ (IO,*,Err=290) NSC,CTLO,ra,rn,dachl,dachu,z 
        FLAGS = 1
        FLAGC = 3
        NCARD  = NCARD+1
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        READ (IO,*,Err=290) (XSLP(I),SSLP(I),I=1,NSC)
        lngth = xslp(nsc)                
        NCARD  = NCARD+1
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        READ (IO,*,Err=290) CTLZ,CTLN,CTLSL
        YBASE1 = 0.0
@@ -294,7 +274,6 @@ c      include 'Rz_Params.inc'  !sab 6/2002
       character I_4*4
        NCARD  = 12                                                   
        PAC    = 1
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        READ (IO,*,Err=290) DAPND,INTAKE,FRONT,DRAW,SIDE,ctl,DIAO,C   
        IF (METFLG .EQ. 1) THEN
@@ -522,21 +501,15 @@ C
       INOW=ILAST
 C
       IF((NPTSO.GT.10).OR.(NPTSO.LE.0))THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('RUN STOPPED : INPUT ERROR. THE NUMBER OF '
      &                   //'POINTS READ IN MUST BE > 0 OR <= 10')
-         PRINT *, "CALLING Logmessage"
          Call Logmessage('  NPTSO='//I_4(NPtso))
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('STOP')
       else  IF(XTEMP(NPTSO).EQ.0.0)THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('RUN STOPPED : INPUT ERROR. EITHER THE '//
      &       'LAST DISTANCE POINT WAS READ AS 0 OR THE NUMBER OF')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('DISTANCE AND SLOPE POINTS WAS LESS THAN '//
      &        'NPTSO OR ONLY 1 POINT WAS READ & THE DISTANCE WAS ZERO')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('STOP')
       ENDIF
 C
@@ -554,19 +527,14 @@ C
       ENDIF
 C
       IF (DABS(XTEMP(1)+XTEMP(2)).LE.Apprx0) THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('RUN STOPPED : INPUT ERROR. 1st 2 TWO DISTANCE'
      &       //' POINTS CAN NOT BE 0; Xtemp(1)=Xtemp(2)')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('STOP')
       else IF(DABS(XTEMP(NPTSO-1)-XTEMP(NPTSO)).LE.Apprx0) THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('RUN STOPPED : INPUT ERROR.LAST 2 DISTANCE '//
      &       'POINTS CAN NOT BE EQUAL:')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage(' XTEMP(NPTSO-1)='//G12_5(Xtemp(NPTSO-1))//
      &       '& XTEMP(NPTSO)='//G12_5(Xtemp(NPTSO)))
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('STOP')
       ENDIF
 C
@@ -636,13 +604,10 @@ C
       DO 60 I=2,NPTSO
 C
          IF((X1_ero(I).LT.X1_ero(I-1)).OR.(S1_ero(I).LT.0.0))THEN
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('RUN STOPPED : INPUT ERROR. DISTANCE PTS '
      &     //'MUST ALWAYS INCREASE - SLOPE CAN NOT BE NEGATIVE')
-           PRINT *, "CALLING LogMessage"
            Call LogMessage(' XTEMP ='//G12_5(X1_ero(I))//
      &                   ' SLTEMP ='//G12_5(S1_ero(i)))
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('STOP')
          ENDIF
 C
@@ -727,27 +692,19 @@ C
          ENDIF
 C
          IF(NEWPTS.GT.26)THEN
-            PRINT *, "CALLING LogMessage"
             Call LogMessage('RUN STOPPED : INPUT ERROR. THERE ARE TOO '
      &         //'MANY CURVED SLOPED SEGMENTS. MAXIMUM NUMBER OF ')
-            PRINT *, "CALLING LogMessage"
             Call LogMessage('SEGMENTS ALLOWED : ')
-            PRINT *, "CALLING LogMessage"
             Call LogMessage('1) TWO CONCAVE AND TWO CONVEX WITH EACH '
      &         //'BEING SEPARATED BY A UNIFORM SEGMENT; OR')
-            PRINT *, "CALLING LogMessage"
             Call LogMessage('2) TWO CONCAVE AND THREE CONVEX OR THREE'
      &         //' CONCAVE AND TWO CONVEX IN DIFFERENT')
-            PRINT *, "CALLING LogMessage"
             Call LogMessage('   COMBINATIONS (FIVE CURVED - NO UNIFORM)'
      &         //' THE SUBROUTINE ADDS POINTS TO CURVED')
-            PRINT *, "CALLING LogMessage"
             Call LogMessage('SEGMENTS - THE TOTAL NUMBER OF POINTS'
      &         //' SHOULD BE LESS THAN OR EQUAL TO 26')
-            PRINT *, "CALLING LogMessage"
             Call LogMessage('TOTAL NUMBER OF POINTS RETURNED BEFORE '
      &        //'EXITING MAIN LOOP ='//I_4(NewPts))
-            PRINT *, "CALLING LogMessage"
             Call LogMessage('STOP')
           ENDIF
 C
@@ -864,30 +821,21 @@ c      include 'Rz_Params.inc'
      1                COLMN1(NPOS),GIVEN)
        RETURN
  100   CONTINUE
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('Routine Table:GIVEN IS OUTSIDE THE RANGE OF '
      &   //'THE TABLE.USE THIS INFO TO IDENTIFY THE FUNCTION WHERE')
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('THE PROBLEM OCCURED')
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('FLAG: 1 - GIVEN COLUMN 1 FIND COLUMN 2 '//
      &    '(COLUMN 1 DECREASES)')
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('      2 - GIVEN COLUMN 1 FIND COLUMN 2 '//
      &    '(COLUMN 1 INCREASES)')
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('      3 - GIVEN COLUMN 2 FIND COLUMN 1 '//
      &    '(COLUMN 2 DECREASES)')
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('      4 - GIVEN COLUMN 2 FIND COLUMN 1 '//
      &    '(COLUMN 2 INCREASES)')
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('THE FLAG = '//I_4(Flag)//' GIVEN VALUE = '//
      &    G12_5(Given))
-      PRINT *, "CALLING Logmessage"
       Call Logmessage('THIRD VALUE FROM COLUMN 1 = '//G12_5(Colmn1(3))
      &   //' THIRD VALUE FROM COLUMN 2 = '//G12_5(Colmn2(3)))
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('STOP')
       END
 C======================================================================
@@ -906,7 +854,6 @@ C
 C      READ AND ECHO THE NUMBER OF YEARS IN A CROP ROTATION
 C
        NCARD  = 13
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        READ (IO,*,Err=290) NYEARS
        IF (NYEARS.LE.0) RETURN
@@ -920,7 +867,6 @@ C
 C          READ AND ECHO THE DATES FOR ONE YEAR
 C
            NCARD  = 15
-           PRINT *, "CALLING EchoLine"
            Call EchoLine(Io)
            READ (io,2000,Err=290) (Cdate_ero(IDATE),IDATE=DATBEG,DATEND)
 2000       format (10i8)
@@ -939,7 +885,6 @@ C      READ AND ECHO THE DISTANCE VALUES FOR OVERLAND FLOW PARAMETERS
 C      THAT WILL CHANGE WITH RESPECT TO TIME
 C
        NCARD  = 16
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        READ (IO,*,Err=290) NXF,(XFACT(I),I=1,NXF)
 C
@@ -964,16 +909,13 @@ C
            DATEND = DATBEG + DNYEAR(NYEAR)-1
            DO 60 IXF=1,NXF
                NCARD  = 17
-               PRINT *, "CALLING EchoLine"
                Call EchoLine(Io)
                READ (IO,*,Err=290)(CFACT(IXF,IDATE),IDATE=DATBEG,DATEND)
                NCARD  = NCARD+1
-               PRINT *, "CALLING EchoLine"
                Call EchoLine(Io)
                READ (IO,*,Err=290)(Pfact_ero(IXF,IDATE),IDATE=
      &                                     DATBEG,DATEND)
                NCARD  = NCARD+1
-               PRINT *, "CALLING EchoLine"
                Call EchoLine(Io)
                READ (IO,*,Err=290)(NFACT(IXF,IDATE),IDATE=DATBEG,DATEND)
   60       CONTINUE
@@ -986,7 +928,6 @@ C      READ AND ECHO THE DISTANCE VALUES FOR CHANNEL ONE PARAMETERS
 C      THAT WILL CHANGE WITH RESPECT TO TIME
 C
        NCARD  = 20
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        READ (IO,*,Err=290) NXC1,(XCHN1(I),I=1,NXC1)
 C
@@ -1012,7 +953,6 @@ C
            DATEND = DATBEG+DNYEAR(NYEAR)-1
            DO 140 IXC1=1,NXC1
               NCARD  = 21
-              PRINT *, "CALLING EchoLine"
               Call EchoLine(Io)
               READ (IO,*,Err=290)(NCHN1(IXC1,IDATE),IDATE=DATBEG,DATEND)
                IF (FLAGC1.LT.3) GO TO 130
@@ -1031,18 +971,14 @@ C
  120           CONTINUE
                IF (NBAD.EQ.0) GO TO 130
                WRITE (Astr,'(20A4)') (MARKER(I),I=1,MARK)
-               PRINT *, "CALLING LogMessage"
                Call LogMessage(Astr)
-               PRINT *, "CALLING LogMessage"
                Call LogMessage('NATURALLY ERODED CHANNEL - THE '//
      &             'MANNINGS N MUST EQUAL THAT FOR BARE SOIL')
  130           CONTINUE
                NCARD  = NCARD+1
-              PRINT *, "CALLING EchoLine"
               Call EchoLine(Io)
               READ (IO,*,Err=290)(DCHN1(IXC1,IDATE),IDATE=DATBEG,DATEND)
                NCARD  = NCARD+1
-              PRINT *, "CALLING EchoLine"
               Call EchoLine(Io)
               READ (IO,*,Err=290)(WCHN1(IXC1,IDATE),IDATE=DATBEG,DATEND)
                 DO 132 IDATE=DATBEG,DATEND
@@ -1107,7 +1043,6 @@ C      READ AND ECHO THE DISTANCE VALUES FOR CHANNEL TWO PARAMETERS
 C      THAT WILL CHANGE WITH RESPECT TO TIME
 C
        NCARD  = 20
-       PRINT *, "CALLING EchoLine"
        Call EchoLine(Io)
        READ (IO,*,Err=290) NXC2,(XCHN2(I),I=1,NXC2)
 C
@@ -1132,7 +1067,6 @@ C
            DATEND = DATBEG+DNYEAR(NYEAR)-1
            DO 220 IXC2=1,NXC2
                NCARD  = 21
-              PRINT *, "CALLING EchoLine"
               Call EchoLine(Io)
               READ (IO,*,Err=290)(NCHN2(IXC2,IDATE),IDATE=DATBEG,DATEND)
                IF (FLAGC2.LT.3) GO TO 210
@@ -1151,18 +1085,14 @@ C
  200           CONTINUE
                IF (NBAD.EQ.0) GO TO 210
                WRITE (Astr,'(20A4)') (MARKER(I),I=1,MARK)
-               PRINT *, "CALLING LogMessage"
                Call LogMessage(Astr)
-               PRINT *, "CALLING LogMessage"
                Call LogMessage('NATURALLY ERODED CHANNEL - THE '//
      &             'MANNINGS N MUST EQUAL THAT FOR BARE SOIL')
  210           CONTINUE
                NCARD  = NCARD+1
-              PRINT *, "CALLING EchoLine"
               Call EchoLine(Io)
               READ (IO,*,Err=290)(DCHN2(IXC2,IDATE),IDATE=DATBEG,DATEND)
               NCARD  = NCARD+1
-              PRINT *, "CALLING EchoLine"
               Call EchoLine(Io)
               READ (IO,*,Err=290)(WCHN2(IXC2,IDATE),IDATE=DATBEG,DATEND)
                DO 215 IDATE=DATBEG,DATEND
@@ -1245,71 +1175,47 @@ c      include 'Rz_Params.inc'
        save
       data Bl/'                '/
        IF (FLAG.EQ.0) GO TO 10
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('INITIAL CONSTANTS')
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('BEGINNING YEAR FOR THIS RUN '//I_4(Byear))
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('MANNING N BARE SOIL (OVER) '//G12_5(Nbarov))
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('MANNING N BARE SOIL (CHAN) '//G12_5(Nbarch))
        IF (METFLG .EQ. 0) THEN
-          PRINT *, "CALLING LogMessage"
           Call LogMessage('WT. DENSITY SOIL (IN PLACE) '//G12_5(WtdSoi)
      &             //' LBSF/FT**3 ')
-          PRINT *, "CALLING LogMessage"
           Call LogMessage('CHANNEL ERODIBILITY FACTOR '//G12_5(Kch)//
      &          '  (LBS/FT**2 SEC)/(LBS/FT**2)**1.05')
        ELSE
           BD = WTDSOI/62.4d0
           CHK=KCH*0.1317d0
-          PRINT *, "CALLING LogMessage"
           Call LogMessage('WT. DENSITY SOIL (IN PLACE) '//G12_5(BD)
      &          //' G/CM**3 ')
-          PRINT *, "CALLING LogMessage"
           Call LogMessage('CHANNEL ERODIBILITY FACTOR '//G12_5(Kch)//
      &          ' (TONNE-HA-H/HA-MJ-MM)')
        ENDIF
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('YALIN CONSTANT (ALL PART.) '//G12_5(Yalcon))
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('MOMENTUM COEFF. FOR NONUNIFORM VELOCITY '//
      &      'IN CROSS SECTION '//G12_5(Beta_ero)//' (NO UNITS)')
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('DISTRIBUTION OF PRIMARY PARTICLES'
      &    //' AND ORGANIC MATTER IN THE ORIGINAL SOIL MASS')
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('   TYPE        FRACTION     SPECIFIC SURFACE'
      &                           //' (M**2/G OF SOIL)')
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('CLAY'//G12_5(SolCly)//'  '//G12_5(SSCly))
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('SILT'//G12_5(SolSlt)//'  '//G12_5(SSSlt))
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('SAND'//G12_5(SolSnd)//'  '//G12_5(SSSnd))
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('            (M**2/G OF ORGANIC CARBON)')
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('ORGANIC MATTER'//G12_5(SolOrg)//'  '//
      &                G12_5(SSOrg))
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('(ORGANIC CARBON = ORGANIC MATTER/1.73)')
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('INDEX OF SPECIFIC SURFACE '//G12_5(SSSoil)//
      &                ' M**2/G OF TOTAL SOIL')
   10   CONTINUE
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('PARTICLE SPECIFICATIONS')
        IF (METFLG .EQ. 0) THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('TYPE        DIA.'//Bl//'SPGRAV.   FRAC. IN')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage(' NO.        MM'//Bl//'GM/CM**3  DETACH. SED')
        ELSE
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('TYPE       DIA.    EQSAND DIA. '//
      &                       '  SPGRAV.   FRAC. IN')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage(' NO.        MM         MM      '//
      1                ' GM/CM**3  DETACH. SED.')
        ENDIF
@@ -1317,21 +1223,16 @@ c      include 'Rz_Params.inc'
            DIAMM = 304.8d0*DIA(K)
            WRITE (Astr,'(10X,I2,8X,F5.3,6X,12X,F4.2,7X,F4.2)') 
      &                    K,DIAMM, SPGR(K),FRAC(K)
-           PRINT *, "CALLING LogMessage"
            Call LogMessage(Astr)
   20   CONTINUE
        IF (FLAG.NE.0) then
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('PARTICLE COMPOSITION')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('TYPE'//Bl//'PRIMARY PARTICLE FRACTIONS')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage(' NO.      CLAY       SILT       SAND'//
      &             'ORGANIC MATTER')
          DO 30 K=1,NPART
            WRITE (Astr,'((13X,I2,1X,3(5X,F6.3),8X,F6.3))') 
      &          K,FRCLY(K),FRSLT(K),FRSND(K),FRORG(K)
-           PRINT *, "CALLING LogMessage"
            Call LogMessage(Astr)
   30     CONTINUE
        endif
@@ -1351,68 +1252,49 @@ c      include 'Rz_Params.inc'
       Data Stype/'A SHARP CONCAVE SLOPE BREAK','CONCAVE','UNIFORM',
      &           'CONVEX','A SHARP CONVEX SLOPE BREAK'/
        DACRES = DAOVR/43560.0d0
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('OVERLAND FLOW INPUTS')
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('OVERLAND FLOW TOPOGRAPHY')
        IF(METFLG .EQ. 0) THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('OVERLAND AREA     '//G12_5(Dacres)//' ACRES')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('SLOPE LENGTH      '//G12_5(Slngth)//'   FT')
        ELSE
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('OVERLAND AREA     '//G12_5(DACRES/2.471d0)
      &         //' Hectares')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('SLOPE LENGTH      '//
      &       G12_5(SLNGTH/FeetPerMeter)//'   M')
        ENDIF
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('AVERAGE SLOPE     '//G12_5(AvgSlp))
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('SEGMENT TYPES DEFINING OVERLAND FLOW PROFILE')
        IF(NSEG.EQ.1)THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('The Profile is '//Ptype(Flagov(1)))
        ELSE
           DO 10 I=1,NSEG
-            PRINT *, "CALLING LogMessage"
             Call LogMessage('Segment '//I_4(I)//' is '//
      &                              Stype(Flagov(i)))
   10      CONTINUE
        ENDIF
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('SLOPE STEEPNESS ALONG OVERLAND FLOW PROFILE')
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('DISTANCE    DISTANCE      SLOPE')
        IF(METFLG .EQ. 0) THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('  FEET       NONDIM.')
-       PRINT *, "CALLING LogMessage"
        Call LogMessage(' METERS      NONDIM.')
           DO 20 I=1,NPTSO
    20        Call LogMessage(G12_5(XPOVR(I))//G12_5(XPOVR(I)/SLNGTH)
      &                 //G12_5(SPOVR(I)) )
        ELSE
-         PRINT *, "CALLING LogMessage"
          Call LogMessage(' METERS      NONDIM.')
           DO 22 I=1,NPTSO
   22         Call LogMessage(G12_5(XPOVR(I)/FeetPerMeter)//
      &           G12_5(XPOVR(I)/SLNGTH)//G12_5(SPOVR(I)))
        ENDIF
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('SOIL ERODIBILITY ALONG OVERLAND FLOW PROFILE')
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('DISTANCE    DISTANCE      SOIL')
        IF(METFLG .EQ. 0) THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('  FEET       NONDIM.      EROD')
          DO 30 I=1,NXK
   30       Call LogMessage(G12_5(XSoil(I))//
      &           G12_5(Xsoil(I)/SLNGTH)//G12_5(Ksoil(I)))
        ELSE
-         PRINT *, "CALLING LogMessage"
          Call LogMessage(' METERS      NONDIM.      EROD')
          DO 32 I=1,NXK
   32       Call LogMessage(G12_5(XSoil(I)/FeetPerMeter)//
@@ -1433,9 +1315,7 @@ c      include 'Rz_Params.inc'
       character Astr*255, G12_5*12,I_4*4
       INTEGER DATBEG,DATEND,DNYEAR(40)
        save
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('OVERLAND FLOW COVER AND MANAGEMENT PARAMETERS')
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('(ONE TABLE FOR EACH YEAR OF THE '//I_4(Nyears)//
      &                   ' YEAR ROTATION)')
        DATBEG = 1
@@ -1443,25 +1323,19 @@ c      include 'Rz_Params.inc'
          DATEND = DATBEG+DNYEAR(NYEAR)-1
          WRITE (Astr,'(A,I2,A,10I8)') 'Year ',NYEAR,' Dates:',
      &                          (Cdate_ero(IDATE),IDATE=DATBEG,DATEND)
-         PRINT *, "CALLING logMessage"
          Call logMessage(Astr)
          DO 10 I=1,NXF
            IF (METFLG .EQ. 0) THEN
-              PRINT *, "CALLING LogMessage"
               Call LogMessage('X ='//G12_5(XFACT(I))//' Ft')
            ELSE
-              PRINT *, "CALLING LogMessage"
               Call LogMessage('X ='//G12_5(XFACT(I)/3.281)//' Ft')
            ENDIF
            WRITE (Astr,'(10F8.3)') (CFACT(I,IDATE),IDATE=DATBEG,DATEND)
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('SOIL LOSS RATIO   '// Astr)
            WRITE (Astr,'((10F8.3))')(Pfact_ero(I,IDATE),
      &                                      IDATE=DATBEG,DATEND)
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('CONTOURING FACTOR '// Astr)
            WRITE (Astr,'((10F8.3))')(NFACT(I,IDATE),IDATE=DATBEG,DATEND)
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('MANNINGS N        '// Astr)
   10       CONTINUE
            DATBEG = DATBEG+DNYEAR(NYEAR)
@@ -1483,49 +1357,36 @@ c      include 'Rz_Params.inc'
      &           'A NATURALLY ERODED CHANNEL   SIDE SLOPE='/
        save
        IF (INDXC.NE.2) then
-         PRINT *, "CALLING MapVars"
          Call MapVars(FLAGC,FLAGC1,FLAGS,FLAGS1,CTLO ,CTLO1,CTLZ ,CTLZ1,
      &     CTLN ,CTLN1,CTLSL,CTLSL1,RA   ,RA1,RN   ,RN1,YBASE,YBASE1,
      &     Z    ,Z1,LEFF ,LEFF1,DACREU,DACHU1,DACREL,DACHL1)
        else
-         PRINT *, "CALLING MapVars"
          Call MapVars(FLAGC,FLAGC2,FLAGS,FLAGS2,CTLO ,CTLO2,CTLZ ,CTLZ2,
      &     CTLN ,CTLN2,CTLSL,CTLSL2,RA   ,RA2,RN   ,RN2,YBASE,YBASE2,
      &     Z    ,Z2,LEFF ,LEFF2,DACREU,DACHU2,DACREL,DACHL2)
        endif
        LNGTHU         =LEFF-LNGTHL
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('CHANNEL '//I_4(Indxc)//' CHARACTERISTICS')
        IF (METFLG .EQ. 0) THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('CHANNEL LENGTH         '//
      &           G12_5(Lngthl)//'   FT')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('DRAINAGE AREA UPPER END'//
      &           G12_5(Dacreu)//' ACRES')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('EFFCT. LENGTH UPPER END'//
      &           G12_5(Lngthu)//'   FT')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('DRAINAGE AREA LOWER END'//
      &           G12_5(Dacrel)//' ACRES')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('EFFCT. LENGTH LOWER END'//
      &           G12_5(Leff)//'   FT')
        ELSE
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('CHANNEL LENGTH         '//
      &           G12_5(Lngthl/3.281)//'   M')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('DRAINAGE AREA UPPER END'//
      &           G12_5(Dacreu/2.471)//' HECTARES')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('EFFCT. LENGTH UPPER END'//
      &           G12_5(Lngthu/3.281)//'   M')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('DRAINAGE AREA LOWER END'//
      &           G12_5(Dacrel/2.471)//' HECTARES')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('EFFCT. LENGTH LOWER END'//
      &           G12_5(Leff/3.281)//'  M')
        ENDIF
@@ -1534,62 +1395,41 @@ c      include 'Rz_Params.inc'
        IF (FLAGC.EQ.3) Call LogMessage(Stype(3)//G12_5(Z))
 
        IF (FLAGS.NE.1) then
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('ENERGY GRADELINE:  SLOPE OF ENERGY '//
      &           'GRADELINE = SLOPE OF CHANNEL')
        ELSE !flags=1
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('ENERGY GRADELINE: USES THE ENERGY '
      &          //'GRADELINE CURVES')
          IF (CTLO.EQ.2) THEN
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('UNIFORM FLOW CONTROL:TRIANGULAR CHANNEL')
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('BOTTOM SLOPE = '//G12_5(Ctlsl))
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('SIDE SLOPE   = '//G12_5(Ctlz))
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('MANNINGS N   = '//G12_5(Ctln))
          ELSE IF (CTLO.EQ.3) THEN 
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('UNIFORM FLOW CONTROL:TRIANGULAR CHANNEL')
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('BOTTOM SLOPE = '//G12_5(Ctlsl))
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('SIDE SLOPE   = '//G12_5(Ctlz))
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('MANNINGS N   = N AT END OF CHANNEL')
          ELSE IF (CTLO.EQ.4) THEN
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('RATING CURVE CONTROL:Q = RA*(Y-YBASE)**RN')
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('RA    = '//G12_5(Ra))
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('RN    = '//G12_5(Rn))
            IF (METFLG .EQ. 0) THEN
-             PRINT *, "CALLING LogMessage"
              Call LogMessage('YBASE = '//G12_5(Ybase)//' FT.')
            ELSE
-             PRINT *, "CALLING LogMessage"
              Call LogMessage('YBASE = '//G12_5(Ybase/3.281)//' M')
            ENDIF
          ELSE
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('CRITICAL DEPTH CONTROL')
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('TRIANGULAR CONTROL CHANNEL :SIDE SLOPE = '
      &         //G12_5(Ctlz))
          ENDIF
        ENDIF !of flags.ne.1
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('SLOPE STEEPNESS ALONG CHANNEL '//I_4(Indxc))
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('DISTANCE    DISTANCE      SLOPE')
        IF (METFLG .EQ. 0) THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('  FEET       NONDIM.')
        ELSE
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('  METERS     NONDIM.')
        ENDIF
        DO 80 I=1,NPTSC
@@ -1600,7 +1440,6 @@ c      include 'Rz_Params.inc'
               WRITE (Astr,'(F7.1)') XPCHN(I)/3.281
            endif
            WRITE (Astr(9:),'(2(4X,F8.3))') XSTAR(INDXC,I),SPCHN(I)
-           PRINT *, "CALLING LogMessage"
            Call LogMessage(Astr)
   80   CONTINUE
        RETURN
@@ -1644,10 +1483,8 @@ c      include 'Rz_Params.inc'
        INTEGER DNYEAR(40),DATBEG,DATEND
        Character Astr*255, G12_5*12,I_4*4
        save
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('CHANNEL '//I_4(Indxc)//' COVER AND MANAGEMENT'
      &                  //' PARAMETERS')
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('   (ONE TABLE FOR EACH YEAR OF THE '//
      &         I_4(Nyears)//' YEAR ROTATION)')
        DATBEG = 1
@@ -1655,25 +1492,19 @@ c      include 'Rz_Params.inc'
          DATEND = DATBEG+DNYEAR(NYEAR)-1
          WRITE (Astr,'(A,I2,A,10I8)') 'Year ',NYEAR,' Dates: ',
      &                  (Cdate_ero(IDATE),IDATE=DATBEG,DATEND)
-         PRINT *, "CALLING LogMessage"
          Call LogMessage(Astr)
          IF(INDXC.NE.2) THEN
            IF(METFLG .EQ. 0) THEN
            DO 10 I=1,NXC1
-               PRINT *, "CALLING LogMessage"
                Call LogMessage('X = '//G12_5(Xchn1(i))//' FT')
                WRITE (Astr,1000) (NCHN1(I,IDATE),IDATE=DATBEG,DATEND)
  1000            Format(10(F8.3,1X))
-               PRINT *, "CALLING LogMessage"
                Call LogMessage('MANNINGS N         '//Astr)
                WRITE (Astr,1000) (CCHN1(I,IDATE),IDATE=DATBEG,DATEND)
-               PRINT *, "CALLING LogMessage"
                Call LogMessage('CR SHEAR (LB/FT**2)'//Astr)
                WRITE (Astr,1000) (SCHN1(I,IDATE),IDATE=DATBEG,DATEND)
-               PRINT *, "CALLING LogMessage"
                Call LogMessage('DEPTH SIDE (FT)    '//Astr)
                WRITE (Astr,1000) (DCHN1(I,IDATE),IDATE=DATBEG,DATEND)
-               PRINT *, "CALLING LogMessage"
                Call LogMessage('DEPTH MIDDLE (FT)  '//Astr)
                WRITE (Astr,1000) (WCHN1(I,IDATE),IDATE=DATBEG,DATEND)
    10          Call LogMessage('WIDTH (FT)         '//Astr)
@@ -1686,19 +1517,14 @@ c      include 'Rz_Params.inc'
                      WIDT1(J,K)=WCHN1(J,K)/FeetPerMeter
   12              CONTINUE
                   DISTM1(J)=XCHN1(J)/FeetPerMeter
-                  PRINT *, "CALLING LogMessage"
                   Call LogMessage('X = '//G12_5(Distm1(J))//' M')
                   WRITE (Astr,1000) (NCHN1(J,IDATE),IDATE=DATBEG,DATEND)
-                  PRINT *, "CALLING LogMessage"
                   Call LogMessage('MANNINGS N         '//Astr)
                   WRITE (Astr,1000) (TCHN1(J,M),M=DATBEG,DATEND)
-                  PRINT *, "CALLING LogMessage"
                   Call LogMessage('CR SHEAR (G/CM**2)'//Astr)
                   WRITE (Astr,1000) (SIDE1(J,M),M=DATBEG,DATEND)
-                  PRINT *, "CALLING LogMessage"
                   Call LogMessage('DEPTH SIDE (M)    '//Astr)
                   WRITE (Astr,1000) (CENT1(J,M),M=DATBEG,DATEND)
-                  PRINT *, "CALLING LogMessage"
                   Call LogMessage('DEPTH MIDDLE (M)  '//Astr)
                   WRITE (Astr,1000) (WIDT1(J,M),M=DATBEG,DATEND)
    13             Call LogMessage('WIDTH (M)         '//Astr)
@@ -1707,16 +1533,12 @@ c      include 'Rz_Params.inc'
            IF(METFLG .EQ. 0) THEN
            DO 30 I=1,NXC2
                WRITE (Astr,1000) (NCHN2(I,IDATE),IDATE=DATBEG,DATEND)
-               PRINT *, "CALLING LogMessage"
                Call LogMessage('MANNINGS N         '//Astr)
                WRITE (Astr,1000) (CCHN2(I,IDATE),IDATE=DATBEG,DATEND)
-               PRINT *, "CALLING LogMessage"
                Call LogMessage('CR SHEAR (LB/FT**2)'//Astr)
                WRITE (Astr,1000) (SCHN2(I,IDATE),IDATE=DATBEG,DATEND)
-               PRINT *, "CALLING LogMessage"
                Call LogMessage('DEPTH SIDE (FT)    '//Astr)
                WRITE (Astr,1000) (DCHN2(I,IDATE),IDATE=DATBEG,DATEND)
-               PRINT *, "CALLING LogMessage"
                Call LogMessage('DEPTH MIDDLE (FT)  '//Astr)
                WRITE (Astr,1000) (WCHN2(I,IDATE),IDATE=DATBEG,DATEND)
    30          Call LogMessage('WIDTH (FT)         '//Astr)
@@ -1729,19 +1551,14 @@ c      include 'Rz_Params.inc'
                      CENT2(J,K)=DCHN2(J,K)/FeetPerMeter
                      WIDT2(J,K)=WCHN2(J,K)/FeetPerMeter
   32              CONTINUE
-                  PRINT *, "CALLING LogMessage"
                   Call LogMessage('X = '//G12_5(Distm2(i))//' M')
                   WRITE (Astr,1000) (NCHN2(I,IDATE),IDATE=DATBEG,DATEND)
-                  PRINT *, "CALLING LogMessage"
                   Call LogMessage('MANNINGS N         '//Astr)
                   WRITE (Astr,1000) (TCHN2(J,M),M=DATBEG,DATEND)
-                  PRINT *, "CALLING LogMessage"
                   Call LogMessage('CR SHEAR (G/CM**2)'//Astr)
                   WRITE (Astr,1000) (SIDE2(J,M),M=DATBEG,DATEND)
-                  PRINT *, "CALLING LogMessage"
                   Call LogMessage('DEPTH SIDE (M)    '//Astr)
                   WRITE (Astr,1000) (CENT2(J,M),M=DATBEG,DATEND)
-                  PRINT *, "CALLING LogMessage"
                   Call LogMessage('DEPTH MIDDLE (M)  '//Astr)
                   WRITE (Astr,1000) (WIDT2(J,M),M=DATBEG,DATEND)
    33             Call LogMessage('WIDTH (M)         '//Astr)
@@ -1763,51 +1580,35 @@ c      include 'Rz_Params.inc'
        save
        DACREi  = DAPND/43560.0d0
        INTAKI = INTAKE*43200.0d0
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('IMPOUNDMENT INPUTS')
        IF(METFLG .EQ. 0) THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('DRAINAGE AREA '//G12_5(Dacrei)//' ACRES')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('INTAKE RATE   '//G12_5(Intaki)//' IN/HR')
        ELSE
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('DRAINAGE AREA '//G12_5(Dacrei/2.741)//' HA')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('INTAKE RATE   '//G12_5(Intaki*2.54)//' CM/HR')
        ENDIF
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('IMPOUNDMENT GEOMETRY:(SURFACE AREA = '//
      &                         'FS * DEPTH**B)')
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('FS = '//G12_5(FS))
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('B  = '//G12_5(B_ero))
        IF(PAC.LT.1) THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('COMPUTED FROM SLOPES:FRONT = '//G12_5(Front)//
      &      ' DRAW='//G12_5(Draw)//' SIDE='//G12_5(Side))
        ELSE
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('SUPPLIED BY USER')
        ENDIF
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('IMPOUNDMENT EXIT:(Q = C * SQRT(DEPTH))')
        IF(CTL.LT.1) THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('WATER EXITS THROUGH A PIPE OUTLET')
          IF(METFLG .EQ. 0) THEN
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('ORIFICE DIAMETER= '//G12_5(DIAO)//' FT')
          ELSE
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('ORIFICE DIAMETER= '//G12_5(DIAO/3.281)
      &           //' M')
          ENDIF
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('ORIFICE COEFICIENT = '//G12_5(C_ero))
        ELSE
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('ORIFICE COEFICIENT READ IN: C = '//
      &       G12_5(C_ero))
        ENDIF
@@ -1875,12 +1676,10 @@ C======================================================================
       Integer IO
       character Astr*255
       Read(Io,'(A)',Err=20) Astr
-      PRINT *, "CALLING LogMessage"
       Call LogMessage(Astr)
       BACKSPACE (UNIT=IO)
       goto 30
    20   Call LogMessage('Error on reading erosion parameter card')
-        PRINT *, "CALLING LogMessage"
         Call LogMessage('STOP')
    30 return
       end
@@ -1907,11 +1706,9 @@ c      include 'Rz_Params.inc'
       Runoff = RzRunoff / CmPerInch  ! ditto for runoff
       Call Set_SSSoil
 c      Call CalculatePeakRunoff   ! uses Runoff - results in Exrain, both in cmb
-      PRINT *, "CALLING SetupDailyErosion"
       Call SetupDailyErosion(Indxy,Indxd,IndxNd,Lyear)
       IF (EROOUT.GT.3) CALL ReportStormSummary
       !Call IncrementRain_N_Runoff_Accumulators(NRAINY,NRAINM,NRUNOY, ! RM - name too long.
-      PRINT *, "CALLING IncRain_N_Runoff_Acc"
       Call IncRain_N_Runoff_Acc(NRAINY,NRAINM,NRUNOY,
      &                            NRUNOM,TRAINY,TRAINM,TRUNOY,TRUNOM )
       IF (RUNOFF.LE.0.0.OR.EXRAIN.LE.0.0) GO TO 220
@@ -2088,26 +1885,17 @@ C======================================================================
         EXRTMP = 43200.0d0*EXRAIN    !done in RZWQM, no need to convert here, by CHD
         !EXRTMP = EXRAIN
         Write(Astr,'(A,I10,A)')'==== Storm Inputs === on ',Sdate,' DOY'
-        PRINT *, "CALLING LogMessage"
         Call LogMessage(Astr)
         IF (METFLG .EQ. 0) THEN
-          PRINT *, "CALLING LogMessage"
           Call LogMessage(Alab(1)//G12_5(RnFall)//' inches')
-          PRINT *, "CALLING LogMessage"
           Call LogMessage(Alab(2)//G12_5(Runtmp)//' inches')
-          PRINT *, "CALLING LogMessage"
           Call LogMessage(Alab(3)//G12_5(Exrtmp)//' in/hr')
-          PRINT *, "CALLING LogMessage"
           Call LogMessage(Alab(4)//G12_5(EI)//
      &' Wischmeier Engl. units')
         ELSE
-          PRINT *, "CALLING LogMessage"
           Call LogMessage(Alab(1)//G12_5(RnFall*CmPerInch)//' cm')
-          PRINT *, "CALLING LogMessage"
           Call LogMessage(Alab(2)//G12_5(Runtmp*CmPerInch)//' cm')
-          PRINT *, "CALLING LogMessage"
           Call LogMessage(Alab(3)//G12_5(Exrtmp*CmPerInch)//' cm/hr')
-          PRINT *, "CALLING LogMessage"
           Call LogMessage(Alab(4)//G12_5(EI*17.02d0)//
      &' MJ-mm/ha-hr')
         ENDIF
@@ -2237,20 +2025,15 @@ C======================================================================
       save
       RUNVOL = TRUNOY*DAREA(ELEM)
       TRUNOY = 12.0d0*TRUNOY
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('=== Annual Summary for Year '//I_4(Lyear))
       IF (METFLG .EQ. 0) THEN
-         PRINT *, "CALLING LogMessage"
          Call LogMessage(I_4(Nrainy)//' storms produced '//
      &     G12_5(TrainY)//' in. of rainfall')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage(I_4(Nrunoy)//' storms produced '//
      &     G12_5(TrunoY)//' in. of runoff')
       ELSE
-         PRINT *, "CALLING LogMessage"
          Call LogMessage(I_4(Nrainy)//' storms produced '//
      &     G12_5(TrainY*CmPerInch)//' cm of rainfall')
-         PRINT *, "CALLING LogMessage"
          Call LogMessage(I_4(Nrunoy)//' storms produced '//
      &     G12_5(TrunoY*CmPerInch)//' cm of runoff')
       ENDIF
@@ -2261,21 +2044,17 @@ C======================================================================
      &        .or.(J.EQ.3.AND.FLGSEQ.EQ.5)) then
 c             nada -- do nothing
            else
-             PRINT *, "CALLING LogMessage"
              Call LogMessage(Vlab//ObjLab(J))
              Tgs =Sum_TGS(j,Tgsy,Npart)
              IF (TGS.LE.0.0d0) then
-                PRINT *, "CALLING LogMessage"
                 Call LogMessage('               *** NO SOIL LOSS ***')
              else
                Call DisplayHeader
-               PRINT *, "CALLING ReportConcentrations"
                Call ReportConcentrations(j,Tgsy,TGS,RunVol)
              endif
            endif
   50     CONTINUE
        endif !of if (Nrunoy.gt.0 -- was 60 continue
-       PRINT *, "CALLING ZeroOut"
        Call ZeroOut(Nrainy,Nrunoy,TrainY,TrunoY,TGSY,Elem,Npart)
        RETURN
        END
@@ -2285,18 +2064,14 @@ C======================================================================
 C======================================================================
       Implicit Double Precision (A-H,O-Z)
       include 'Rz_Gleams.inc'  !sab 6/2002
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('                     THE QUANTITY OF ERODED'
      &         //' SEDIMENT IN RUNOFF')
-      PRINT *, "CALLING LogMessage"
       Call LogMessage('      PART.   FRAC. IN   SOIL LOSS         '
      &        //'CONCENTRATIONS (SOIL/WATER)    ')
       IF (METFLG .EQ. 0) THEN
-        PRINT *, "CALLING LogMessage"
         Call LogMessage('      TYPE   SED. LOAD      LBS.      LBSF'
      &            //'/FT**3    LBSF/LBSF     PPM (WT)')
       ELSE
-        PRINT *, "CALLING LogMessage"
         Call LogMessage('      TYPE   SED. LOAD       KG        KG/'
      &           //'M**3        KG/KG       PPM (WT)')
       ENDIF
@@ -2331,7 +2106,6 @@ C======================================================================
              TGSYM=TGSY(J,K)/2.205d0
              WRITE (Astr,4002) K,FRACK(k),TGSYM,CONCM,CONCPC,PPM
           ENDIF
-          PRINT *, "CALLING LogMessage"
           Call LogMessage(Astr)
         ENDIF
         TCONC   = TCONC  + CONC(K)
@@ -2344,17 +2118,14 @@ C======================================================================
         TGSm = TGS
         IF (METFLG .EQ. 0) TGSm = TGS/2.205d0
         WRITE (Astr,'(8x,3(9X,F9.4),4X,F10.0)') TGSm,TCONC,TCNCPC,TPPM
-        PRINT *, "CALLING LogMessage"
         Call LogMessage('          Total'//Astr)
         IF (METFLG .EQ. 0) THEN
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('ANNUAL SOIL LOSS FOR AREA '//G12_5(SoLoss)
      &       //' TONS/ACRE == (AREA = '//G12_5(Dacrei)//' ACRES)')
            ELMANN(J) = SOLOSS                                        
          ELSE
            DHECT=DACREi/2.471d0
            TPH=SOLOSS*2.242d0
-           PRINT *, "CALLING LogMessage"
            Call LogMessage('ANNUAL SOIL LOSS FOR AREA '//G12_5(tph)
      &       //' TONNES/HA == (AREA = '//G12_5(Dhect)//' HECTARES)')
            ELMANN(J) = tph                                           
@@ -2365,16 +2136,13 @@ C======================================================================
          CALL ENRCMP(1,CONC,ENRICH)
          ENRANN(J) = ENRICH 
          IF (METFLG .EQ. 0) THEN
-           PRINT *, "CALLING LogMessage"
            Call LogMessage(AlossLab//G12_5(Soloss)//' tons/acre')
            ELMANN(J) = SOLOSS
          ELSE
            TPH=SOLOSS*2.242d0
-           PRINT *, "CALLING LogMessage"
            Call LogMessage(AlossLab//G12_5(tph)//' tonnes/hectare')
            ELMANN(J) = TPH 
          ENDIF
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('     Enrichment Ratio='//G12_5(Enrich))
       endif 
       return
@@ -2410,23 +2178,15 @@ C======================================================================
      1          SEDSND)/TOTAL
        ENRICH = SSSED/SSSOIL
        IF (FLAG.GT.1) then
-         PRINT *, "CALLING Logmessage"
          Call Logmessage('DISTRIBUTION OF PRIMARY PARTICLES '//
      &                  'AND ORGANIC MATTER IN THE ERODED SEDIMENT')
-         PRINT *, "CALLING Logmessage"
          Call Logmessage('TYPE           FRACTION')
-         PRINT *, "CALLING Logmessage"
          Call Logmessage('CLAY            '//G12_5(SedCly))
-         PRINT *, "CALLING Logmessage"
          Call Logmessage('SILT            '//G12_5(SedSlt))
-         PRINT *, "CALLING Logmessage"
          Call Logmessage('SAND            '//G12_5(SedSnd))
-         PRINT *, "CALLING Logmessage"
          Call Logmessage('ORGANIC MATTER      '//G12_5(Sedorg))
-         PRINT *, "CALLING Logmessage"
          Call Logmessage('INDEX OF SPECIFIC SURFACE '//G12_5(SSSed)//
      &                    ' M**2/G OF TOTAL SEDIMENT')
-         PRINT *, "CALLING Logmessage"
          Call Logmessage('ENRICHMENT RATIO OF SPECIFIC SURFACE '//
      &            G12_5(Enrich))
        endif
@@ -2471,12 +2231,10 @@ C======================================================================
          NMANOV = NFACT(IFACT,DATE)
          EATA   = 0.5
        else If (Elem.Eq.2) then
-         PRINT *, "CALLING MapChannel"
          Call MapChannel(1,FLAGCT ,FLAGS,CTLO,CTLZ,CTLN,CTLSL,
      &              RA,RN,YBASE,DAU,DAL,Z,LEFF,ENDMAN,ICHAN,CRSH,
      &              DEPSID,NMANCH,EATA,INDXC,Date)
        else
-         PRINT *, "CALLING MapChannel"
          Call MapChannel(2,FLAGCT ,FLAGS,CTLO,CTLZ,CTLN,CTLSL,
      &              RA,RN,YBASE,DAU,DAL,Z,LEFF,ENDMAN,ICHAN,CRSH,
      &              DEPSID,NMANCH,EATA,INDXC,Date)
@@ -3283,7 +3041,6 @@ C
           XBO    =XBN
  23    CONTINUE
        IF (M.LT.25) GO TO 24
-       PRINT *, "CALLING LogMessage"
        Call LogMessage('  *****DID NOT CONVERGE IN RECTANGULAR SECTION,'
      1    //' CALL GEORGE FOSTER FOR HELP.******')
  24    CONTINUE
@@ -3618,12 +3375,10 @@ C======================================================================
      &  'LBS.      LBSF/FT**3    LBSF/LBSF     PPM (WT)',
      &  ' KG         KG/M**3       KG/KG       PPM (WT)'/
       IF (EROOUT.GE.4) then
-        PRINT *, "CALLING LogMessage"
         Call LogMessage(Element(Elem))
         IF (EROOUT.NE.4) then
           IF (ELEM.EQ.4) THEN
             RUNPND = 12.0d0*RUNPND
-            PRINT *, "CALLING LogMessage"
             Call LogMessage('  RUNOFF FROM IMPOUNDMENT='//
      &                 G12_5(RunPnd*Uconv1(MetFlg))//Unit1(MetFlg))  !2.54
            endif
@@ -3634,22 +3389,16 @@ C======================================================================
      &        Call LogMessage(FsLab//'= CHANNEL SLOPE')
            IF (FLAGS.EQ.2.AND.YE.GT.YNOR) 
      &        Call LogMessage(FsLab//'= CHANNEL SLOPE EXCEPT AT END')
-           PRINT *, "CALLING Logmessage"
            Call Logmessage('PEAK DISCHARGE UPPER END'//
      &                        G12_5(Qb*Uconv2(metflg))//Unit2(MetFlg))
-           PRINT *, "CALLING Logmessage"
            Call Logmessage('PEAK DISCHARGE LOWER END'//
      &                        G12_5(Qe*Uconv2(metflg))//Unit2(MetFlg))
-           PRINT *, "CALLING Logmessage"
            Call Logmessage('CRITICAL DEPTH          '//
      &                       G12_5(Ycr/Uconv3(metflg))//Unit3(MetFlg))
-           PRINT *, "CALLING Logmessage"
            Call Logmessage('NORMAL DEPTH            '//
      &                      G12_5(Ynor/Uconv3(metflg))//Unit3(MetFlg))
-           PRINT *, "CALLING Logmessage"
            Call Logmessage('CONTROL DEPTH           '//
      &                        G12_5(Ye/Uconv3(metflg))//Unit3(MetFlg))
-           PRINT *, "CALLING Logmessage"
            Call Logmessage('FRICTION SLOPE AT END   ')
          endif ! Elem.NE.1
        endif
@@ -3660,15 +3409,11 @@ C======================================================================
        SOLOSS = 43560.0d0/2000.0d0*TGS/AnArea 
        elmlos(elem) = Soloss*Uconv4(MetFlg)
        IF (TGS.LE.0.0d0) then
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('*** NO SOIL LOSS ***')
        ELSE IF (EROOUT.GT.4) then
-         PRINT *, "CALLING Logmessage"
          Call Logmessage('THE QUANTITY OF ERODED SEDIMENT IN RUNOFF')
-         PRINT *, "CALLING Logmessage"
          Call Logmessage('PART.   FRAC. IN   SOIL LOSS         CONC'//
      &                      'ENTRATIONS (SOIL/WATER)')
-         PRINT *, "CALLING Logmessage"
          Call Logmessage(Header(-1)(1:30)//Header(Metflg))
          TCONC  = 0.0d0
          TCNCPC = 0.0d0
@@ -3679,16 +3424,13 @@ C======================================================================
            FRACK(K)= GS(K)/TGS
            WRITE(Astr,'(7X,I2,6X,F5.2,3(4X,F9.4),4X,F10.0)') K,Frack(k),
      &         GS(K)/Uconv5(MetFlg),CONC(K)*Uconv6(Metflg),CONCPC,PPM
-           PRINT *, "CALLING LogMessage"
            Call LogMessage(Astr)
            TCONC  = TCONC  + CONC(K)
            TCNCPC = TCNCPC + CONCPC
    30      TPPM   = TPPM   + PPM
          Write(Astr,'(A,17X,F9.0,3(4X,F10.4))')'Total',                   !2.205
      &     Tgs/Uconv5(metFlg),Tconc*Uconv6(MetFlg),Tcncpc,Tppm           !16.01 
-         PRINT *, "CALLING LogMessage"
          Call LogMessage(Astr)
-         PRINT *, "CALLING LogMessage"
          Call LogMessage('Average soil loss for area='//                 !2.242
      &        G12_5(SoLoss*Uconv4(Metflg))//Unit4(metflg))
          CALL ENRCMP(2,CONC,ENRICH)
@@ -3696,10 +3438,8 @@ C======================================================================
       else
         CALL ENRCMP(1,CONC,ENRICH)
          elmenr(elem) = enrich   
-        PRINT *, "CALLING LogMessage"
         Call LogMessage('Average Soil Loss='//
      &      G12_5(Soloss*Uconv4(MetFlg))//Unit4(Metflg))
-        PRINT *, "CALLING LogMessage"
         Call LogMessage('Enrichment Ratio='//G12_5(Enrich))
       ENDIF
 c      IF (TGS.GT.0.0d0) THEN
@@ -3766,13 +3506,10 @@ C======================================================================
       RUNVOL = TRUNOM*DAREA(ELEM)
       TRUNOM = 12.0d0*TRUNOM
       IF (EROOUT .GE. 2) THEN
-        PRINT *, "CALLING Logmessage"
         Call Logmessage('MONTHLY SUMMARY FOR '//Months(Lmonth)//', '//
      &     I_4(Lyear))
-        PRINT *, "CALLING LogMessage"
         Call LogMessage(I_4(Nrainm)//' STORMS PRODUCED '//
      &      G12_5(TRAINM*Uconv1(MetFlg))//unit1(metflg)//'rainfall')
-        PRINT *, "CALLING LogMessage"
         Call LogMessage(I_4(Nrunom)//' STORMS PRODUCED '//
      &      G12_5(TrunoM*Uconv1(MetFlg))//unit1(metflg)//'runoff')
       endif
@@ -3786,17 +3523,14 @@ c             nada
            IF (EROOUT .GE. 2) Call LogMessage(Element(j))
            Tgs =Sum_TGS(j,Tgsm,Npart)
            IF (TGS.LE.0.0) then
-              PRINT *, "CALLING Logmessage"
               Call Logmessage('*** NO SOIL LOSS ***')
            else
              Call ReportMonthlyHeaders
-             PRINT *, "CALLING SumConcs"
              Call SumConcs(j,Conc,Runvol,TGs,TGsm,Tconc,Tcncpc,Tppm)
              DACREi  = DAREA(J)/43560.0d0
              SOLOSS = TGS/(2000.0d0*DACREi)
              ELMMON(J) = SOLOSS*Uconv4(Metflg)
              IF (FLGTMP.NE.0) then
-               PRINT *, "CALLING ReportTotals"
                Call ReportTotals(Tgs,Tconc,Tcncpc,Tppm,Elmmon(j),Dacrei)
                CALL ENRCMP(2,CONC,ENRICH)
                ENRMON(J) = ENRICH                                           BE
@@ -3805,10 +3539,8 @@ c             nada
                ENRMON(J) = ENRICH                                           BE
                ELMMON(J) = SOLOSS*UConv4(Metflg)
                IF (EROOUT .GE. 2) THEN                                       BE
-                 PRINT *, "CALLING LogMessage"
                  Call LogMessage('Monthly soil loss '//G12_5(Elmmon(j))
      &                  //Unit2(MetFlg))
-                 PRINT *, "CALLING LogMessage"
                  Call LogMessage('ENRICHMENT RATIO  '//G12_5(Enrich))
                endif
              endif
@@ -3816,7 +3548,6 @@ c             nada
          endif ! of j=2...etc
   50   CONTINUE
       endif
-      PRINT *, "CALLING ZeroOut"
       Call ZeroOut(Nrainm,Nrunom,Trainm,Trunom,TGSm,Elem,Npart)
        RETURN
        END
@@ -3832,11 +3563,8 @@ C======================================================================
      &'  LBSF/FT**3    LBSF/LBSF     PPM (WT)',
      &'    KG/M**3       KG/KG       PPM (WT)'/
       IF (EROOUT .GE. 2.and.FLGTMP.EQ.1) THEN
-        PRINT *, "CALLING Logmessage"
         Call Logmessage(Header(-3))
-        PRINT *, "CALLING Logmessage"
         Call Logmessage(Header(-2))
-        PRINT *, "CALLING Logmessage"
         Call Logmessage(Header(-1)(1:30)//Header(Metflg))
       ENDIF
       return
@@ -3861,7 +3589,6 @@ C======================================================================
            WRITE (Astr,'(7X,I2,6X,F5.2,3(4X,F9.4),4X,F10.0)') K,
      &       FRACK(k),TGSM(J,K)/Uconv2(metflg),CONC(K)*Uconv3(Metflg), !2.205, 16.01
      &                                  CONCPC,PPM
-           PRINT *, "CALLING Logmessage"
            Call Logmessage(Astr)
         ENDIF
         TCONC   = TCONC  + CONC(K)
@@ -3883,13 +3610,10 @@ C======================================================================
       IF (EROOUT .GE. 2) THEN
         Write(Astr,'(10X,A,17X,3(F9.4,4X),F10.0)')'TOTAL',
      &             TGS/Uconv2(Metflg),TCONC,TCNCPC,TPPM                  !2.205,
-        PRINT *, "CALLING Logmessage"
         Call Logmessage(Astr)
-        PRINT *, "CALLING LogMessage"
         Call LogMessage('Monthly Soil Loss for area='//
      &     G12_5(AElmmon)//Unit2(metflg)//' (area='//
      &     G12_5(DACREi/Uconv5(Metflg))//Unit3(metflg))                   !2.471
-        PRINT *, "CALLING Logmessage"
         Call Logmessage(Astr)
       ENDIF
       return
@@ -3966,7 +3690,6 @@ C======================================================================
              GS(K)   = RUNPND*DAPND*CONC(K)
    30        SOLOSS  = SOLOSS+GS(K)/DAPND
         else
-           PRINT *, "CALLING Logmessage"
            Call Logmessage('***  NO RUNOFF - NO SOIL LOSS  ***'//
      &                     '(IMPOUNDMENT CONTAINED ALL RUNOFF)')
            RUNOFF = 0.0d0

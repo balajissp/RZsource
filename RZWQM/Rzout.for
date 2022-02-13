@@ -304,8 +304,8 @@ C-----------------------------------------------------------------------
       CHARACTER STR*129
 C
       REWIND(UNIT2)
-   10 READ(UNIT2,1000,END=20) STR
-      WRITE(UNIT1,1000) STR
+   10 READ(UNIT2,*,END=20) STR
+      WRITE(UNIT1,*) STR
       GOTO 10
    20 CLOSE(UNIT=UNIT2,STATUS='DELETE')
 C     

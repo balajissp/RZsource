@@ -1,50 +1,5 @@
 ! RZinterrupt.for Balaji Pokuri, Jan 2022
 C Utility code to save plant state and resume on next run
-C 
-! 	     SUBROUTINE PLSTATREAD(RFDD,JDAY,IYYY,TMAX,TMIN,RTS,TPP,W,HEIGHT,LAI,T,
-!      +    SOILPP,NDXN2H,RDF,JGS,NSC,PLTSLV,RPOOL,UPNIT,EWP,SDEAD,TLPLNT,
-!      +    XNIT,BASE,FIXN,IPL,IPM,JGROW,IMAGIC,ODMDN,CN,RM,RESAGE,RCN,
-!      +    SDCN,CORES,COPLNT,NPEST,CHLRFL,TDAY,IQUE,INXPL,IRTYPE,OMSEA,
-!      +    TLAI,IPR,SDEAD_HEIGHT,AIRR,CC,RZPAR,JBDAY,IYB,CO2R,ndxt2n,
-!      +    iswpar,tmday,iweather,ssurft,IPDEPTH,TUP,DAYL)
-! C
-! C======================================================================
-! C
-! C       PURPOSE:  DUMP ALL VARIABLES TO PLSTAT.DAT
-! C
-! C
-! C       VARIABLE DEFINITIONS:
-! C       VARIABLE  I/O DESCRIPTION
-! C       --------  --- -----------
-! C
-! C       EXTERNAL REFERENCES: None
-! C
-! C       CALLED FROM: MAIN
-! C
-! C       PROGRAMMER: BALAJI POKURI
-! C
-! C       VERSION: 0.1
-! C		VARIABLE LIST COPIED FROM MAPLNT(), CODE FROM STATIN()
-! C======================================================================
-! C
-!       OPEN(IFILE,FILE='PLSTAT.DAT',STATUS='OLD',   ERR=90)
-
-!       READ(IFILE,*) RFDD,JDAY,IYYY,TMAX,TMIN,RTS,TPP,W,HEIGHT,LAI,T,
-!      +    SOILPP,NDXN2H,RDF,JGS,NSC,PLTSLV,RPOOL,UPNIT,EWP,SDEAD,TLPLNT,
-!      +    XNIT,BASE,FIXN,IPL,IPM,JGROW,IMAGIC,ODMDN,CN,RM,RESAGE,RCN,
-!      +    SDCN,CORES,COPLNT,NPEST,CHLRFL,TDAY,IQUE,INXPL,IRTYPE,OMSEA,
-!      +    TLAI,IPR,SDEAD_HEIGHT,AIRR,CC,RZPAR,JBDAY,IYB,CO2R,ndxt2n,
-!      +    iswpar,tmday,iweather,ssurft,IPDEPTH,TUP,DAYL
-!       CLOSE(UNIT=IFILE)
-! 	RETURN
-! C     ..ERROR CONDITIONS FOR OPENNING FILE
-!    90 PRINT*,'ERROR OPENING THE FILE: PLSTAT.DAT'
-! 	  PRINT*
-! 	  PRINT*,' CHECK TO MAKE SURE THE FILE IS IN THE CURRENT DIR.'
-! 	  STOP
-! C
-!      	END SUBROUTINE PLSTATREAD
-
       SUBROUTINE PLSTATWRITE()
 C
 C======================================================================
@@ -63,7 +18,7 @@ C
 C       PROGRAMMER: BALAJI POKURI
 C
 C       VERSION: 0.1
-C		VARIABLE LIST COPIED FROM MAPLNT(), CODE FROM STATOT()
+C       COMMON blocks taken primarily from MAPLNT()
 C======================================================================
 C
       USE ModuleDefs
@@ -93,7 +48,7 @@ C
       PARAMETER(IKEN=8+13+5+3*MAXSCT+8)
       PARAMETER(MXTNCA=9)
       PARAMETER(IFILE=432,CARBCV=1.0D0/0.58D0)
-
+      INTEGER YESMAC
 
       COMMON /HEAT/ CSH(MXNOD),T(MXNOD),SOLTP1(MAXHOR,5),
      +    SOLTP2(MAXSCT,MAXHOR,3)
@@ -232,6 +187,116 @@ C
       COMMON /LABLS/ SCNRIO,SCALAR,VECTOR,HZLABS
 
       TYPE (PLANTVARType) PLANTVAR
+      TYPE (SwitchType) ISWITCH
+      TYPE (ControlType) CONTROL
+
+      INTEGER IRPL, NYR, NYRC
+      DIMENSION ADIW(MXAPP),NYRP(MXPEST),ADIWMONTH(12,200),totadiw(20)
+      LOGICAL SPLT1,FIRST7
+
+      CHARACTER*1 IDETW, ISWWAT, RNMODE
+      INTEGER DAS, DOY, DYNAMIC, ERRNUM, FROP, NAVWB, NAP, NOUTDW,
+     + RUN, YEAR, YRDOY, REPNO
+      REAL AVWTD, PESW, TLL, TOTBUNDRO, TOTIR, TSW
+
+      INTEGER NVALP0
+      INTEGER YREMRG, MDATE
+      integer istage
+      INTEGER STGDOY(20)
+
+      REAL CANHT, EORATIO
+      REAL KCAN, KEP, KSEVAP, KTRANS, NSTRES
+      REAL PORMIN, RWUEP1, RWUMX
+      REAL XLAI, XHLAI
+
+      REAL LFWT,STMWT,XSTAGE,DTT,BIOMAS,SDWT,GRNWT,EARS
+      REAL RTWT,STOVWT,STOVN,ROOTN,GRAINN,RTDEP
+      REAL NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD
+      real trnu,swfac,grwt,cwad,tfg,wfg,cnad,stwt,nupd,gnad,rtwts
+      REAL, DIMENSION(20) :: RLV, UNO3, UNH4
+      LOGICAL FixCanht
+      TYPE (ResidueType) HARVRES, SENESCE
+
+
+      CHARACTER*6     SECTION       
+      CHARACTER*30    FILEIO 
+      CHARACTER*80    C80
+      CHARACTER*255   FILECC
+
+      REAL        AREALF, ASMDOT, BD(20), CANWH, CARBOT, 
+     + CO2X(10), CO2Y(10), DUMMY, EP1, pp1, pp2, FSLFW, FSLFN, 
+     + GRF, GROEAR, GROGRN, GROLF, GROSTM, HI, HIP, LAIDOT, LEAFNOE,
+     + CumLeafSenes, CumLeafSenesY, CumLfNSenes, LFWTE, LIFAC, TAW,DTAW, 
+     + NDEF3, NFAC, NPOOL, NPOOL1, NPOOL2, NSDR, NSINK, P3, PAR, 
+     + PARSR, PC, PCARB, PCNGRN, PCO2, 
+     + PRFTC(4), SLPF, PLAE, PLAS, PODNO, PODWT, PPLTD, PRFT, RANC, 
+     + RANCE, RGFILL, RGFIL(4), RLWR, RMNC, RNLAB, RNOUT, RSGR, RSGRT, 
+     + RTWO, RTWTE, RTWTO, RUE, SATFAC, SDSIZE, SDSZ, 
+     + SEEDNO, SEEDRV, SEEDRVE, SFAC, SHELPC, SI1(6), SI2(6), SI3(6), 
+     + SI4(6), SLAN, SLA, SLFC, SLFN, SLFT, SLFW, Stg2CLS, STMWTO, 
+     + STMWTE, SUMEX, SUMRL, SWEXF, SWIDOT, SWMAX, SWMIN, 
+     + TANCE, TAVGD, TCNP, TEMPM, TFAC, TI, TMNC, TNLAB, 
+     + TSS(20), VANC, VSTAGE, WLIDOT, WRIDOT, WSIDOT, XANC, 
+     + XLFWT, XNF, YIELDB, RZrwu(300), RZtrwup, AVG_HROOT, WTDEP, 
+     + qsr(300), TRWUP1
+      INTEGER     CMAT, EMAT, FOUND, I, ICOLD, ISECT, L, LINC, LNUM, 
+     + LUNCRP, LUNIO, NWSD, RSTAGE, PATHL, yrplt, ISTRESS, iresetlai, 
+     + iresetht1
+      DOUBLE PRECISION alaireset, WSI(10),heightset
+
+      REAL            ABSTRES         
+      REAL            ACOEF           
+      REAL            BARFAC 
+      REAL            C1              
+      REAL            CUMDTT          
+      REAL            DEC             
+      REAL            DGET
+      REAL            DJTI
+      REAL            DLV             
+      REAL            DOPT                      
+      REAL            DSGT
+      REAL            DSGFT
+      REAL            GDDE
+      REAL            GPP            
+      REAL            P2O            
+      REAL            P9             
+      REAL            PDTT
+      REAL            PSKER          
+      REAL            RATEIN         
+      REAL            ROPT           
+      REAL            S1             
+      REAL            SIND           
+      REAL            SNDN           
+      REAL            SNUP           
+      REAL            SUMDTT         
+      REAL            SWCG
+      REAL            SWSD           
+      REAL            TBASE          
+      REAL            TDSOIL         
+      REAL            TEMPCN         
+                                     
+      REAL            TEMPCR         
+      REAL            TEMPCX         
+      REAL            TH             
+      REAL            TLNO           
+      REAL            TMSOIL         
+      REAL            TNSOIL         
+      REAL            TOPT           
+      REAL            XNTI           
+      REAL            XS             
+      REAL            tdsoil1,tnsoil1,tmsoil1         
+
+      INTEGER         L0             
+      INTEGER         NDAS           
+      INTEGER ISDATE          
+      INTEGER IPATH
+      INTEGER LUNECO
+
+      CHARACTER*6 ECOTYP
+      CHARACTER*255 C255
+      CHARACTER*255    FILEGC
+      CHARACTER*16  ECONAM
+
 C
 C
 C    Now Open the dat file to write
@@ -245,6 +310,118 @@ C
 C
       PRINT *, "WRITING PLSTAT.DAT"
 C     Explicitly specify sequence for custom datatypes
+
+      CALL GETPUT_MZ_PHENOL('GET', ABSTRES, ACOEF, BARFAC, C1, 
+     + CUMDTT, DEC, DGET, DJTI, DLV, DOPT, DSGT, DSGFT, DTT, DUMMY, 
+     + EARS, GDDE, GPP, KCAN, KEP, P2O, P3, P9, PDTT, PSKER, RATEIN, 
+     + ROPT, RUE, S1, SIND, SNDN, SNUP, SUMDTT, SWCG, SWSD, TBASE, 
+     + TDSOIL, TEMPCN, TEMPCR, TEMPCX, TH, TLNO, TMSOIL, TNSOIL, TOPT, 
+     + XNTI, XS, XSTAGE, tdsoil1, tnsoil1, tmsoil1, FOUND, ISTAGE, L, 
+     + L0, LINC, LNUM, LUNIO, MDATE, NDAS, YREMRG, ISDATE, PATHL, 
+     + LUNECO, ISECT, LUNCRP, STGDOY, SECTION, ECOTYP, C255, FILEGC, 
+     + ECONAM, C80)
+      WRITE(IFILE, *) ABSTRES, ACOEF, BARFAC, C1, 
+     + CUMDTT, DEC, DGET, DJTI, DLV, DOPT, DSGT, DSGFT, DTT, DUMMY, 
+     + EARS, GDDE, GPP, KCAN, KEP, P2O, P3, P9, PDTT, PSKER, RATEIN, 
+     + ROPT, RUE, S1, SIND, SNDN, SNUP, SUMDTT, SWCG, SWSD, TBASE, 
+     + TDSOIL, TEMPCN, TEMPCR, TEMPCX, TH, TLNO, TMSOIL, TNSOIL, TOPT, 
+     + XNTI, XS, XSTAGE, tdsoil1, tnsoil1, tmsoil1, FOUND, ISTAGE, L, 
+     + L0, LINC, LNUM, LUNIO, MDATE, NDAS, YREMRG, ISDATE, PATHL, 
+     + LUNECO, ISECT, LUNCRP, STGDOY
+      WRITE(IFILE, '(A6,A6,A255,A255,A16,A80)') SECTION, ECOTYP, C255,
+     +  FILEGC, ECONAM, C80
+
+
+
+      CALL GETPUT_MZ_GROSUB('GET', SECTION, FILEIO, C80, FILECC, 
+     +  AREALF, ASMDOT, BD, CANHT, CANWH, CARBOT, CO2X, CO2Y, 
+     +  DUMMY, EP1, pp1, pp2, FSLFW, FSLFN, GRF, GROEAR, GROGRN, 
+     +  GROLF, GROSTM, HI, HIP, LAIDOT, LEAFNOE, CumLeafSenes, 
+     +  CumLeafSenesY, CumLfNSenes, LFWTE, LIFAC, TAW, DTAW, NDEF3, 
+     +  NFAC, NPOOL, NPOOL1, NPOOL2, NSDR, NSINK, P3, PAR, 
+     +  PARSR, PC, PCARB, PCNGRN, PCNL, PCNRT, PCNSD, PCNST, PCO2, 
+     +  PRFTC, SLPF, PLAE, PLAS, PODNO, PODWT, PPLTD, PRFT, RANC, 
+     +  RANCE, RGFILL, RGFIL, RLWR, RMNC, RNLAB, RNOUT, RSGR, RSGRT, 
+     +  RTWO, RTWTE, RTWTO, RUE, RWUMX, SATFAC, SDSIZE, SDSZ, SDWT, 
+     +  SEEDNO, SEEDRV, SEEDRVE, SFAC, SHELPC, SI1, SI2, SI3, SI4, 
+     +  SLAN, SLA, SLFC, SLFN, SLFT, SLFW, Stg2CLS, STMWTO, STMWTE, 
+     +  SUMEX, SUMRL, SWEXF, SWIDOT, SWMAX, SWMIN, TANCE, 
+     +  TAVGD, TCNP, TEMPM, TFAC, TI, TMNC, TNLAB, TOPWT, TSS, 
+     +  VANC, VSTAGE, WLIDOT, WRIDOT, WSIDOT, WTLF, XANC, XLFWT, 
+     +  XNF, YIELDB, RZrwu, RZtrwup, AVG_HROOT, WTDEP, qsr, TRWUP1, 
+     +  CMAT, EMAT, FOUND, I, ICOLD, ISECT, L, LINC, LNUM, LUNCRP, 
+     +  LUNIO, NWSD, RSTAGE, PATHL, yrplt, ISTRESS, iresetlai,iresetht1,
+     +  alaireset, WSI, heightset)
+      WRITE(IFILE,'(A6,A30,A80,A255)') SECTION,FILEIO,C80,FILECC
+      WRITE(IFILE,*) AREALF, ASMDOT, BD, CANHT, CANWH, CARBOT, 
+     + CO2X, CO2Y, DUMMY, EP1, pp1, pp2, FSLFW, FSLFN, 
+     + GRF, GROEAR, GROGRN, GROLF, GROSTM, HI, HIP, LAIDOT, LEAFNOE,
+     + CumLeafSenes, CumLeafSenesY, CumLfNSenes, LFWTE, LIFAC, TAW,DTAW, 
+     + NDEF3, NFAC, NPOOL, NPOOL1, NPOOL2, NSDR, NSINK, P3, PAR, 
+     + PARSR, PC, PCARB, PCNGRN, PCNL, PCNRT, PCNSD, PCNST, PCO2, 
+     + PRFTC, SLPF, PLAE, PLAS, PODNO, PODWT, PPLTD, PRFT, RANC, 
+     + RANCE, RGFILL, RGFIL, RLWR, RMNC, RNLAB, RNOUT, RSGR, RSGRT, 
+     + RTWO, RTWTE, RTWTO, RUE, RWUMX, SATFAC, SDSIZE, SDSZ, SDWT, 
+     + SEEDNO, SEEDRV, SEEDRVE, SFAC, SHELPC, SI1, SI2, SI3, 
+     + SI4, SLAN, SLA, SLFC, SLFN, SLFT, SLFW, Stg2CLS, STMWTO, 
+     + STMWTE, SUMEX, SUMRL, SWEXF, SWIDOT, SWMAX, SWMIN, 
+     + TANCE, TAVGD, TCNP, TEMPM, TFAC, TI, TMNC, TNLAB, TOPWT, 
+     + TSS, VANC, VSTAGE, WLIDOT, WRIDOT, WSIDOT, WTLF, XANC, 
+     + XLFWT, XNF, YIELDB, RZrwu, RZtrwup, AVG_HROOT, WTDEP, 
+     + qsr, TRWUP1
+
+      WRITE(IFILE,*) CMAT, EMAT, FOUND, I, ICOLD, ISECT, L, LINC, LNUM, 
+     + LUNCRP, LUNIO, NWSD, RSTAGE, PATHL, yrplt, ISTRESS, iresetlai, 
+     + iresetht1
+      WRITE(IFILE,*) alaireset, WSI,heightset
+
+
+
+      CALL GETPUT_MZ_NFACTO('GET', AGEFAC, NDEF3, NFAC, NSTRES)
+      WRITE(IFILE,*) AGEFAC, NDEF3, NFAC, NSTRES
+
+      CALL Alt_Plant_Memory('GET', NVALP0, YREMRG, MDATE, STGDOY, 
+     +  CANHT, EORATIO, KCAN, KEP, KSEVAP, KTRANS, NSTRES, PORMIN, 
+     +  RWUEP1, RWUMX, XLAI, XHLAI, RLV, UNO3, UNH4, LFWT, STMWT, 
+     +  XSTAGE, DTT, BIOMAS, SDWT, GRNWT, EARS, RTWT, STOVWT, STOVN, 
+     +  ROOTN, GRAINN, RTDEP, NFIXN, TOPWT, WTLF, PCNL, PCNST, PCNRT, 
+     +  PCNSD, trnu, swfac, grwt, cwad, tfg, wfg, cnad, stwt, nupd, 
+     +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)      
+      WRITE(IFILE, *) NVALP0, YREMRG, MDATE, istage
+      WRITE(IFILE, *) STGDOY(20)
+
+      WRITE(IFILE, *) CANHT, EORATIO, KCAN, KEP, KSEVAP, KTRANS, NSTRES, 
+     + PORMIN, RWUEP1, RWUMX, XLAI, XHLAI, LFWT, STMWT, XSTAGE, DTT, 
+     + BIOMAS, SDWT, GRNWT, EARS, RTWT, STOVWT, STOVN, ROOTN, GRAINN, 
+     + RTDEP, NFIXN, TOPWT, WTLF, PCNL, PCNST, PCNRT, PCNSD
+      WRITE(IFILE, *) trnu, swfac, grwt, cwad, tfg, wfg, cnad, stwt, 
+     + nupd, gnad, rtwts
+      WRITE(IFILE, *) RLV, UNO3, UNH4
+      WRITE(IFILE, *) FixCanht
+
+      WRITE(IFILE, *) HARVRES
+      WRITE(IFILE, *) SENESCE
+
+
+      CALL OPWBAL_Memory('GET', IDETW, ISWWAT, RNMODE, DAS, DOY, 
+     +  DYNAMIC, ERRNUM, FROP, NAVWB, NAP, NOUTDW, RUN, YEAR, 
+     +  YRDOY, REPNO, AVWTD, PESW, TLL, TOTBUNDRO, TOTIR, TSW)
+      WRITE(IFILE,'(3A1)') IDETW, ISWWAT, RNMODE
+      WRITE(IFILE,'(12I)') DAS,DOY, DYNAMIC, ERRNUM, FROP, NAVWB, NAP,
+     + NOUTDW, RUN, YEAR, YRDOY, REPNO
+      WRITE(IFILE,'(6e)') AVWTD, PESW, TLL, TOTBUNDRO, TOTIR, TSW
+
+      CALL MAPLNT_Memory('GET',nreps,FIRST11,first15,PCN,TTPLNT,
+     +  TMPLNT,TXPLNT,IJ)
+      WRITE(IFILE,*) nreps,FIRST11,first15,PCN,TTPLNT,TMPLNT,TXPLNT,IJ
+      CALL DSSATDRV_Memory('GET', oldhgt,PLHGHT,PLALFA)
+      WRITE(IFILE, *) oldhgt,PLHGHT,PLALFA
+      CALL DAYJACK_Memory('GET',LID,LIM,LIYYY,JSEQDAY,CURSTATE)
+      WRITE(IFILE,*) LID,LIM,LIYYY,JSEQDAY,CURSTATE
+      CALL MAQUE_Memory('GET',ADIW,JSPLT,SPLT1,FIRST7,NYR,IRPL,NYRC,
+     +  NYRP,ADIWMONTH,totadiw,curradiw)
+      WRITE(IFILE, *) ADIW,JSPLT,SPLT1,FIRST7,NYR,IRPL,NYRC,
+     +  NYRP,ADIWMONTH,totadiw,curradiw
 
       CALL GETPUT_PLANTVAR('GET', PLANTVAR)
 C       WRITE(IFILE,*) PLANTVAR%VARNO,PLANTVAR%ECONO          
@@ -271,6 +448,27 @@ C       WRITE(IFILE,*) PLANTVAR%PLME
      + PLANTVAR%FCUT,PLANTVAR%FLAI,PLANTVAR%DDISQ
       WRITE(IFILE,*) PLANTVAR%EFINOC,PLANTVAR% EFNFIX
       WRITE(IFILE,*) PLANTVAR%RESAMT,PLANTVAR%ATEMP
+
+      CALL GETPUT_CONTROL('GET', CONTROL)
+      WRITE(IFILE,'(A1,A1,A2,A12)') CONTROL%MESIC, CONTROL%RNMODE,
+     + CONTROL%CROP, CONTROL%MODEL
+      WRITE(IFILE,*) CONTROL%DAS, CONTROL%DYNAMIC, CONTROL%FROP, 
+     + CONTROL%MULTI, CONTROL%REPNO, CONTROL%RUN
+      WRITE(IFILE,*) CONTROL%TRTNO, CONTROL%YRDOY, CONTROL%YRSIM, 
+     + CONTROL%NYRS, CONTROL%YRDIF, CONTROL%ROTNUM
+      WRITE(IFILE,*) CONTROL%EXPER
+      WRITE(IFILE,*) CONTROL%ENAME
+      WRITE(IFILE,*) CONTROL%TITLET
+      WRITE(IFILE,*) CONTROL%YRPLT, CONTROL%IEMRG
+
+      CALL GETPUT_ISWITCH('GET', ISWITCH)
+      WRITE(IFILE,'(21A1,I)') ISWITCH%IDETC,ISWITCH%IDETD,ISWITCH%IDETG, 
+     + ISWITCH%IDETL, ISWITCH%IDETN, ISWITCH%IDETO, ISWITCH%IDETR, 
+     + ISWITCH%IDETS, ISWITCH%IDETW, ISWITCH%IHARI, ISWITCH%IPLTI, 
+     + ISWITCH%IIRRI, ISWITCH%ISWDIS, ISWITCH%ISWNIT, 
+     + ISWITCH%ISWSYM, ISWITCH%ISWWAT,
+     + ISWITCH%MEEVP, ISWITCH%MEPHO, ISWITCH%MESOM,
+     + ISWITCH%IFERI, ISWITCH%IRESI, ISWITCH%NSWI
 
 
 C       Now save the variables from common directories
@@ -426,7 +624,7 @@ C
       CLOSE(UNIT=IFILE)
       RETURN
 C     ..ERROR CONDITIONS FOR OPENNING FILE
-   50 PRINT*,'ERROR OPENING THE FILE: INTERMEDIATE.DAT'
+   50 PRINT*,'ERROR OPENING THE FILE: PLSTAT.DAT'
       PRINT*
       PRINT*,' CHECK TO MAKE SURE THE FILE IS IN THE CURRENT DIR.'
       STOP
@@ -480,6 +678,7 @@ C
       PARAMETER(IKEN=8+13+5+3*MAXSCT+8)
       PARAMETER(MXTNCA=9)
       PARAMETER(IFILE=432,CARBCV=1.0D0/0.58D0)
+      INTEGER YESMAC
 
       integer :: IOS
       character(len=100) :: IOMSG, STRING
@@ -621,6 +820,115 @@ C
       COMMON /LABLS/ SCNRIO,SCALAR,VECTOR,HZLABS
 
       TYPE (PLANTVARType) PLANTVAR
+      TYPE (SwitchType) ISWITCH
+      TYPE (ControlType) CONTROL
+
+      INTEGER IRPL, NYR, NYRC
+      DIMENSION ADIW(MXAPP),NYRP(MXPEST),ADIWMONTH(12,200),totadiw(20)
+      LOGICAL SPLT1,FIRST7
+
+      CHARACTER*1 IDETW, ISWWAT, RNMODE
+      INTEGER DAS, DOY, DYNAMIC, ERRNUM, FROP, NAVWB, NAP, NOUTDW,
+     + RUN, YEAR, YRDOY, REPNO
+      REAL AVWTD, PESW, TLL, TOTBUNDRO, TOTIR, TSW
+
+      INTEGER NVALP0
+      INTEGER YREMRG, MDATE
+      integer istage
+      INTEGER STGDOY(20)
+
+      REAL CANHT, EORATIO
+      REAL KCAN, KEP, KSEVAP, KTRANS, NSTRES
+      REAL PORMIN, RWUEP1, RWUMX
+      REAL XLAI, XHLAI
+
+      REAL LFWT,STMWT,XSTAGE,DTT,BIOMAS,SDWT,GRNWT,EARS
+      REAL RTWT,STOVWT,STOVN,ROOTN,GRAINN,RTDEP
+      REAL NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD
+      real trnu,swfac,grwt,cwad,tfg,wfg,cnad,stwt,nupd,gnad,rtwts
+      REAL, DIMENSION(20) :: RLV, UNO3, UNH4
+      LOGICAL FixCanht
+      TYPE (ResidueType) HARVRES, SENESCE
+
+      CHARACTER*6     SECTION 
+      CHARACTER*30    FILEIO 
+      CHARACTER*80    C80
+      CHARACTER*255   FILECC
+
+      REAL        AREALF, ASMDOT, BD(20), CANWH, CARBOT, 
+     + CO2X(10), CO2Y(10), DUMMY, EP1, pp1, pp2, FSLFW, FSLFN, 
+     + GRF, GROEAR, GROGRN, GROLF, GROSTM, HI, HIP, LAIDOT, LEAFNOE,
+     + CumLeafSenes, CumLeafSenesY, CumLfNSenes, LFWTE, LIFAC, TAW,DTAW, 
+     + NDEF3, NFAC, NPOOL, NPOOL1, NPOOL2, NSDR, NSINK, P3, PAR, 
+     + PARSR, PC, PCARB, PCNGRN, PCO2, 
+     + PRFTC(4), SLPF, PLAE, PLAS, PODNO, PODWT, PPLTD, PRFT, RANC, 
+     + RANCE, RGFILL, RGFIL(4), RLWR, RMNC, RNLAB, RNOUT, RSGR, RSGRT, 
+     + RTWO, RTWTE, RTWTO, RUE, SATFAC, SDSIZE, SDSZ, 
+     + SEEDNO, SEEDRV, SEEDRVE, SFAC, SHELPC, SI1(6), SI2(6), SI3(6), 
+     + SI4(6), SLAN, SLA, SLFC, SLFN, SLFT, SLFW, Stg2CLS, STMWTO, 
+     + STMWTE, SUMEX, SUMRL, SWEXF, SWIDOT, SWMAX, SWMIN, 
+     + TANCE, TAVGD, TCNP, TEMPM, TFAC, TI, TMNC, TNLAB, 
+     + TSS(20), VANC, VSTAGE, WLIDOT, WRIDOT, WSIDOT, XANC, 
+     + XLFWT, XNF, YIELDB, RZrwu(300), RZtrwup, AVG_HROOT, WTDEP, 
+     + qsr(300), TRWUP1
+      INTEGER     CMAT, EMAT, FOUND, I, ICOLD, ISECT, L, LINC, LNUM, 
+     + LUNCRP, LUNIO, NWSD, RSTAGE, PATHL, yrplt, ISTRESS, iresetlai, 
+     + iresetht1
+      DOUBLE PRECISION alaireset, WSI(10),heightset
+
+
+      REAL            ABSTRES         
+      REAL            ACOEF           
+      REAL            BARFAC 
+      REAL            C1              
+      REAL            CUMDTT          
+      REAL            DEC             
+      REAL            DGET
+      REAL            DJTI
+      REAL            DLV             
+      REAL            DOPT                      
+      REAL            DSGT
+      REAL            DSGFT
+      REAL            GDDE
+      REAL            GPP            
+      REAL            P2O            
+      REAL            P9             
+      REAL            PDTT
+      REAL            PSKER          
+      REAL            RATEIN         
+      REAL            ROPT           
+      REAL            S1             
+      REAL            SIND           
+      REAL            SNDN           
+      REAL            SNUP           
+      REAL            SUMDTT         
+      REAL            SWCG
+      REAL            SWSD           
+      REAL            TBASE          
+      REAL            TDSOIL         
+      REAL            TEMPCN         
+                                     
+      REAL            TEMPCR         
+      REAL            TEMPCX         
+      REAL            TH             
+      REAL            TLNO           
+      REAL            TMSOIL         
+      REAL            TNSOIL         
+      REAL            TOPT           
+      REAL            XNTI           
+      REAL            XS             
+      REAL            tdsoil1,tnsoil1,tmsoil1         
+
+      INTEGER         L0             
+      INTEGER         NDAS           
+      INTEGER ISDATE          
+      INTEGER IPATH
+      INTEGER LUNECO
+
+      CHARACTER*6 ECOTYP
+      CHARACTER*255 C255
+      CHARACTER*255    FILEGC
+      CHARACTER*16  ECONAM
 
 C
 C
@@ -629,11 +937,140 @@ C
 C
       PRINT *, "ENTER PLSTATREAD, now trying to load the file"
       OPEN(IFILE,FILE="PLSTAT.DAT",ACTION="READ",IOSTAT=IOS,IOMSG=IOMSG)
-      IF(IOS.NE.0) RETURN  ! file not found, start fresh
+      IF(IOS.NE.0) then
+          PRINT *, "File not found, skipping initialization"
+          RETURN  ! file not found, start fresh
+      ENDIF
       READ(IFILE, *, IOSTAT=IOS, IOMSG=IOMSG) STRING
-      IF(IOS.NE.0) RETURN  ! file empty, nothing to read
+      IF(IOS.NE.0)  then
+          PRINT *, "File empty, skipping initialization"
+          RETURN  ! file empty, nothing to read
+      ENDIF 
       BACKSPACE(IFILE)
       PRINT *, "PLSTAT not empty, trying to read"
+
+
+      READ(IFILE, *) ABSTRES, ACOEF, BARFAC, C1, 
+     + CUMDTT, DEC, DGET, DJTI, DLV, DOPT, DSGT, DSGFT, DTT, DUMMY, 
+     + EARS, GDDE, GPP, KCAN, KEP, P2O, P3, P9, PDTT, PSKER, RATEIN, 
+     + ROPT, RUE, S1, SIND, SNDN, SNUP, SUMDTT, SWCG, SWSD, TBASE, 
+     + TDSOIL, TEMPCN, TEMPCR, TEMPCX, TH, TLNO, TMSOIL, TNSOIL, TOPT, 
+     + XNTI, XS, XSTAGE, tdsoil1, tnsoil1, tmsoil1, FOUND, ISTAGE, L, 
+     + L0, LINC, LNUM, LUNIO, MDATE, NDAS, YREMRG, ISDATE, PATHL, 
+     + LUNECO, ISECT, LUNCRP, STGDOY
+      READ(IFILE, '(A6,A6,A255,A255,A16,A80)') SECTION, ECOTYP, C255,
+     +  FILEGC, ECONAM, C80
+      CALL GETPUT_MZ_PHENOL('GET', ABSTRES, ACOEF, BARFAC, C1, 
+     + CUMDTT, DEC, DGET, DJTI, DLV, DOPT, DSGT, DSGFT, DTT, DUMMY, 
+     + EARS, GDDE, GPP, KCAN, KEP, P2O, P3, P9, PDTT, PSKER, RATEIN, 
+     + ROPT, RUE, S1, SIND, SNDN, SNUP, SUMDTT, SWCG, SWSD, TBASE, 
+     + TDSOIL, TEMPCN, TEMPCR, TEMPCX, TH, TLNO, TMSOIL, TNSOIL, TOPT, 
+     + XNTI, XS, XSTAGE, tdsoil1, tnsoil1, tmsoil1, FOUND, ISTAGE, L, 
+     + L0, LINC, LNUM, LUNIO, MDATE, NDAS, YREMRG, ISDATE, PATHL, 
+     + LUNECO, ISECT, LUNCRP, STGDOY, SECTION, ECOTYP, C255, FILEGC, 
+     + ECONAM, C80)
+
+      READ(IFILE,'(A6,A30,A80,A255)') SECTION, FILEIO, C80, FILECC
+      READ(IFILE,*) AREALF, ASMDOT, BD, CANHT, CANWH, CARBOT, 
+     + CO2X, CO2Y, DUMMY, EP1, pp1, pp2, FSLFW, FSLFN, 
+     + GRF, GROEAR, GROGRN, GROLF, GROSTM, HI, HIP, LAIDOT, LEAFNOE,
+     + CumLeafSenes, CumLeafSenesY, CumLfNSenes, LFWTE, LIFAC, TAW,DTAW, 
+     + NDEF3, NFAC, NPOOL, NPOOL1, NPOOL2, NSDR, NSINK, P3, PAR, 
+     + PARSR, PC, PCARB, PCNGRN, PCNL, PCNRT, PCNSD, PCNST, PCO2, 
+     + PRFTC, SLPF, PLAE, PLAS, PODNO, PODWT, PPLTD, PRFT, RANC, 
+     + RANCE, RGFILL, RGFIL, RLWR, RMNC, RNLAB, RNOUT, RSGR, RSGRT, 
+     + RTWO, RTWTE, RTWTO, RUE, RWUMX, SATFAC, SDSIZE, SDSZ, SDWT, 
+     + SEEDNO, SEEDRV, SEEDRVE, SFAC, SHELPC, SI1, SI2, SI3, 
+     + SI4, SLAN, SLA, SLFC, SLFN, SLFT, SLFW, Stg2CLS, STMWTO, 
+     + STMWTE, SUMEX, SUMRL, SWEXF, SWIDOT, SWMAX, SWMIN, 
+     + TANCE, TAVGD, TCNP, TEMPM, TFAC, TI, TMNC, TNLAB, TOPWT, 
+     + TSS, VANC, VSTAGE, WLIDOT, WRIDOT, WSIDOT, WTLF, XANC, 
+     + XLFWT, XNF, YIELDB, RZrwu, RZtrwup, AVG_HROOT, WTDEP, 
+     + qsr, TRWUP1
+
+      READ(IFILE,*) CMAT, EMAT, FOUND, I, ICOLD, ISECT, L, LINC, LNUM, 
+     + LUNCRP, LUNIO, NWSD, RSTAGE, PATHL, yrplt, ISTRESS, iresetlai, 
+     + iresetht1
+      READ(IFILE,*) alaireset, WSI,heightset
+
+      CALL GETPUT_MZ_GROSUB('PUT', SECTION, FILEIO, C80, FILECC, 
+     +  AREALF, ASMDOT, BD, CANHT, CANWH, CARBOT, CO2X, CO2Y, 
+     +  DUMMY, EP1, pp1, pp2, FSLFW, FSLFN, GRF, GROEAR, GROGRN, 
+     +  GROLF, GROSTM, HI, HIP, LAIDOT, LEAFNOE, CumLeafSenes, 
+     +  CumLeafSenesY, CumLfNSenes, LFWTE, LIFAC, TAW, DTAW, NDEF3, 
+     +  NFAC, NPOOL, NPOOL1, NPOOL2, NSDR, NSINK, P3, PAR, 
+     +  PARSR, PC, PCARB, PCNGRN, PCNL, PCNRT, PCNSD, PCNST, PCO2, 
+     +  PRFTC, SLPF, PLAE, PLAS, PODNO, PODWT, PPLTD, PRFT, RANC, 
+     +  RANCE, RGFILL, RGFIL, RLWR, RMNC, RNLAB, RNOUT, RSGR, RSGRT, 
+     +  RTWO, RTWTE, RTWTO, RUE, RWUMX, SATFAC, SDSIZE, SDSZ, SDWT, 
+     +  SEEDNO, SEEDRV, SEEDRVE, SFAC, SHELPC, SI1, SI2, SI3, SI4, 
+     +  SLAN, SLA, SLFC, SLFN, SLFT, SLFW, Stg2CLS, STMWTO, STMWTE, 
+     +  SUMEX, SUMRL, SWEXF, SWIDOT, SWMAX, SWMIN, TANCE, 
+     +  TAVGD, TCNP, TEMPM, TFAC, TI, TMNC, TNLAB, TOPWT, TSS, 
+     +  VANC, VSTAGE, WLIDOT, WRIDOT, WSIDOT, WTLF, XANC, XLFWT, 
+     +  XNF, YIELDB, RZrwu, RZtrwup, AVG_HROOT, WTDEP, qsr, TRWUP1, 
+     +  CMAT, EMAT, FOUND, I, ICOLD, ISECT, L, LINC, LNUM, LUNCRP, 
+     +  LUNIO, NWSD, RSTAGE, PATHL, yrplt, ISTRESS, iresetlai,iresetht1,
+     +  alaireset, WSI, heightset)
+
+
+
+
+      READ(IFILE,*) AGEFAC, NDEF3, NFAC, NSTRES
+      CALL GETPUT_MZ_NFACTO('GET', AGEFAC, NDEF3, NFAC, NSTRES)
+
+      READ(IFILE, *) NVALP0, YREMRG, MDATE, istage
+      READ(IFILE, *) STGDOY(20)
+
+      READ(IFILE, *) CANHT, EORATIO, KCAN, KEP, KSEVAP, KTRANS, NSTRES, 
+     + PORMIN, RWUEP1, RWUMX, XLAI, XHLAI, LFWT, STMWT, XSTAGE, DTT, 
+     + BIOMAS, SDWT, GRNWT, EARS, RTWT, STOVWT, STOVN, ROOTN, GRAINN, 
+     + RTDEP, NFIXN, TOPWT, WTLF, PCNL, PCNST, PCNRT, PCNSD
+      READ(IFILE, *) trnu, swfac, grwt, cwad, tfg, wfg, cnad, stwt, 
+     + nupd, gnad, rtwts
+      READ(IFILE, *) RLV, UNO3, UNH4
+      READ(IFILE, *) FixCanht
+
+      READ(IFILE, *) HARVRES
+      READ(IFILE, *) SENESCE
+      CALL Alt_Plant_Memory('PUT', NVALP0, YREMRG, MDATE, STGDOY, 
+     +  CANHT, EORATIO, KCAN, KEP, KSEVAP, KTRANS, NSTRES, PORMIN, 
+     +  RWUEP1, RWUMX, XLAI, XHLAI, RLV, UNO3, UNH4, LFWT, STMWT, 
+     +  XSTAGE, DTT, BIOMAS, SDWT, GRNWT, EARS, RTWT, STOVWT, STOVN, 
+     +  ROOTN, GRAINN, RTDEP, NFIXN, TOPWT, WTLF, PCNL, PCNST, PCNRT, 
+     +  PCNSD, trnu, swfac, grwt, cwad, tfg, wfg, cnad, stwt, nupd, 
+     +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)      
+
+
+      READ(IFILE,'(3A1)') IDETW, ISWWAT, RNMODE
+      READ(IFILE,'(12I)') DAS,DOY, DYNAMIC, ERRNUM, FROP, NAVWB, NAP,
+     + NOUTDW, RUN, YEAR, YRDOY, REPNO
+      READ(IFILE,'(6e)') AVWTD, PESW, TLL, TOTBUNDRO, TOTIR, TSW
+C       READ(IFILE,*) IDETW, ISWWAT, RNMODE
+C       PRINT *, "LOADED CHARS"
+C       READ(IFILE,*) DAS, DOY, DYNAMIC, ERRNUM, FROP, NAVWB, NAP, NOUTDW,
+C      + RUN, YEAR, YRDOY, REPNO
+C       PRINT *, "LOADED INTS"
+C       READ(IFILE,*) AVWTD, PESW, TLL, TOTBUNDRO, TOTIR, TSW
+C       PRINT *, "LOADED REALS"
+C       CALL OPWBAL_Memory('PUT', IDETW, ISWWAT, RNMODE, DAS, DOY, 
+C      +  DYNAMIC, ERRNUM, FROP, NAVWB, NAP, NOUTDW, RUN, YEAR, 
+C      +  YRDOY, REPNO, AVWTD, PESW, TLL, TOTBUNDRO, TOTIR, TSW)
+C       PRINT *, "OPWBAL success"
+      READ(IFILE,*) nreps,FIRST11,first15,PCN,TTPLNT,TMPLNT,TXPLNT,IJ
+      CALL MAPLNT_Memory('PUT',nreps,FIRST11,first15,PCN,TTPLNT,
+     +  TMPLNT,TXPLNT,IJ)
+
+      READ(IFILE, *) oldhgt,PLHGHT,PLALFA
+      CALL DSSATDRV_Memory('PUT', oldhgt,PLHGHT,PLALFA)
+      
+      READ(IFILE,*) LID,LIM,LIYYY,JSEQDAY,CURSTATE
+      CALL DAYJACK_Memory('PUT',LID,LIM,LIYYY,JSEQDAY,CURSTATE)
+
+      READ(IFILE, *) ADIW,JSPLT,SPLT1,FIRST7,NYR,IRPL,NYRC,
+     +  NYRP,ADIWMONTH,totadiw,curradiw
+      CALL MAQUE_Memory('PUT',ADIW,JSPLT,SPLT1,FIRST7,NYR,IRPL,NYRC,
+     +  NYRP,ADIWMONTH,totadiw,curradiw)
 
       ! explicitly specify sequence for custom datatype 
 C       READ(IFILE,*) PLANTVAR%VARNO,PLANTVAR%ECONO 
@@ -662,6 +1099,40 @@ C       READ(IFILE,*) PLANTVAR%PLME
       READ(IFILE,*) PLANTVAR%RESAMT,PLANTVAR%ATEMP
       CALL GETPUT_PLANTVAR('PUT',PLANTVAR)
 
+      PRINT *, "ABOUT TO LOAD CONTROL"
+      READ(IFILE,'(A1,A1,A2,A12)') CONTROL%MESIC, CONTROL%RNMODE,
+     + CONTROL%CROP, CONTROL%MODEL
+      PRINT *, "LOADING CONTROL"
+      READ(IFILE,*) CONTROL%DAS, CONTROL%DYNAMIC, CONTROL%FROP, 
+     + CONTROL%MULTI, CONTROL%REPNO, CONTROL%RUN
+      PRINT *, "LOADING CONTROL"
+      READ(IFILE,*) CONTROL%TRTNO, CONTROL%YRDOY, CONTROL%YRSIM, 
+     + CONTROL%NYRS, CONTROL%YRDIF, CONTROL%ROTNUM
+C       PRINT *, "LOADING CONTROL"
+C       READ(IFILE,*) CONTROL%FILEC, CONTROL%FILEE, CONTROL%FILES,
+C      + CONTROL%FILEA,CONTROL%FILET
+C       PRINT *, "LOADING CONTROL"
+C       READ(IFILE,*) CONTROL%PATHCR,CONTROL%PATHER,CONTROL%PATHSR
+      PRINT *, "LOADING CONTROL"
+      READ(IFILE,*) CONTROL%EXPER
+      PRINT *, "LOADING CONTROL"
+      READ(IFILE,*) CONTROL%ENAME
+      PRINT *, "LOADING CONTROL"
+      READ(IFILE,*) CONTROL%TITLET
+      PRINT *, "LOADING CONTROL"
+      READ(IFILE,*) CONTROL%YRPLT, CONTROL%IEMRG
+      PRINT *, "SAVING CONTROL"
+      CALL GETPUT_CONTROL('PUT', CONTROL)
+      PRINT *, "ISWITCH: ", ISWITCH
+      READ(IFILE,'(21A1,I)') ISWITCH%IDETC,ISWITCH%IDETD,ISWITCH%IDETG, 
+     + ISWITCH%IDETL, ISWITCH%IDETN, ISWITCH%IDETO, ISWITCH%IDETR, 
+     + ISWITCH%IDETS, ISWITCH%IDETW, ISWITCH%IHARI, ISWITCH%IPLTI, 
+     + ISWITCH%IIRRI, ISWITCH%ISWDIS, ISWITCH%ISWNIT, 
+     + ISWITCH%ISWSYM, ISWITCH%ISWWAT,
+     + ISWITCH%MEEVP, ISWITCH%MEPHO, ISWITCH%MESOM,
+     + ISWITCH%IFERI, ISWITCH%IRESI,ISWITCH%NSWI
+      PRINT *, "ISWITCH: ", ISWITCH
+      CALL GETPUT_ISWITCH('PUT', ISWITCH)
 C
 C
 C    Write each set of common variables in sequence
@@ -825,16 +1296,3 @@ C     ..ERROR CONDITIONS FOR OPENNING FILE
       PRINT*,' CHECK TO MAKE SURE THE FILE IS IN THE CURRENT DIR.'
       STOP
       END SUBROUTINE PLSTATREAD
-
-
-
-      SUBROUTINE CHECK_IF_FILE_USABLE(IOS, IOMSG, OP)
-        IMPLICIT NONE
-        INTEGER, INTENT(IN) :: IOS
-        CHARACTER(LEN=*), INTENT(IN) :: IOMSG, OP
-        IF (IOS == 0) RETURN   ! THERE WAS NO ERROR, CONTINUE
-        PRINT*, "ERROR ENCOUNTERED DURING " // TRIM(OP)
-        PRINT*, "ERROR CODE: ", IOS
-        PRINT*, "ERROR MESSAGE: " // TRIM(IOMSG)
-        RETURN
-      END SUBROUTINE CHECK_IF_FILE_USABLE
