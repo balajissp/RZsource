@@ -1121,3 +1121,404 @@ C       USE ModuleDefs
 
       RETURN
       END SUBROUTINE GETPUT_MZ_PHENOL
+
+
+      SUBROUTINE GETPUT_MZ_ROOTGR(CODE, L1, RLDF, RLNEW, RLV, RNFAC, 
+     +      RNLF, RTDEP, RTEXF, RTSURV, SWDF, SWEXF, TRLDF)
+      IMPLICIT NONE
+      SAVE
+      CHARACTER(len=3) CODE
+      INTEGER     L1       
+      REAL        RLDF(20), RLNEW, RLV(20), RNFAC, RNLF, RTDEP, RTEXF, 
+     + RTSURV, SWDF, SWEXF, TRLDF      
+
+      INTEGER     MEM_L1       
+      REAL        MEM_RLDF(20), MEM_RLNEW, MEM_RLV(20), MEM_RNFAC, 
+     + MEM_RNLF, MEM_RTDEP, MEM_RTEXF, 
+     + MEM_RTSURV, MEM_SWDF, MEM_SWEXF, MEM_TRLDF      
+
+      SELECT CASE(CODE)
+        CASE('GET')
+            L1 = MEM_L1
+            RLDF = MEM_RLDF
+            RLNEW = MEM_RLNEW
+            RLV = MEM_RLV
+            RNFAC = MEM_RNFAC
+            RNLF = MEM_RNLF
+            RTDEP = MEM_RTDEP
+            RTEXF = MEM_RTEXF
+            RTSURV = MEM_RTSURV
+            SWDF = MEM_SWDF
+            SWEXF = MEM_SWEXF
+            TRLDF = MEM_TRLDF
+        CASE('PUT')
+            MEM_L1 = L1
+            MEM_RLDF = RLDF
+            MEM_RLNEW = RLNEW
+            MEM_RLV = RLV
+            MEM_RNFAC = RNFAC
+            MEM_RNLF = RNLF
+            MEM_RTDEP = RTDEP
+            MEM_RTEXF = RTEXF
+            MEM_RTSURV = RTSURV
+            MEM_SWDF = SWDF
+            MEM_SWEXF = SWEXF
+            MEM_TRLDF = TRLDF
+      END SELECT
+
+      RETURN
+      END SUBROUTINE GETPUT_MZ_ROOTGR
+
+
+      SUBROUTINE GETPUT_MZ_OPNIT(CODE, DAS, NOUTDN, DAP,L, NLAYR
+     + , OUTPN, PCNL, WTNCAN, WTNSD, WTNVEG, PCNGRN, PCNVEG, WTNUP, 
+     + WTNLF, WTNST, PCNST, PCNRT, CUMSENSURFN, CUMSENSOILN, FEXIST, 
+     + FIRST)
+      IMPLICIT NONE
+      SAVE
+      CHARACTER(len=3) CODE
+      INTEGER DAS, NOUTDN, DAP,L, NLAYR
+      CHARACTER*12 OUTPN
+      REAL PCNL, WTNCAN, WTNSD, WTNVEG, PCNGRN, PCNVEG, WTNUP, WTNLF, 
+     + WTNST, PCNST, PCNRT, CUMSENSURFN, CUMSENSOILN
+      LOGICAL FEXIST, FIRST
+
+      INTEGER MEM_DAS, MEM_NOUTDN, MEM_DAP, MEM_L, MEM_NLAYR
+      CHARACTER*12 MEM_OUTPN
+      REAL MEM_PCNL, MEM_WTNCAN, MEM_WTNSD, MEM_WTNVEG, MEM_PCNGRN, 
+     + MEM_PCNVEG, MEM_WTNUP, MEM_WTNLF, MEM_WTNST, MEM_PCNST, 
+     + MEM_PCNRT, MEM_CUMSENSURFN, MEM_CUMSENSOILN
+      LOGICAL MEM_FEXIST, MEM_FIRST
+
+      SELECT CASE(CODE)
+        CASE('GET')
+          DAS = MEM_DAS
+          NOUTDN = MEM_NOUTDN
+          DAP = MEM_DAP
+          L = MEM_L
+          NLAYR = MEM_NLAYR
+          OUTPN = MEM_OUTPN
+          PCNL = MEM_PCNL
+          WTNCAN = MEM_WTNCAN
+          WTNSD = MEM_WTNSD
+          WTNVEG = MEM_WTNVEG
+          PCNGRN = MEM_PCNGRN
+          PCNVEG = MEM_PCNVEG
+          WTNUP = MEM_WTNUP
+          WTNLF = MEM_WTNLF
+          WTNST = MEM_WTNST
+          PCNST = MEM_PCNST
+          PCNRT = MEM_PCNRT
+          CUMSENSURFN = MEM_CUMSENSURFN
+          CUMSENSOILN = MEM_CUMSENSOILN
+          FEXIST = MEM_FEXIST
+          FIRST = MEM_FIRST
+        CASE('PUT')
+          MEM_DAS = DAS
+          MEM_NOUTDN = NOUTDN
+          MEM_DAP = DAP
+          MEM_L = L
+          MEM_NLAYR = NLAYR
+          MEM_OUTPN = OUTPN
+          MEM_PCNL = PCNL
+          MEM_WTNCAN = WTNCAN
+          MEM_WTNSD = WTNSD
+          MEM_WTNVEG = WTNVEG
+          MEM_PCNGRN = PCNGRN
+          MEM_PCNVEG = PCNVEG
+          MEM_WTNUP = WTNUP
+          MEM_WTNLF = WTNLF
+          MEM_WTNST = WTNST
+          MEM_PCNST = PCNST
+          MEM_PCNRT = PCNRT
+          MEM_CUMSENSURFN = CUMSENSURFN
+          MEM_CUMSENSOILN = CUMSENSOILN
+          MEM_FEXIST = FEXIST
+          MEM_FIRST = FIRST
+      END SELECT
+      RETURN
+      END SUBROUTINE GETPUT_MZ_OPNIT
+
+
+      SUBROUTINE GETPUT_MZ_OPGROW(CODE, OUTG, NOUTDG, DAP, DAS, 
+     +      PODWTD, CUMSENSURF, CUMSENSOIL, FEXIST, FIRST)
+      IMPLICIT NONE
+      SAVE
+      CHARACTER(len=3) CODE
+      CHARACTER*12 OUTG
+      INTEGER NOUTDG, DAP, DAS
+      REAL PODWTD, CUMSENSURF, CUMSENSOIL
+      LOGICAL         FEXIST, FIRST
+
+      CHARACTER*12 MEM_OUTG
+      INTEGER MEM_NOUTDG, MEM_TIMDIF, MEM_DAP, MEM_DAS
+      REAL MEM_PODWTD, MEM_CUMSENSURF, MEM_CUMSENSOIL
+      LOGICAL         MEM_FEXIST, MEM_FIRST
+
+      SELECT CASE(CODE)
+        CASE('GET')
+            OUTG = MEM_OUTG
+            NOUTDG = MEM_NOUTDG
+            DAP = MEM_DAP
+            DAS = MEM_DAS
+            PODWTD = MEM_PODWTD
+            CUMSENSURF = MEM_CUMSENSURF
+            CUMSENSOIL = MEM_CUMSENSOIL
+            FEXIST = MEM_FEXIST
+            FIRST = MEM_FIRST
+
+        CASE('PUT')
+            MEM_OUTG = OUTG
+            MEM_NOUTDG = NOUTDG
+            MEM_DAP = DAP
+            MEM_DAS = DAS
+            MEM_PODWTD = PODWTD
+            MEM_CUMSENSURF = CUMSENSURF
+            MEM_CUMSENSOIL = CUMSENSOIL
+            MEM_FEXIST = FEXIST
+            MEM_FIRST = FIRST
+      END SELECT
+
+      RETURN
+      END SUBROUTINE GETPUT_MZ_OPGROW
+
+
+C       SUBROUTINE GETPUT_MZ_OPHARV(CODE)
+C       IMPLICIT NONE
+C       SAVE
+C       CHARACTER(len=3) CODE
+
+C       CHARACTER*6  SECTION
+C       CHARACTER*10 STNAME(20)
+C       CHARACTER*12 FILEA
+
+C       INTEGER DFLR, DMAT
+C       INTEGER DNR1, DNR7, FOUND
+C       INTEGER IFLR, IMAT
+C       INTEGER ISENS, LINC, LNUM, LUNIO
+C       INTEGER TRTNO, YRNR1, YRNR2, YRNR3
+C       INTEGER YRNR5, YRSIM, YRPLT
+      
+C       REAL BWAH, BWAM
+C       REAL HI
+C       REAL PBIOMS, PSDWT
+C       REAL SDRATE
+C       REAL SDWTAH, SDWTAM
+C       REAL WTNCAN, WTNUP, XGNP, XLAI, XN
+C       REAL YIELD,RNAD,RWAD 
+
+C       INTEGER ACOUNT
+C       CHARACTER*4 OLAB(40), OLAP(40)  !OLAP modified for dap
+C       CHARACTER*6 X(40)
+C       CHARACTER*8 Simulated(40), Measured(40)
+C       CHARACTER*35 DESCRIP(40)
+
+C       SELECT CASE(CODE)
+C         CASE('GET')
+
+C         CASE('PUT')
+
+C       END SELECT
+
+C       RETURN
+C       END SUBROUTINE GETPUT_MZ_OPHARV
+
+
+      SUBROUTINE GETPUT_MZ_NUPTAKE(CODE, ANDEM, DNG, DROOTN, DSTOVN, FAC
+     +  , FACTOR, FNH4, FNO3, NDEM, NUF, RFAC, RNDEM, RNH4U, RNLOSS, 
+     +  RNO3U, SMDFR, SNH4, SNO3, TNDEM, TRLV, TRNLOS, XMIN, XNDEM)
+      IMPLICIT NONE
+      SAVE
+      CHARACTER(len=3) CODE
+
+      REAL        ANDEM , MEM_ANDEM  
+      REAL        DNG , MEM_DNG         
+      REAL        DROOTN , MEM_DROOTN      
+      REAL        DSTOVN , MEM_DSTOVN      
+      REAL        FAC(20), MEM_FAC(20)     
+      REAL        FACTOR , MEM_FACTOR      
+      REAL        FNH4 , MEM_FNH4        
+      REAL        FNO3 , MEM_FNO3        
+      REAL        NDEM , MEM_NDEM        
+      REAL        NUF , MEM_NUF         
+      REAL        RFAC , MEM_RFAC        
+      REAL        RNDEM , MEM_RNDEM       
+      REAL        RNH4U(20), MEM_RNH4U(20)   
+      REAL        RNLOSS , MEM_RNLOSS      
+      REAL        RNO3U(20), MEM_RNO3U(20)   
+      REAL        SMDFR , MEM_SMDFR       
+      REAL        SNH4(20), MEM_SNH4(20)    
+      REAL        SNO3(20), MEM_SNO3(20)    
+      REAL        TNDEM , MEM_TNDEM       
+      REAL        TRLV , MEM_TRLV        
+      REAL        TRNLOS , MEM_TRNLOS      
+      REAL        XMIN , MEM_XMIN        
+      REAL        XNDEM , MEM_XNDEM       
+
+
+      SELECT CASE(CODE)
+        CASE('GET')
+            ANDEM = MEM_ANDEM
+            DNG = MEM_DNG
+            DROOTN = MEM_DROOTN
+            DSTOVN = MEM_DSTOVN
+            FAC = MEM_FAC
+            FACTOR = MEM_FACTOR
+            FNH4 = MEM_FNH4
+            FNO3 = MEM_FNO3
+            NDEM = MEM_NDEM
+            NUF = MEM_NUF
+            RFAC = MEM_RFAC
+            RNDEM = MEM_RNDEM
+            RNH4U = MEM_RNH4U
+            RNLOSS = MEM_RNLOSS
+            RNO3U = MEM_RNO3U
+            SMDFR = MEM_SMDFR
+            SNH4 = MEM_SNH4
+            SNO3 = MEM_SNO3
+            TNDEM = MEM_TNDEM
+            TRLV = MEM_TRLV
+            TRNLOS = MEM_TRNLOS
+            XMIN = MEM_XMIN
+            XNDEM = MEM_XNDEM
+
+        CASE('PUT')
+            MEM_ANDEM = ANDEM
+            MEM_DNG = DNG
+            MEM_DROOTN = DROOTN
+            MEM_DSTOVN = DSTOVN
+            MEM_FAC = FAC
+            MEM_FACTOR = FACTOR
+            MEM_FNH4 = FNH4
+            MEM_FNO3 = FNO3
+            MEM_NDEM = NDEM
+            MEM_NUF = NUF
+            MEM_RFAC = RFAC
+            MEM_RNDEM = RNDEM
+            MEM_RNH4U = RNH4U
+            MEM_RNLOSS = RNLOSS
+            MEM_RNO3U = RNO3U
+            MEM_SMDFR = SMDFR
+            MEM_SNH4 = SNH4
+            MEM_SNO3 = SNO3
+            MEM_TNDEM = TNDEM
+            MEM_TRLV = TRLV
+            MEM_TRNLOS = TRNLOS
+            MEM_XMIN = XMIN
+            MEM_XNDEM = XNDEM
+      END SELECT
+
+      RETURN
+      END SUBROUTINE GETPUT_MZ_NUPTAKE
+
+
+
+
+      SUBROUTINE MAIZE_GROWTH_STATE(CODE, IFILE)
+      ! subroutine to save/retrieve all parameters of dssat maize model 
+      ! from disk, used only by RZinterrupt.for
+      ! placed in this location for modularity
+      IMPLICIT NONE
+      CHARACTER(len=3) CODE
+      INTEGER IFILE
+
+      ! MZ_ROOTGR
+      INTEGER     L1       
+      REAL        RLDF(20), RLNEW, RLV(20), RNFAC, RNLF, RTDEP, RTEXF, 
+     + RTSURV, SWDF, SWEXF, TRLDF      
+
+      ! MZ_OPNIT
+      INTEGER DAS, NOUTDN, DAP,L, NLAYR, TIMDIF
+      CHARACTER*12 OUTPN
+      REAL PCNL, WTNCAN, WTNSD, WTNVEG, PCNGRN, PCNVEG, WTNUP, WTNLF, 
+     + WTNST, PCNST, PCNRT, CUMSENSURFN, CUMSENSOILN
+      LOGICAL FEXIST, FIRST
+
+      CHARACTER*12 OUTG
+      INTEGER NOUTDG
+      REAL PODWTD, CUMSENSURF, CUMSENSOIL
+
+      REAL        ANDEM , MEM_ANDEM  
+      REAL        DNG , MEM_DNG         
+      REAL        DROOTN , MEM_DROOTN      
+      REAL        DSTOVN , MEM_DSTOVN      
+      REAL        FAC(20), MEM_FAC(20)     
+      REAL        FACTOR , MEM_FACTOR      
+      REAL        FNH4 , MEM_FNH4        
+      REAL        FNO3 , MEM_FNO3        
+      REAL        NDEM , MEM_NDEM        
+      REAL        NUF , MEM_NUF         
+      REAL        RFAC , MEM_RFAC        
+      REAL        RNDEM , MEM_RNDEM       
+      REAL        RNH4U(20), MEM_RNH4U(20)   
+      REAL        RNLOSS , MEM_RNLOSS      
+      REAL        RNO3U(20), MEM_RNO3U(20)   
+      REAL        SMDFR , MEM_SMDFR       
+      REAL        SNH4(20), MEM_SNH4(20)    
+      REAL        SNO3(20), MEM_SNO3(20)    
+      REAL        TNDEM , MEM_TNDEM       
+      REAL        TRLV , MEM_TRLV        
+      REAL        TRNLOS , MEM_TRNLOS      
+      REAL        XMIN , MEM_XMIN        
+      REAL        XNDEM , MEM_XNDEM       
+
+      SELECT CASE(CODE)
+        CASE('GET')
+
+        READ(IFILE,*) L1, RLDF, RLNEW, RLV, RNFAC, 
+     +      RNLF, RTDEP, RTEXF, RTSURV, SWDF, SWEXF, TRLDF
+        CALL GETPUT_MZ_ROOTGR('PUT', L1, RLDF, RLNEW, RLV, RNFAC, 
+     +      RNLF, RTDEP, RTEXF, RTSURV, SWDF, SWEXF, TRLDF)
+
+        READ(IFILE,*) DAS, NOUTDN, DAP,L, NLAYR
+     + , OUTPN, PCNL, WTNCAN, WTNSD, WTNVEG, PCNGRN, PCNVEG, WTNUP, 
+     + WTNLF, WTNST, PCNST, PCNRT, CUMSENSURFN, CUMSENSOILN, FEXIST, 
+     + FIRST
+      CALL GETPUT_MZ_OPNIT('PUT', DAS, NOUTDN, DAP,L, NLAYR
+     + , OUTPN, PCNL, WTNCAN, WTNSD, WTNVEG, PCNGRN, PCNVEG, WTNUP, 
+     + WTNLF, WTNST, PCNST, PCNRT, CUMSENSURFN, CUMSENSOILN, FEXIST, 
+     + FIRST)
+
+      READ(IFILE,*) OUTG, NOUTDG, DAP, DAS, 
+     +      PODWTD, CUMSENSURF, CUMSENSOIL, FEXIST, FIRST
+      CALL GETPUT_MZ_OPGROW('PUT', OUTG, NOUTDG, DAP, DAS, 
+     +      PODWTD, CUMSENSURF, CUMSENSOIL, FEXIST, FIRST)
+
+      READ(IFILE,*) ANDEM, DNG, DROOTN, DSTOVN, FAC
+     +  , FACTOR, FNH4, FNO3, NDEM, NUF, RFAC, RNDEM, RNH4U, RNLOSS, 
+     +  RNO3U, SMDFR, SNH4, SNO3, TNDEM, TRLV, TRNLOS, XMIN, XNDEM
+      CALL GETPUT_MZ_NUPTAKE('PUT', ANDEM, DNG, DROOTN, DSTOVN, FAC
+     +  , FACTOR, FNH4, FNO3, NDEM, NUF, RFAC, RNDEM, RNH4U, RNLOSS, 
+     +  RNO3U, SMDFR, SNH4, SNO3, TNDEM, TRLV, TRNLOS, XMIN, XNDEM)
+
+       CASE('PUT')
+        CALL GETPUT_MZ_ROOTGR('GET', L1, RLDF, RLNEW, RLV, RNFAC, 
+     +      RNLF, RTDEP, RTEXF, RTSURV, SWDF, SWEXF, TRLDF)
+        WRITE(IFILE,*) L1, RLDF, RLNEW, RLV, RNFAC, 
+     +      RNLF, RTDEP, RTEXF, RTSURV, SWDF, SWEXF, TRLDF
+
+      CALL GETPUT_MZ_OPNIT('GET', DAS, NOUTDN, DAP,L, NLAYR
+     + , OUTPN, PCNL, WTNCAN, WTNSD, WTNVEG, PCNGRN, PCNVEG, WTNUP, 
+     + WTNLF, WTNST, PCNST, PCNRT, CUMSENSURFN, CUMSENSOILN, FEXIST, 
+     + FIRST)
+        WRITE(IFILE,*) DAS, NOUTDN, DAP,L, NLAYR
+     + , OUTPN, PCNL, WTNCAN, WTNSD, WTNVEG, PCNGRN, PCNVEG, WTNUP, 
+     + WTNLF, WTNST, PCNST, PCNRT, CUMSENSURFN, CUMSENSOILN, FEXIST, 
+     + FIRST
+
+      CALL GETPUT_MZ_OPGROW('GET', OUTG, NOUTDG, DAP, DAS, 
+     +      PODWTD, CUMSENSURF, CUMSENSOIL, FEXIST, FIRST)
+      WRITE(IFILE,*) CODE, OUTG, NOUTDG, DAP, DAS, 
+     +      PODWTD, CUMSENSURF, CUMSENSOIL, FEXIST, FIRST
+
+      CALL GETPUT_MZ_NUPTAKE('GET', ANDEM, DNG, DROOTN, DSTOVN, FAC
+     +  , FACTOR, FNH4, FNO3, NDEM, NUF, RFAC, RNDEM, RNH4U, RNLOSS, 
+     +  RNO3U, SMDFR, SNH4, SNO3, TNDEM, TRLV, TRNLOS, XMIN, XNDEM)
+
+      WRITE(IFILE,*) ANDEM, DNG, DROOTN, DSTOVN, FAC
+     +  , FACTOR, FNH4, FNO3, NDEM, NUF, RFAC, RNDEM, RNH4U, RNLOSS, 
+     +  RNO3U, SMDFR, SNH4, SNO3, TNDEM, TRLV, TRNLOS, XMIN, XNDEM
+      END SELECT  
+
+      RETURN
+      END SUBROUTINE MAIZE_GROWTH_STATE

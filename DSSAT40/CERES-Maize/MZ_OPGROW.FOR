@@ -24,7 +24,7 @@ C  Calls:     None
 !----------------------------------------------------------------------
       USE ModuleDefs
       IMPLICIT NONE
-      SAVE
+C       SAVE
 !----------------------------------------------------------------------
       INTEGER NOUTDG
       INTEGER DYNAMIC
@@ -54,6 +54,8 @@ C  Calls:     None
       TYPE (SwitchType)  ISWITCH
       TYPE (ResidueType) SENESCE
 
+      CALL GETPUT_MZ_OPGROW('GET', OUTG, NOUTDG, DAP, DAS, 
+     +      PODWTD, CUMSENSURF, CUMSENSOIL, FEXIST, FIRST)
       IDETG   = ISWITCH % IDETG
       IF (IDETG .EQ. 'N') RETURN
 
@@ -164,7 +166,8 @@ C-------------------------------------------------------------------
         CLOSE (NOUTDG)
 
       ENDIF
-
+      CALL GETPUT_MZ_OPGROW('PUT', OUTG, NOUTDG, DAP, DAS, 
+     +      PODWTD, CUMSENSURF, CUMSENSOIL, FEXIST, FIRST)
 !***********************************************************************
       RETURN
       END SUBROUTINE MZ_OPGROW

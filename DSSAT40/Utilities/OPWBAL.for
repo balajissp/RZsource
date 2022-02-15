@@ -156,7 +156,6 @@ C-----------------------------------------------------------------------
      &      (DYNAMIC .EQ. FINAL  .AND. MOD(DAS, FROP) .NE. 0)) THEN
 
           CALL YR_DOY(YRDOY, YEAR, DOY) 
-          PRINT *, AVWTD, NAVWB 
           AVWTD = AVWTD / NAVWB
 
           WRITE (NOUTDW,1300)YEAR, DOY,MOD(DAS,100000), 

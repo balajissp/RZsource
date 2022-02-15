@@ -713,10 +713,10 @@ C     ..SHAW VARIABLES DIMENSIONED
      +     thetaold(mxnod),lwsnow,lwres(NODRES),lwsoil,thetaoldi(mxnod)
      +     ,dsnow,subl,totmelt
 ceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-      SAVE PERIOD,SPAN,DELT,START,NBPR,COR,TTRO,STMSEG,ND,FIRST5,JSTDAY,
-     +    TSTART,OLDSTR,TRFDD,TCII,TROI,NBPRI,CANIRR,HROOT,RNDR,SNP,
-     +    SSTART,PKTEMP,hrootdummy
-      SAVE IDIMIYOLD,wthour,totalsub
+C       SAVE PERIOD,SPAN,DELT,START,NBPR,COR,TTRO,STMSEG,ND,FIRST5,JSTDAY,
+C      +    TSTART,OLDSTR,TRFDD,TCII,TROI,NBPRI,CANIRR,HROOT,RNDR,SNP,
+C      +    SSTART,PKTEMP,hrootdummy
+C       SAVE IDIMIYOLD,wthour,totalsub
       data pfirst/.true./
 C
       DATA PERIOD /'STORM'/,SPAN /.FALSE./,ISEG /1/,COR /1.0D-6/,START /
@@ -766,6 +766,13 @@ c rma removed ishutl initialization, read in from rzwqm.dat
 
 
       DATA RHORS/0.15d0,0.17d0,0.18d0/
+
+!-----------MEMORY-----------------------------------------------------
+      CALL PHYSCL_Memory('GET', PERIOD, SPAN, DELT, START, NBPR, COR, 
+     +    TTRO, STMSEG, ND, FIRST5, JSTDAY, TSTART, OLDSTR, TRFDD,
+     +    TCII, TROI, NBPRI, CANIRR, HROOT, RNDR, SNP,
+     +    SSTART, PKTEMP, hrootdummy,
+     +    IDIMIYOLD,wthour,totalsub)
 ceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 C----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -3005,6 +3012,14 @@ C     print out stress related water balance stuff
      +       avg_H,avg_sw,trwup,acttrndum,RET_day_T,SumCropET,
      +       avg_Hrdf,avg_swrdf
   707 format (i8,i6,12(f15.4,2x))
+
+      !-----------MEMORY-----------------------------------------------------
+      CALL PHYSCL_Memory('PUT', PERIOD, SPAN, DELT, START, NBPR, COR, 
+     +    TTRO, STMSEG, ND, FIRST5, JSTDAY, TSTART, OLDSTR, TRFDD,
+     +    TCII, TROI, NBPRI, CANIRR, HROOT, RNDR, SNP,
+     +    SSTART, PKTEMP, hrootdummy,
+     +    IDIMIYOLD,wthour,totalsub)
+
       RETURN
 csssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 c     jak

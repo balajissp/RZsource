@@ -310,7 +310,8 @@ C
 C
       PRINT *, "WRITING PLSTAT.DAT"
 C     Explicitly specify sequence for custom datatypes
-
+      
+      CALL MAIZE_GROWTH_STATE('PUT', IFILE)
       CALL GETPUT_MZ_PHENOL('GET', ABSTRES, ACOEF, BARFAC, C1, 
      + CUMDTT, DEC, DGET, DJTI, DLV, DOPT, DSGT, DSGFT, DTT, DUMMY, 
      + EARS, GDDE, GPP, KCAN, KEP, P2O, P3, P9, PDTT, PSKER, RATEIN, 
@@ -949,7 +950,7 @@ C
       BACKSPACE(IFILE)
       PRINT *, "PLSTAT not empty, trying to read"
 
-
+      CALL MAIZE_GROWTH_STATE('GET', IFILE)
       READ(IFILE, *) ABSTRES, ACOEF, BARFAC, C1, 
      + CUMDTT, DEC, DGET, DJTI, DLV, DOPT, DSGT, DSGFT, DTT, DUMMY, 
      + EARS, GDDE, GPP, KCAN, KEP, P2O, P3, P9, PDTT, PSKER, RATEIN, 

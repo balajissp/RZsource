@@ -145,6 +145,7 @@
 		<File RelativePath="..\DSSAT40\CERES-Millet\ML_TILLSUB.FOR"/>
 		<File RelativePath="..\DSSAT40\CROPGRO\MOBIL.FOR"/>
 		<File RelativePath="..\DSSAT40\Utilities\ModuleDefs.for"/>
+		<File RelativePath="..\DSSAT40\CERES-Maize\MZ_Memory.for"/>
 		<File RelativePath="..\DSSAT40\CERES-Maize\MZ_CERES.FOR"/>
 		<File RelativePath="..\DSSAT40\CERES-Maize\MZ_GROSUB.for"/>
 		<File RelativePath="..\DSSAT40\CERES-Maize\MZ_NFACTO.for"/>

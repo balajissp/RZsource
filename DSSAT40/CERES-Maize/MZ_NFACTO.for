@@ -98,7 +98,7 @@ C     ----------------------------------------------------------------
 
  
       CALL GETPUT_MZ_NFACTO('PUT', AGEFAC, NDEF3, NFAC, NSTRES)
-      PRINT *, 'EXITING MZ_NFACTO'
+      PRINT *, "EXITING MZ_NFACTO"
       RETURN
 
       END SUBROUTINE MZ_NFACTO

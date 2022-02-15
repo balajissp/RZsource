@@ -45,8 +45,8 @@ C-----------------------------------------------------------------------
       CHARACTER*255 TITLET,TITSIM
       CHARACTER*50 SLDESC
       CHARACTER*60 ENAME
-	CHARACTER*1  MEWTH,MESIC,IDETH,IDETP,IOX,ISWPHO,ISWPOT
-	CHARACTER*1 ISWSYM
+      CHARACTER*1  MEWTH,MESIC,IDETH,IDETP,IOX,ISWPHO,ISWPOT
+      CHARACTER*1 ISWSYM
 C      character filename*160
       character*80 LINE
       CHARACTER*120 WTHSTR
@@ -55,7 +55,7 @@ C      character filename*160
       CHARACTER* 12 OUTP,OUTSOMC,OUTRSTG,SOUTE,SOUTR,SEVAL,PNBAL
       CHARACTER* 12 PCBAL,SNBAL,SCBAL,SPBAL,SWBAL,PPBAL
       CHARACTER* 12 FILET,FILEA, FILEC, FILEE, FILES
-	CHARACTER*255 PATHCR,PATHSR,PATHER
+      CHARACTER*255 PATHCR,PATHSR,PATHER
       CHARACTER*255 FILECC,FILEGG
 
       INTEGER I,JGS(2),NLAYRR,YRSIMR,NLDS,JDAY,NSENS,NSWAB
@@ -64,7 +64,7 @@ C      character filename*160
       INTEGER IFIRST, ITRIM, YRIC, REP,RSEED1,NSWI,NARES,ILEN
       INTEGER YRSIMRS, HDATE(3),NREPs, IPDSSAT, L, MXNOD,mxana
       integer ihtyper,iharvr,HAREND,iptyper,iemrg,iweather,nhour
-	INTEGER YREND,ISTAGE, YR, DOY, MDATE, TIMDIF,NHAR,dslayer,imagic
+      INTEGER YREND,ISTAGE, YR, DOY, MDATE, TIMDIF,NHAR,dslayer,imagic
       parameter (MXNOD=300,MXANA=135,dslayer=20)
 
       REAL CES, CET, CEP, CRAIN, CSD1, CSD2, ICSDUR,salb,GRAINR
@@ -89,23 +89,23 @@ c      REAL XLAT,RWUEP1,REFHT,WINDHT,BETN,CANWH,CANHT,NDEM
 C-RZ
       REAL TOTRTRES,TOTWTNRRS,RM1,RMN1,RTM1,RTMN1
       REAL RTRES(MXNOD),WTNRRS(MXNOD),TOPRES,WTNRES,DEPMAX
-	REAL ROWSPC, PLTPOP, SDEPTH, PHINT, DRAIN, PESW,RLV(NL)
+      REAL ROWSPC, PLTPOP, SDEPTH, PHINT, DRAIN, PESW,RLV(NL)
       REAL TSW, TLL, TSAT, TRNU, ANO3, ANH4,TLCH,TSON
-	REAL SW(NL), ST(NL), NO3(NL), NH4(NL),FAC(NL),RWU(NL)
-	REAL RWUMX, TRWUP, PORMIN, SATFAC, RWUEP1,SNO3(NL),SNH4(NL)
-	REAL EP, ES, EO, ET, SWFAC, TURFAC, ICRES, TWILEN
+      REAL SW(NL), ST(NL), NO3(NL), NH4(NL),FAC(NL),RWU(NL)
+      REAL RWUMX, TRWUP, PORMIN, SATFAC, RWUEP1,SNO3(NL),SNH4(NL)
+      REAL EP, ES, EO, ET, SWFAC, TURFAC, ICRES, TWILEN
       REAL DEC,DAYL,SOC,SNDN,SNUP, HARVFRAC(3), SNOW, EOP
-	REAL KEP, KCAN, NSTRES, UNO3(NL), UNH4(NL),XLAI,EP1
-	REAL CUMDEP,AINO3,AINH4, IRRAMT,TSWINI,SWINIT(dslayer),TSOC
+      REAL KEP, KCAN, NSTRES, UNO3(NL), UNH4(NL),XLAI,EP1
+      REAL CUMDEP,AINO3,AINH4, IRRAMT,TSWINI,SWINIT(dslayer),TSOC
       REAL CO2,SRAD,TMAX,TMIN,HPC,SRFTEMP   !SRFTEMP NEED TO HAVE VALUES, LIWANG MA
       REAL GRWT,STWT,NUPD,GNAD,CNAD,WFG,TFG,CWAD,RTWTS,RTWTB,STMWTB,wflf
 
 C PARAMETERS FOR CROPGRO NEED TO CHECK THEIR VALUES
-	REAL XHLAI,EORATIO,KSEVAP,KTRANS,HS,HTMAX,BIOHALF
+      REAL XHLAI,EORATIO,KSEVAP,KTRANS,HS,HTMAX,BIOHALF
 C PARAMETERS NEED TO BE DEFINED/PASSED FOR CERES
       REAL LFWT,STMWT,XSTAGE,DTT,BIOMAS,SDWT,GRNWT,EARS,avg_hroot
-	REAL RTWT,STOVWT,STOVN,ROOTN,GRAINN,RTDEP,RZrwu(mxnod),RZtrwup
-	REAL NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,WTNFX,srdot
+      REAL RTWT,STOVWT,STOVN,ROOTN,GRAINN,RTDEP,RZrwu(mxnod),RZtrwup
+      REAL NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,WTNFX,srdot
       real TNH4,TNO3,THUMC,THUMN,tnh4no3,conv1,ceo,pronod,nodgr
       double precision hrt(24),hrts(24),hru(24),hrh(24),hrzpar(24)
      +       ,HRTH(24),SSURFT(24),RCO2,resage,rootnr(mxnod),rwl(mxnod)
@@ -113,8 +113,8 @@ C PARAMETERS NEED TO BE DEFINED/PASSED FOR CERES
 c      REAL CUMSENSURF,  CUMSENSOIL  !cumul. senesced matter, soil & surf
 c      REAL CUMSENSURFN, CUMSENSOILN !cumul. senes. N soil and surface
 
-	INTEGER NOUTDO, NOUTDG, NOUTDS, NOUTDW, NOUTDC
-	INTEGER NVEG0,RSTAGE,istress,iresetlai, iresetht1
+      INTEGER NOUTDO, NOUTDG, NOUTDS, NOUTDW, NOUTDC
+      INTEGER NVEG0,RSTAGE,istress,iresetlai, iresetht1
 C
       DOUBLE PRECISION XLATR,TMAXR,TMINR,SRADR,REFHTR,WNDHTR,
      &            ACTTRN,PET,PER,PES,ACTEVP,
@@ -196,16 +196,16 @@ c
 C      if (iresetht1.eq. 1) userht=height
       IF (FIRST) THEN
       RM1=0.0
-	RMN1=0.0
+      RMN1=0.0
       RTM1=0.0
-	RTMN1=0.0
+      RTMN1=0.0
 C
         CONTROL % DYNAMIC = runinit
         CONTROL % YRSIM = YRSIMRS
         YRPLT = YRSIMR
         CONTROL % YRPLT = YRPLT
         CONTROL % iemrg = iemrg
-	  YREND = -99
+        YREND = -99
         MDATE = -99
 c from Alt_Plant.For
       oldheight = 0.0d0
@@ -230,7 +230,7 @@ c      RLV      = 0.0
 c from Alt_plant.for
 c
         
-	  if (hdate(1).gt.0) CALL Y2K_DOY(HDATE(1))        
+        if (hdate(1).gt.0) CALL Y2K_DOY(HDATE(1))        
         ISTAGE = 7
         CANWH  = 0.0
         CANHT  = 0.0
@@ -264,9 +264,9 @@ c        control % YRSIM = YRP * 1000 + ISIMP
       CONTROL % RUN = control% run + 1
       CONTROL % MULTI = CONTROL % MULTI +1
       CONTROL % REPNO = 1
-c	CONTROL % RNMODE = 'N'
-	CONTROL % NYRS = 1
-C	CONTROL % YRDIF = YRDIF
+c      CONTROL % RNMODE = 'N'
+      CONTROL % NYRS = 1
+C      CONTROL % YRDIF = YRDIF
       CONTROL % CROP   = CROPR
       CONTROL % RNMODE = 'N'
       ISWITCH % MESOM = 'R'
@@ -278,7 +278,7 @@ C -------------------------------------------------------------------
 c      TITLET = ENAME
 c          TITLET = "RZWQM-CERES"//"-"//TITLET
           ENAME  = "RZWQM2"//"-"//ENAME
-c	    CROP = CONTROL % CROP
+c          CROP = CONTROL % CROP
 c       control% titlet = titlet
        control% ename = ename
           VARNO  = VARNOR
@@ -498,7 +498,7 @@ C-----------------------------------------------------------------------
       RSEED1 = 2150
       MEWTH = 'M'
       control % MESIC = 'M'
-	NHAR = 1
+      NHAR = 1
 C      MELI = 'E'
 C      CONTROL % FILEIO = 'D:\RZWQM_DSSAT40\IBWA8334.INP'
       ISWITCH % MEEVP = 'R'  !dynamic ET need height
@@ -530,12 +530,12 @@ C-----------------------------------------------------------------------
       END DO
 C added by Liwang Ma, Oct. 22, 2004 to limit RZWQM layers to DS(dslayer)
       SOILPROP % SALB = SALB
-	DO I=NNR,1,-1
-	   IF (TLTR(I).LE.SOILPROP % DS(dslayer)) THEN
-	      NLAYRI=I
-	      GO TO 10
-	    ENDIF
-	END DO
+      DO I=NNR,1,-1
+         IF (TLTR(I).LE.SOILPROP % DS(dslayer)) THEN
+            NLAYRI=I
+            GO TO 10
+          ENDIF
+      END DO
 c      NLAYRI  = NNR
 10    CALL LYRSET (NLAYRI, TLTR, SOILPROP % NLAYR, SOILPROP % DS, 
      &             SOILPROP % DLAYR, DEPMAX)
@@ -863,7 +863,7 @@ C-----------------------------------------------------------------------
       endif      
       icres = real(RM)
       cumres = real (RM)
-	DO L = 1,SOILPROP % NLAYR
+      DO L = 1,SOILPROP % NLAYR
         SWINIT(L) = SW(L)
         TSWINI = TSWINI + SW(L) * SOILPROP % DLAYR(L)
       ENDDO
@@ -995,8 +995,8 @@ C       Calculate sun angles and hourly weather variables.
         CALL HANG(
      &    DEC, HS, weather%XLAT,                                  !Input
      &    weather%AZZON(i), weather%BETA(i))                              !Output
-       PRINT *, "DSSATDRV CALLING FRACD"
-       CALL FRACD(
+        PRINT *, "DSSATDRV CALLING FRACD"
+        CALL FRACD(
      &    weather%BETA(i), weather%CLOUDS, HS, weather%RADHR(i), 
      &     S0N, SNDN,SNUP,                                              !Input
      &    weather%FRDIFP(i), weather%FRDIFR(i))                          !Output
@@ -1100,10 +1100,10 @@ C
         CALL OPSUM (CONTROL, ISWITCH, YRPLT,
      &     EXPER,CG, ENAME)                !LIWANG MA, RZWQM-DSSAT
 !      ENDIF
-	endif
+      endif
       IF (FIRST) then
-	      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
-	      CALL GETPUT_CONTROL('get', CONTROL) 
+            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
+            CALL GETPUT_CONTROL('get', CONTROL) 
              control % dynamic = seasinit
             PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('PUT', CONTROL) 
@@ -1206,8 +1206,8 @@ C-----------------------------------------------------------------------
 c---- END OF  DYNAMIC = SEASINIT  --------------------
 c---------- START  DYNAMIC = RATE --------------------
 C       CALL GETPUT_WEATHER('PUT', WEATHER)    
-	      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
-	      CALL GETPUT_CONTROL('get', CONTROL) 
+            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
+            CALL GETPUT_CONTROL('get', CONTROL) 
              CONTROL % DYNAMIC = RATE
             PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('PUT', CONTROL) 
@@ -1287,8 +1287,8 @@ c        ENDIF   !ISWWAT = 'Y'
 
        endif
 C
-	      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
-	      CALL GETPUT_CONTROL('get', CONTROL) 
+            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
+            CALL GETPUT_CONTROL('get', CONTROL) 
                  CONTROL % DYNAMIC = INTEGR
             PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('PUT', CONTROL) 
@@ -1350,8 +1350,8 @@ C
 c---- END OF DYNAMIC = INTEGR --------------------
 c---- START  DYNAMIC = OUTPUT --------------------
 
-	      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
-	      CALL GETPUT_CONTROL('get', CONTROL) 
+            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
+            CALL GETPUT_CONTROL('get', CONTROL) 
                  CONTROL % DYNAMIC = OUTPUT
             PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('PUT', CONTROL) 
@@ -1427,7 +1427,7 @@ c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
 C
 c---- END OF  DYNAMIC = OUTPUT --------------------
 
-      PRINT *, "DSSATDRV CALLING AUTHAR", ISWITCH
+      PRINT *, "DSSATDRV CALLING AUTHAR"
       CALL AUTHAR(CONTROL, ISWITCH %ISWWAT, 
      &    SOILPROP%DLAYR, SOILPROP%DUL, ISWITCH%IDETO, 
      &    ISWITCH%IHARI, SOILPROP%LL, STGDOY,           !Input
@@ -1490,17 +1490,17 @@ c      FIRST  = FIRST
       IF ((INDEX('GROgro',MODEL(3:5)) .GT.0) .or.
      &   (INDEX('FRMfrm',MODEL(3:5)) .GT.0)) THEN
 c      IF (CONTROL % CROP .EQ. 'SB') THEN
-	  if (CONTROL % YRDOY.eq.yrend) then
+        if (CONTROL % YRDOY.eq.yrend) then
               nfixn=0.0d0
               fixn=0.0d0
-	  else
+        else
                FIXN   = DBLE((NFIXN+(NODGR * 0.16 * PRONOD)) * 10.)   !kg N/ha/d
-	  endif
-	         GS = DBLE(RSTAGE/8.0)
+        endif
+               GS = DBLE(RSTAGE/8.0)
                BASE   = DBLE((CANWH * MIN(CANWH,BETN)))
                HEIGHT = DBLE(CANHT*100.)
-	      IF (CONTROL % DAS .EQ. NVEG0) THEN
-	         JGS(1) = 1
+            IF (CONTROL % DAS .EQ. NVEG0) THEN
+               JGS(1) = 1
             ELSE IF (CONTROL % YRDOY .EQ. MDATE .and.Hdate(1).lt.0)THEN
 c            ELSE IF (CONTROL % DAS .EQ. MDATE) THEN
                JGS(2) = 1
@@ -1622,13 +1622,13 @@ C            HI    = SDWT*EARS/BIOMAS
      &        (CONTROL % CROP .EQ. 'BA').or.
      &        (control%crop .eq.'TR')) THEN
             GRAINR = (GRWT * PLTPOP * 10.0)
-	      BIOMAS = (CWAD/10.0)
-	      TRNU = NUPD
-	      stovn = (CNAD-GNAD)/PLTPOP/10.0
-		  grainn = GNAD/PLTPOP/10.0
-	      SWFAC = WFG
+            BIOMAS = (CWAD/10.0)
+            TRNU = NUPD
+            stovn = (CNAD-GNAD)/PLTPOP/10.0
+              grainn = GNAD/PLTPOP/10.0
+            SWFAC = WFG
             turfac=wflf
-	      STMWT = STWT
+            STMWT = STWT
 c         else if (CONTROL % CROP .EQ. 'ML') then
          ELSE if (INDEX('SGMLMOMX',control%CROP) .GT. 0) then
 c it seems to me that grnwt was not caculated at harverst and sdwt was calculated other times
@@ -1645,26 +1645,26 @@ C      ENDIF
 c      IF (CONTROL % CROP .EQ. 'SB') THEN
       IF ((INDEX('GROgro',MODEL(3:5)) .GT.0) .or.
      &   (INDEX('FRMfrm',MODEL(3:5)) .GT.0)) THEN
-	  if (CONTROL % YRDOY.ne.yrend) then
+        if (CONTROL % YRDOY.ne.yrend) then
           TRNO3R= dble((TRNU+NFIXN+(NODGR * 0.16 * PRONOD))/PLTPOP)  !g/plant
-	  else
-	    trno3r=dble(trnu/pltpop)
-	  endif                        
-	     BIOMAS = TOPWT
-	     RTWT = RTWTB/PLTPOP
-	     RTWTS = SRDOT/PLTPOP
-	     LFWT = WTLF/PLTPOP
-	     STMWT = STMWTB/PLTPOP
+        else
+          trno3r=dble(trnu/pltpop)
+        endif                        
+           BIOMAS = TOPWT
+           RTWT = RTWTB/PLTPOP
+           RTWTS = SRDOT/PLTPOP
+           LFWT = WTLF/PLTPOP
+           STMWT = STMWTB/PLTPOP
            GRAINR = (SDWT * 10.0)
-	     PCNLR = DBLE(PCNL/100.0)
-	     PCNSTR = DBLE(PCNST/100.0)
-	     PCNRTR = DBLE(PCNRT/100.0)
-	     PCNGRNR = DBLE(PCNSD/100.0)
+           PCNLR = DBLE(PCNL/100.0)
+           PCNSTR = DBLE(PCNST/100.0)
+           PCNRTR = DBLE(PCNRT/100.0)
+           PCNGRNR = DBLE(PCNSD/100.0)
            STOVN = (LFWT*PCNL+STMWT*PCNST)/100.0
            GRAINN = SDWT*PCNSD/100.0/PLTPOP
            ROOTN  = RTWT*PCNRT/100.0
 
-	ELSE
+      ELSE
           TRNO3R= dble(TRNU)  !DAILY N UPTAKE, g/plant
           IF (STOVWT.NE.0.0) THEN
            PCNLR = DBLE(STOVN/STOVWT)
@@ -1687,13 +1687,13 @@ c      IF (CONTROL % CROP .EQ. 'SB') THEN
            PCNGRNR = 0.0D0
           ENDIF
 C
-	ENDIF
+      ENDIF
 
 c return dead residue and root to the soil system each day
          TOPRES = SENESCE % ResWt(0)
          WTNRES = SENESCE % ResE(0,1)
          if (DBLE(WTNRES).ne.0.0d0) then
-	   FCN = DBLE(TOPRES)/2.5d0/DBLE(WTNRES)
+         FCN = DBLE(TOPRES)/2.5d0/DBLE(WTNRES)
          else
          FCN=0.0d0
          endif
@@ -1760,9 +1760,9 @@ c
         END IF
    95 CONTINUE
       RM1=RM1+TOPRES
-	RMN1=RMN1+WTNRES
+      RMN1=RMN1+WTNRES
       RTM1=RTM1+TOTRTRES
-	RTMN1=RTMN1+TOTWTNRRS
+      RTMN1=RTMN1+TOTWTNRRS
       CALL SGATE (TDAYR,62,DBLE(GRAINR/PLTPOP/10.0D0))
       WRITE (94,2940) MOD(CONTROL % YRDOY,1000),CANHT,XLAI,BIOMAS*10,
      &  GRAINR
@@ -1835,9 +1835,9 @@ c pass yield to RZWQM
          yieldr(3) = DBLE(RTWT*PLTPOP*10.0D0)
          TRWUP=0.0
 c
-	      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
-	      CALL GETPUT_CONTROL('get', CONTROL) 
- 	           CONTROL % DYNAMIC = FINAL
+            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
+            CALL GETPUT_CONTROL('get', CONTROL) 
+                  CONTROL % DYNAMIC = FINAL
             PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('PUT', CONTROL) 
 c
@@ -1915,9 +1915,9 @@ C
         PRINT *, "DSSATDRV CALLING OPSUM"
         CALL OPSUM (CONTROL, ISWITCH, YRPLT,
      &     EXPER,CG, ENAME)                !LIWANG MA, RZWQM-DSSAT
-	      PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
-	      CALL GETPUT_CONTROL('GET', CONTROL) 
- 	           CONTROL % DYNAMIC = SEASINIT
+            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
+            CALL GETPUT_CONTROL('GET', CONTROL) 
+            CONTROL % DYNAMIC = SEASINIT
             PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('PUT', CONTROL) 
 !      ENDIF
@@ -1938,7 +1938,7 @@ c       if ((iharvr.eq.3).or.(iharvr.eq.1)) then
          TOPRES = HARVRES % ResWt(0)
          WTNRES = HARVRES % ResE(0,1)
          if (DBLE(WTNRES).ne.0.0d0) then
-	   FCN = DBLE(TOPRES)/2.5d0/DBLE(WTNRES)
+         FCN = DBLE(TOPRES)/2.5d0/DBLE(WTNRES)
          else
          FCN=0.0d0
          endif

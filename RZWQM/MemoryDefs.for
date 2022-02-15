@@ -380,3 +380,85 @@ C           MEM_CURSTATE = CURSTATE
       END SUBROUTINE Alt_Plant_Memory
 
 
+      SUBROUTINE PHYSCL_Memory(CODE, PERIOD, SPAN, DELT, START, NBPR, 
+     +    COR, TTRO, STMSEG, ND, FIRST5, JSTDAY, TSTART, OLDSTR, TRFDD,
+     +    TCII, TROI, NBPRI, CANIRR, HROOT, RNDR, SNP,
+     +    SSTART, PKTEMP, hrootdummy,
+     +    IDIMIYOLD,wthour,totalsub)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      SAVE
+      PARAMETER(MAXBP=50,MXNOD=300,MXNODT=3001,MAXHOR=12,MAXSCT=11,
+     +    MXCHEM=15,MXPEST=3,MXSPEC=10,MXAPP=200,MXANA=135,MXTG=500)
+      PARAMETER(MXTSTP=5000,MHR=24)
+      PARAMETER (IPSTO = MAXBP*2,IPSTM = IPSTO*2, THRSNO = 0.0D0)
+      CHARACTER PERIOD*5, CODE*3
+      LOGICAL SPAN,START,FIRST5,CANIRR,CNVG,SNODON,SSTART,ihflag,pfirst
+      DIMENSION STMSEG(MAXBP,2,2), wthour(mhr)
+      INTEGER JSTDAY, NBPRI
+
+      CHARACTER MEM_PERIOD*5
+      LOGICAL MEM_SPAN, MEM_START, MEM_FIRST5, MEM_CANIRR, MEM_CNVG, 
+     +  MEM_SNODON, MEM_SSTART, MEM_ihflag, MEM_pfirst
+      DIMENSION MEM_STMSEG(MAXBP,2,2), MEM_wthour(mhr)
+      INTEGER MEM_JSTDAY, MEM_NBPRI
+
+      SELECT CASE(CODE)
+      CASE('GET')
+        PERIOD = MEM_PERIOD
+        SPAN = MEM_SPAN
+        DELT = MEM_DELT
+        START = MEM_START
+        NBPR = MEM_NBPR
+        COR = MEM_COR
+        TTRO = MEM_TTRO
+        STMSEG = MEM_STMSEG
+        ND = MEM_ND
+        FIRST5 = MEM_FIRST5
+        JSTDAY = MEM_JSTDAY
+        TSTART = MEM_TSTART
+        OLDSTR = MEM_OLDSTR
+        TRFDD = MEM_TRFDD
+        TCII = MEM_TCII
+        TROI = MEM_TROI
+        NBPRI = MEM_NBPRI
+        CANIRR = MEM_CANIRR
+        HROOT = MEM_HROOT
+        RNDR = MEM_RNDR
+        SNP = MEM_SNP
+        SSTART = MEM_SSTART
+        PKTEMP = MEM_PKTEMP
+        hrootdummy = MEM_hrootdummy
+        IDIMIYOLD = MEM_IDIMIYOLD
+        wthour = MEM_wthour
+        totalsub = MEM_totalsub
+      CASE('PUT')
+        MEM_PERIOD = PERIOD
+        MEM_SPAN = SPAN
+        MEM_DELT = DELT
+        MEM_START = START
+        MEM_NBPR = NBPR
+        MEM_COR = COR
+        MEM_TTRO = TTRO
+        MEM_STMSEG = STMSEG
+        MEM_ND = ND
+        MEM_FIRST5 = FIRST5
+        MEM_JSTDAY = JSTDAY
+        MEM_TSTART = TSTART
+        MEM_OLDSTR = OLDSTR
+        MEM_TRFDD = TRFDD
+        MEM_TCII = TCII
+        MEM_TROI = TROI
+        MEM_NBPRI = NBPRI
+        MEM_CANIRR = CANIRR
+        MEM_HROOT = HROOT
+        MEM_RNDR = RNDR
+        MEM_SNP = SNP
+        MEM_SSTART = SSTART
+        MEM_PKTEMP = PKTEMP
+        MEM_hrootdummy = hrootdummy
+        MEM_IDIMIYOLD = IDIMIYOLD
+        MEM_wthour = wthour
+        MEM_totalsub = totalsub
+      END SELECT
+
+      END SUBROUTINE PHYSCL_Memory

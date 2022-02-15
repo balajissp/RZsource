@@ -29,7 +29,7 @@ C----------------------------------------------------------------------
 
       USE ModuleDefs
       IMPLICIT  NONE
-      SAVE
+C       SAVE
 C----------------------------------------------------------------------
 C                         Define Variables
 C----------------------------------------------------------------------
@@ -88,7 +88,9 @@ C----------------------------------------------------------------------
 
       TYPE (ResidueType) SENESCE
 
-
+      CALL GETPUT_MZ_NUPTAKE('GET', ANDEM, DNG, DROOTN, DSTOVN, FAC
+     +  , FACTOR, FNH4, FNO3, NDEM, NUF, RFAC, RNDEM, RNH4U, RNLOSS, 
+     +  RNO3U, SMDFR, SNH4, SNO3, TNDEM, TRLV, TRNLOS, XMIN, XNDEM)
 C----------------------------------------------------------------------
 C     Initialize variables
 C----------------------------------------------------------------------
@@ -287,6 +289,9 @@ C-----------------------------------------------------------------------
       IF(RTWT.GT.0.1*RTWT.AND.RTWT.GT.0.0) 
      &   RANC  = ROOTN / (RTWT-0.01*RTWT)
       
+      CALL GETPUT_MZ_NUPTAKE('PUT', ANDEM, DNG, DROOTN, DSTOVN, FAC
+     +  , FACTOR, FNH4, FNO3, NDEM, NUF, RFAC, RNDEM, RNH4U, RNLOSS, 
+     +  RNO3U, SMDFR, SNH4, SNO3, TNDEM, TRLV, TRNLOS, XMIN, XNDEM)
       RETURN
       END SUBROUTINE MZ_NUPTAK
 

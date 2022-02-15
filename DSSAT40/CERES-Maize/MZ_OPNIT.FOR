@@ -22,7 +22,7 @@ C  Calls:     None
 !-----------------------------------------------------------------------
       USE ModuleDefs
       IMPLICIT NONE
-      SAVE
+C       SAVE
 
       INTEGER DAS, DYNAMIC, MDATE, NOUTDN, YRSIM
 
@@ -59,6 +59,10 @@ C  Calls:     None
       YRDOY   = CONTROL % YRDOY
       YRSIM   = CONTROL % YRSIM
 
+      CALL GETPUT_MZ_OPNIT('GET', DAS, NOUTDN, DAP,L, NLAYR
+     + , OUTPN, PCNL, WTNCAN, WTNSD, WTNVEG, PCNGRN, PCNVEG, WTNUP, 
+     + WTNLF, WTNST, PCNST, PCNRT, CUMSENSURFN, CUMSENSOILN, FEXIST, 
+     + FIRST)
 !-----------------------------------------------------------------------
       IF(DYNAMIC.EQ.RUNINIT) THEN
 
@@ -150,6 +154,10 @@ C  Calls:     None
 !***********************************************************************
       ENDIF
 !***********************************************************************
+      CALL GETPUT_MZ_OPNIT('PUT', DAS, NOUTDN, DAP,L, NLAYR
+     + , OUTPN, PCNL, WTNCAN, WTNSD, WTNVEG, PCNGRN, PCNVEG, WTNUP, 
+     + WTNLF, WTNST, PCNST, PCNRT, CUMSENSURFN, CUMSENSOILN, FEXIST, 
+     + FIRST)
       RETURN
       END SUBROUTINE MZ_OPNIT
 !=======================================================================

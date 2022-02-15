@@ -30,7 +30,7 @@ C----------------------------------------------------------------------
 C----------------------------------------------------------------------
       USE ModuleDefs
       IMPLICIT  NONE
-      SAVE
+C       SAVE
 
       INTEGER     DYNAMIC     
 
@@ -74,7 +74,8 @@ C----------------------------------------------------------------------
       REAL        SWFAC      
       REAL        TRLDF      
       INTEGER     YRDOY       
-
+      CALL GETPUT_MZ_ROOTGR('GET', L1, RLDF, RLNEW, RLV, RNFAC, 
+     +      RNLF, RTDEP, RTEXF, RTSURV, SWDF, SWEXF, TRLDF)
 C----------------------------------------------------------------------
 C            DYNAMIC = RUNINIT OR SEASINIT
 C----------------------------------------------------------------------
@@ -215,6 +216,8 @@ C----------------------------------------------------------------------
       ENDIF !Dynamic loop
 
 999   CONTINUE
+      CALL GETPUT_MZ_ROOTGR('PUT', L1, RLDF, RLNEW, RLV, RNFAC, 
+     +      RNLF, RTDEP, RTEXF, RTSURV, SWDF, SWEXF, TRLDF)
       RETURN
       END SUBROUTINE MZ_ROOTGR
 
