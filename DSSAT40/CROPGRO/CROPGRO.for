@@ -1284,7 +1284,6 @@ C-----------------------------------------------------------------------
       ENDIF
 !***********************************************************************
 !     Store plant module data for use in ETPHOT.
-      PRINT *, "CALLING GetPutPlant"
       Call GetPutPlant('PUT', 
      &  CANHT, CANWH, DXR57, EXCESS, NR5, PLTPOP, RNITP, SLAAD, XPOD)
 

@@ -160,7 +160,6 @@ C      +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)
         WRITE(MESSAGE(1),110) 
         WRITE(MESSAGE(2),120) CROP
         WRITE(MESSAGE(3),130) 
-      PRINT *, "Alt_Plant CALLING WARNING"
         CALL WARNING(3, ERRKEY, MESSAGE)
       ENDIF
 
@@ -173,7 +172,6 @@ C      +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)
         ISWITCH % MEEVP = 'R'
 !       Put ISWITCH data where it can be retreived 
 !         by other modules as needed.
-      PRINT *, "Alt_Plant CALLING GETPUT_ISWITCH"
         CALL GETPUT_ISWITCH('PUT',ISWITCH)
 
 !       Write message to WARNING.OUT file
@@ -181,7 +179,6 @@ C      +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)
         WRITE(MESSAGE(2),220) CROP
         WRITE(MESSAGE(3),230) 
         WRITE(MESSAGE(4),240) 
-      PRINT *, "Alt_Plant CALLING WARNING"
         CALL WARNING(4, ERRKEY, MESSAGE)
       ENDIF
       
@@ -200,7 +197,6 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
         WRITE(MESSAGE(2),320) 
         WRITE(MESSAGE(3),330) CROP
         WRITE(MESSAGE(4),340) 
-      PRINT *, "Alt_Plant CALLING WARNING"
         CALL WARNING(4, ERRKEY, MESSAGE)
         !Trigger to set canopy height upon emergence
         FixCanht = .TRUE.
@@ -268,7 +264,6 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
 !-----------------------------------------------------------------------
 ! MAIZE
        IF (INDEX(MODEL,'MZCER') .GT. 0) THEN
-      PRINT *, "Alt_Plant CALLING MZ_CERES "
           CALL MZ_CERES (CONTROL, ISWITCH,              !Input
      &    WEATHER % CO2, DAYL, EOP, HARVFRAC, NH4, NO3, SNOW,  !Input
      &    SOILPROP, WEATHER % SRAD, SW, WEATHER % TMAX,   !INPUT
@@ -291,7 +286,6 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
         
 ! Sugarbeet
        ELSE IF (INDEX(MODEL,'BSCER') .GT. 0) THEN
-      PRINT *, "Alt_Plant CALLING BS_CERES "
           CALL BS_CERES (CONTROL, ISWITCH,              !Input
      &    WEATHER % CO2, DAYL, EOP, HARVFRAC, NH4, NO3, SNOW,  !Input
      &    SOILPROP, WEATHER % SRAD, SW, WEATHER % TMAX,   !INPUT
@@ -314,7 +308,6 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
 
 !     Potato 
       ELSEIF (INDEX(MODEL,'PTSUB') > 0) THEN 
-      PRINT *, "Alt_Plant CALLING SUBSTOR"
         CALL SUBSTOR(CONTROL, ISWITCH, 
      &    CO2, EOP, HARVFRAC, NH4, NO3, SOILPROP, SRAD,   !Input
      &    ST, SW, TMAX, TMIN, TRWUP, TWILEN, YREND, YRPLT,!Input
@@ -332,7 +325,6 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
       ELSEIF ((INDEX(MODEL,'SGCER') .GT. 0).or.
      &        (INDEX(MODEL,'MOCER') .GT. 0).or.
      &        (INDEX(MODEL,'MXCER') .GT. 0)) THEN
-      PRINT *, "Alt_Plant CALLING SG_CERES "
         CALL SG_CERES (CONTROL, ISWITCH, 
      &     CO2, DAYL, EOP, HARVFRAC, NH4, NO3,            !Input
      &     SNOW, SOILPROP, SRAD, SW, TMAX, TMIN,          !Input
@@ -354,7 +346,6 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
 
 !     Millet 
       ELSEIF (INDEX(MODEL,'MLCER') .GT. 0) THEN
-      PRINT *, "Alt_Plant CALLING ML_CERES "
         CALL ML_CERES (CONTROL, ISWITCH, 
      &     CO2, DAYL, EOP, HARVFRAC, NH4, NO3,            !Input
      &     SNOW, SOILPROP, SRAD, SW, TMAX, TMIN,          !Input
@@ -378,7 +369,6 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
       ELSEIF ((INDEX(MODEL,'WHCER') .GT. 0).or. 
      &       (INDEX(MODEL,'BACER') .GT. 0).or.
      &       (INDEX(MODEL,'TRCER') .GT. 0))  THEN
-      PRINT *, "Alt_Plant CALLING CSCERES_Interface "
         CALL CSCERES_Interface (CONTROL, ISWITCH,          !Input
      &     CO2, DAYL, EOP, YREND, NH4, NO3, SNOW, SOILPROP,!Input
      &     SRAD, SRFTEMP, ST, SW, TMAX, TMIN, TRWUP, TWILEN,!Input
@@ -394,7 +384,6 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
           XHLAI = XLAI
         ENDIF
        ELSEIF (INDEX(MODEL,'SFCER') .GT. 0) THEN
-      PRINT *, "Alt_Plant CALLING SF_CERES "
           CALL SF_CERES (CONTROL, ISWITCH,              !Input
      &    WEATHER % CO2, DAYL, EOP, HARVFRAC, NH4, NO3, SNOW,  !Input
      &    SOILPROP, WEATHER % SRAD, SW, WEATHER % TMAX,   !INPUT

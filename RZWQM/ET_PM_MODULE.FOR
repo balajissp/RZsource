@@ -1,4 +1,4 @@
-C   !LIBRARY WASSUBA ( Simulation Wasserhaushalt fÅr N-Modell )
+C   !LIBRARY WASSUBA ( Simulation Wasserhaushalt for N-Modell )
 C   ! Einbau von Luftmangel fuer Pflanzen am 16.12.98
 C   MODULE WASSUBA FROM HERMES MODEL, CONTRIBUTED BY CHRISTIAN KERSEBAUM
 C   DECLARE DEF ACOS
@@ -21,7 +21,7 @@ C=======================================================================
         END IF
 C
         WOB = WG(0,1)+REGEN(TAG)/DZ                     !-(WG(0,1)+REGEN(TAG)/DZ - WG(0,2))/4
-        IF (WOB.LT.WMIN(1)/3.0D0) WOB = WMIN(1)/3.0D0   ! geÑndert 22.3.93
+        IF (WOB.LT.WMIN(1)/3.0D0) WOB = WMIN(1)/3.0D0   ! ge‚Äûndert 22.3.93
         PROZ = (WOB-WMIN(1)/3.0D0)/(W(1)-WMIN(1)/3.0D0)
         IF (PROZ.GT.1.0D0) PROZ = 1.0D0
         IF (PROZ.GT.0.33D0) THEN
@@ -51,9 +51,9 @@ C
 
 
               ! ----------------------- Calculation of reference evapotranspiration for grass acc. to Penman-Monteith  (cm/day) --------------
-              ! -- Required inputs:   Temp (temperature daily average, C∞)
-              !                       Tmin (temperature daily minimum, C∞)
-              !                       Tmax (temperature daily maximum, C∞)
+              ! -- Required inputs:   Temp (temperature daily average, C¬∞)
+              !                       Tmin (temperature daily minimum, C¬∞)
+              !                       Tmax (temperature daily maximum, C¬∞)
               !                       RAD  (radiation daily sum,  MJ/m^2)
               !                       RH   (relative humidity, %)
               !                       DOY  (julian day)
@@ -101,7 +101,6 @@ C
               Deltsat = (4098.d0*(0.6108d0*Exp((17.27d0*Temp)/
      +                  (Temp+237.3d0))))/((TEMP+237.3d0)^2.d0)
               ! ----------------------- Call submodule for dynamic calculation of stomata resistance ---------------------------------
-              PRINT *, "CALLING stomat"
               Call stomat(satdef)
               ! ----------------------------------------------------------------------------------------------------------------------
               ! ----- if wind speed measurement different from 2 meter transfer to 2 meter height -------

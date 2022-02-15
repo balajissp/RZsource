@@ -2197,23 +2197,14 @@ C-----------------------------------------------------------------------
       ENDIF
 !***********************************************************************
 !     Store plant module data for use in ETPHOT.
-      PRINT *, "CALLING PUT"
       Call PUT('PLANT', 'CANHT', CANHT)
-      PRINT *, "CALLING PUT"
       Call PUT('PLANT', 'CANWH', CANWH)
-      PRINT *, "CALLING PUT"
       Call PUT('PLANT', 'DXR57', DXR57)
-      PRINT *, "CALLING PUT"
       Call PUT('PLANT', 'EXCESS', EXCESS)
-      PRINT *, "CALLING PUT"
       Call PUT('PLANT', 'NR5', NR5)   
-      PRINT *, "CALLING PUT"
       Call PUT('PLANT', 'PLTPOP', PLTPOP)
-      PRINT *, "CALLING PUT"
       Call PUT('PLANT', 'RNITP', RNITP) 
-      PRINT *, "CALLING PUT"
       Call PUT('PLANT', 'SLAAD', SLAAD) 
-      PRINT *, "CALLING PUT"
       Call PUT('PLANT', 'XPOD', XPOD)  
 
       RETURN

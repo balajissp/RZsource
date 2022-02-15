@@ -67,12 +67,10 @@ C    Input and Initialization
 C***********************************************************************
       IF (DYNAMIC .EQ. INIT) THEN
 C-----------------------------------------------------------------------
-      PRINT *, "AUTHAR CALLING IPAHAR"
       CALL IPAHAR(CONTROL,
      &    HPC, HBPC, HDATE, HDLAY, HLATE, HSTG,           !Output
      &    NHAR, SWPLTL, SWPLTH, SWPLTD)                   !Output
 
-      PRINT *, "AUTHAR CALLING GETLUN"
       CALL GETLUN('OUTO', NOUTDO)
 
 C-----------------------------------------------------------------------

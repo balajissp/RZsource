@@ -180,11 +180,9 @@ C END OF MODIFICATION
 
 !     Assign descriptions to Measured and Simulated data 
 !         from DATA.CDE.
-      PRINT *, "MZ_OPHARV CALLING GETDESC"
       CALL GETDESC(ACOUNT, OLAB, DESCRIP)
       OLAP = OLAB
 
-      PRINT *, "MZ_OPHARV CALLING OPVIEW"
       CALL OPVIEW(CONTROL, 
      &    PBIOMS, ACOUNT, DESCRIP, IDETO, XN, 
      &    Measured, PlantStres, Simulated, STGDOY, 
@@ -209,7 +207,6 @@ C-----------------------------------------------------------------------
       PlantStres % StageName(4) = 'End Lf Grth-Beg Grn Fil'
       PlantStres % StageName(5) = 'Grain Filling Phase    '
 
-      PRINT *, "MZ_OPHARV CALLING OPVIEW"
       CALL OPVIEW(CONTROL, 
      &    PBIOMS, ACOUNT, DESCRIP, IDETO, XN, 
      &    Measured, PlantStres, Simulated, STGDOY, 
@@ -235,7 +232,6 @@ C-----------------------------------------------------------------------
       ENDIF
 
 !     Send data to Overview.out data on days where stages occur
-      PRINT *, "MZ_OPHARV CALLING OPVIEW"
       CALL OPVIEW(CONTROL, 
      &    PBIOMS, ACOUNT, DESCRIP, IDETO, XN, 
      &    Measured, PlantStres, Simulated, STGDOY, 
@@ -293,12 +289,10 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       IF ((IDETO .EQ. 'Y' .OR. INDEX('IAEBCGD',RNMODE) .GT. 0) .OR.
      &   (INDEX('AY',IDETS) .GT. 0 .AND. CROP .NE. 'FA')) THEN
-      PRINT *, "MZ_OPHARV CALLING READA "
          CALL READA (FILEA, OLAB, TRTNO, YRSIM, X)
 
 C-----------------------------------------------------------------------
 !     Convert from YRDOY format to DAP.  Change descriptions to match.
-      PRINT *, "MZ_OPHARV CALLING READA_Dates"
         CALL READA_Dates(X(1), YRSIM, IFLR)
         IF (IFLR .GT. 0 .AND. IPLTI .EQ. 'R' .AND. ISENS .EQ. 0) THEN
           DFLR = TIMDIF(YRPLT,IFLR)
@@ -307,10 +301,8 @@ C-----------------------------------------------------------------------
         ENDIF
 
         OLAP(1) = 'ADAP'
-      PRINT *, "MZ_OPHARV CALLING GetDesc"
         CALL GetDesc(1,OLAP(1), DESCRIP(1))
 
-      PRINT *, "MZ_OPHARV CALLING READA_Dates"
         CALL READA_Dates(X(4), YRSIM, IMAT)
         IF (IMAT .GT. 0 .AND. IPLTI .EQ. 'R' .AND. ISENS .EQ. 0) THEN
           DMAT = TIMDIF(YRPLT,IMAT)
@@ -319,7 +311,6 @@ C-----------------------------------------------------------------------
         ENDIF
 
         OLAP(4) = 'MDAP'
-      PRINT *, "MZ_OPHARV CALLING GetDesc"
         CALL GetDesc(1,OLAP(4), DESCRIP(4))
 
         IF (YRPLT .GT. 0) THEN
@@ -380,7 +371,6 @@ C-----------------------------------------------------------------------
 
       ENDIF
 
-      PRINT *, "MZ_OPHARV CALLING OPVIEW"
       CALL OPVIEW(CONTROL, 
      &    PBIOMS, ACOUNT, DESCRIP, IDETO, XN, 
      &    Measured, PlantStres, Simulated, STGDOY, 
@@ -415,11 +405,9 @@ C-----------------------------------------------------------------------
       LABEL(17) = 'HIAM'; VALUE(17) = HI
 
       !Send labels and values to OPSUM
-      PRINT *, "MZ_OPHARV CALLING SUMVALS "
       CALL SUMVALS (SUMNUM, LABEL, VALUE) 
 
       !Send Measured and Simulated datat to OPSUM
-      PRINT *, "MZ_OPHARV CALLING EvaluateDat "
       CALL EvaluateDat (ACOUNT, Measured, Simulated, DESCRIP, OLAP) 
 
 !***********************************************************************
