@@ -287,7 +287,6 @@ C       SAVE
      &  '          ',   !19
      &  'Harvest   '/   !20
 
-      PRINT *, "MZ_CERES CALLING GETPUT_MZ_CERES"
       CALL GETPUT_MZ_CERES('GET', STNAME, 
      +  YREND, ICSDUR, ISDATE, ISTAGE, LEAFNO, IDURP, LUNIO, 
      + MDATE, NR2, NOUTDO, RSTAGE, STGDOY, YREMRG,
@@ -314,7 +313,6 @@ C              Code for all Dynamic Variables
 C
 C----------------------------------------------------------------------
 
-      PRINT *, "MZ_CERES CALLING YR_DOY"
       CALL YR_DOY(YRDOY, YR, DOY)
 
 C----------------------------------------------------------------------
@@ -333,9 +331,7 @@ C----------------------------------------------------------------------
           
           STGDOY(14) = YRSIM
 
-      PRINT *, "MZ_CERES CALLING GETLUN"
           CALL GETLUN('OUTO', NOUTDO)
-      PRINT *, "MZ_CERES CALLING GETLUN"
           CALL GETLUN('FILEIO', LUNIO)
 
                 
@@ -343,7 +339,6 @@ C----------------------------------------------------------------------
           !-------------------------------------------------------------
           !Call phenology routine
           !-------------------------------------------------------------
-      PRINT *, "MZ_CERES CALLING MZ_PHENOL"
           CALL MZ_PHENOL(DYNAMIC,ISWWAT,FILEIO,NOUTDO,IDETO,      !C
      &    CUMDEP,DAYL,DLAYR,IDURP,LEAFNO,LL,NLAYR,PLTPOP,SDEPTH,  !I
      &    SI1,SI3,SNOW, SRAD,SUMP,SW,TMAX,TMIN, TWILEN,           !I
@@ -354,7 +349,6 @@ C----------------------------------------------------------------------
           !-------------------------------------------------------------
           !Call growth routine
           !-------------------------------------------------------------
-      PRINT *, "MZ_CERES CALLING MZ_GROSUB "
           CALL MZ_GROSUB (NOUTDO,ISWNIT,ISWWAT,IDETO,DYNAMIC,
      &  STGDOY,YRDOY,DOY,PLTPOP,PHINT,ROWSPC,PORMIN,
      &  P5,G3,SUMDTT,DTT,CUMPH,ISTAGE,
@@ -382,27 +376,23 @@ C----------------------------------------------------------------------
           !Call Root routine
           !-------------------------------------------------------------
 
-      PRINT *, "MZ_CERES CALLING MZ_ROOTGR "
           CALL MZ_ROOTGR (DYNAMIC,ISWNIT,                         !C
      &        CUMDEP,CUMDTT,DEPMAX,DLAYR,DTT,ESW,GRORT,ISTAGE,    !I
      %        LL,DUL,NO3,NH4,NLAYR,PLTPOP,PORMIN,RLWR,SAT,SDEPTH, !I
      %        SHF,STGDOY,SW,SWFAC,YRDOY,                          !I
      %        RTDEP,RLV)            
 
-      PRINT *, "MZ_CERES CALLING MZ_OPGROW"
           CALL MZ_OPGROW(CONTROL, ISWITCH,  
      &    CANHT, CANWH, HI, HIP, MDATE, NLAYR, NSTRES, PCNL, PLTPOP,
      &    PODNO, PODWT, RLV, RSTAGE, RTDEP, RTWT, SATFAC, SDSIZE, 
      &    SDWT, SEEDNO, SENESCE, SHELPC, SLA, STMWTO, SWFAC, TOPWT, 
      &    TURFAC, VSTAGE, WTCO, WTLF, WTLO, WTSO, XLAI, YRPLT)
 
-      PRINT *, "MZ_CERES CALLING MZ_OPNIT"
           CALL MZ_OPNIT(CONTROL, ISWITCH, 
      &    YRPLT, MDATE, NLAYR, SENESCE,
      &    WTNCAN,WTNSD,WTNVEG,PCNGRN,PCNVEG,
      &    WTNUP,WTNLF,WTNST,PCNL,PCNST,PCNRT)
        
-      PRINT *, "MZ_CERES CALLING MZ_OPHARV"
           CALL MZ_OPHARV(CONTROL, 
      &    AGEFAC, APTNUP, BIOMAS, CANNAA, CANWAA, GNUP,   !Input
      &    GPP, GPSM, HARVFRAC, IDETO, IDETS, IPLTI,       !Input
@@ -433,7 +423,6 @@ C-----------------------------------------------------------------------
 C     Subroutine IPPARM reads FILEP, the PEST progress file.
 C-----------------------------------------------------------------------
           IF (ISWDIS.EQ.'Y') THEN
-      PRINT *, "MZ_CERES CALLING PEST"
           CALL PEST(CONTROL, ISWITCH, 
      &    AREALF, CLW, CSW, LAGSD, LNGPEG, NR2, CARBO,    !Input
      &    PHTIM, PLTPOP, RTWTO, SLA, SLDOT, SOILPROP,     !Input
@@ -452,7 +441,6 @@ C-----------------------------------------------------------------------
           STGDOY(14) = YRSIM
 
 
-      PRINT *, "MZ_CERES CALLING MZ_PHENOL"
           CALL MZ_PHENOL(DYNAMIC,ISWWAT,FILEIO,NOUTDO,IDETO,      !C
      &    CUMDEP,DAYL,DLAYR,IDURP,LEAFNO,LL,NLAYR,PLTPOP,SDEPTH,  !I
      &    SI1,SI3,SNOW, SRAD,SUMP,SW,TMAX,TMIN, TWILEN,           !I
@@ -461,7 +449,6 @@ C-----------------------------------------------------------------------
      &    XNTI,TLNO,XSTAGE,YREMRG,RUE,KCAN,KEP,P3)                !O
 
 
-      PRINT *, "MZ_CERES CALLING MZ_GROSUB "
           CALL MZ_GROSUB (NOUTDO,ISWNIT,ISWWAT,IDETO,DYNAMIC,
      &  STGDOY,YRDOY,DOY,PLTPOP,PHINT,ROWSPC,PORMIN,
      &  P5,G3,SUMDTT,DTT,CUMPH,ISTAGE,
@@ -485,28 +472,24 @@ C-----------------------------------------------------------------------
      &  RLWR,SDSZ,RWUMX,BD,RUE, SENESCE, SLPF, P3,yrplt)
                           
 
-      PRINT *, "MZ_CERES CALLING MZ_ROOTGR "
           CALL MZ_ROOTGR (DYNAMIC,ISWNIT,                         !C
      &        CUMDEP,CUMDTT,DEPMAX,DLAYR,DTT,ESW,GRORT,ISTAGE,    !I
      %        LL,DUL,NO3,NH4,NLAYR,PLTPOP,PORMIN,RLWR,SAT,SDEPTH, !I
      %        SHF,STGDOY,SW,SWFAC,YRDOY,                          !I
      %        RTDEP,RLV)            
 
-      PRINT *, "MZ_CERES CALLING MZ_OPGROW"
           CALL MZ_OPGROW(CONTROL, ISWITCH,  
      &    CANHT, CANWH, HI, HIP, MDATE, NLAYR, NSTRES, PCNL, PLTPOP,
      &    PODNO, PODWT, RLV, RSTAGE, RTDEP, RTWT, SATFAC, SDSIZE, 
      &    SDWT, SEEDNO, SENESCE, SHELPC, SLA, STMWTO, SWFAC, TOPWT, 
      &    TURFAC, VSTAGE, WTCO, WTLF, WTLO, WTSO, XLAI, YRPLT)
 
-      PRINT *, "MZ_CERES CALLING MZ_OPNIT"
           CALL MZ_OPNIT(CONTROL, ISWITCH, 
      &    YRPLT, MDATE, NLAYR, SENESCE,
      &    WTNCAN,WTNSD,WTNVEG,PCNGRN,PCNVEG,
      &    WTNUP,WTNLF,WTNST,PCNL,PCNST,PCNRT)
 
 
-      PRINT *, "MZ_CERES CALLING MZ_OPHARV"
           CALL MZ_OPHARV(CONTROL, 
      &    AGEFAC, APTNUP, BIOMAS, CANNAA, CANWAA, GNUP,   !Input
      &    GPP, GPSM, HARVFRAC, IDETO, IDETS, IPLTI,       !Input
@@ -528,7 +511,6 @@ C----------------------------------------------------------------------
 
 
         IF (ISWDIS.EQ.'Y') THEN
-      PRINT *, "MZ_CERES CALLING PEST"
           CALL PEST(CONTROL, ISWITCH, 
      &    AREALF, CLW, CSW, LAGSD, LNGPEG, NR2, CARBO,    !Input
      &    PHTIM, PLTPOP, RTWTO, SLA, SLDOT, SOILPROP,     !Input
@@ -549,7 +531,6 @@ C----------------------------------------------------------------------
       ELSEIF(DYNAMIC.EQ.INTEGR) THEN
 
         IF (ISWDIS.EQ.'Y') THEN
-      PRINT *, "MZ_CERES CALLING PEST"
           CALL PEST(CONTROL, ISWITCH, 
      &    AREALF, CLW, CSW, LAGSD, LNGPEG, NR2, CARBO,    !Input
      &    PHTIM, PLTPOP, RTWTO, SLA, SLDOT, SOILPROP,     !Input
@@ -565,7 +546,6 @@ C----------------------------------------------------------------------
           !------------------------------------------------------------
         IF (YRDOY .EQ. YRPLT .OR. ISTAGE .NE. 7) THEN               
           IF (CROP .NE. 'FA') THEN
-      PRINT *, "MZ_CERES CALLING MZ_PHENOL"
             CALL MZ_PHENOL(DYNAMIC,ISWWAT,FILEIO,NOUTDO,IDETO,    !C
      &    CUMDEP,DAYL,DLAYR,IDURP,LEAFNO,LL,NLAYR,PLTPOP,SDEPTH,  !I
      &    SI1,SI3,SNOW, SRAD,SUMP,SW,TMAX,TMIN, TWILEN,           !I
@@ -578,7 +558,6 @@ C----------------------------------------------------------------------
           !Call MZ_GROSUB
           !------------------------------------------------------------
         IF (ISTAGE .LT. 6) THEN    
-      PRINT *, "MZ_CERES CALLING MZ_GROSUB "
           CALL MZ_GROSUB (NOUTDO,ISWNIT,ISWWAT,IDETO,DYNAMIC,
      &      STGDOY,YRDOY,DOY,PLTPOP,PHINT,ROWSPC,PORMIN,
      &      P5,G3,SUMDTT,DTT,CUMPH,ISTAGE,
@@ -611,7 +590,6 @@ C----------------------------------------------------------------------
 c          IF (ISWWAT .EQ. 'Y') THEN
 
             DEPMAX = DS(NLAYR)
-      PRINT *, "MZ_CERES CALLING MZ_ROOTGR "
             CALL MZ_ROOTGR (DYNAMIC,ISWNIT,                       !C
      &        CUMDEP,CUMDTT,DEPMAX,DLAYR,DTT,ESW,GRORT,ISTAGE,    !I
      %        LL,DUL,NO3,NH4,NLAYR,PLTPOP,PORMIN,RLWR,SAT,SDEPTH, !I
@@ -632,7 +610,6 @@ C----------------------------------------------------------------------
         ENDIF
 
         IF (YRDOY .GE. YRPLT) THEN
-      PRINT *, "MZ_CERES CALLING MZ_GROSUB "
           CALL MZ_GROSUB (NOUTDO,ISWNIT,ISWWAT,IDETO,DYNAMIC,
      &  STGDOY,YRDOY,DOY,PLTPOP,PHINT,ROWSPC,PORMIN,
      &  P5,G3,SUMDTT,DTT,CUMPH,ISTAGE,
@@ -657,19 +634,16 @@ C----------------------------------------------------------------------
 
         ENDIF   
 
-      PRINT *, "MZ_CERES CALLING MZ_OPGROW"
       CALL MZ_OPGROW(CONTROL, ISWITCH,  
      &    CANHT, CANWH, HI, HIP, MDATE, NLAYR, NSTRES, PCNL, PLTPOP,
      &    PODNO, PODWT, RLV, RSTAGE, RTDEP, RTWT, SATFAC, SDSIZE, 
      &    SDWT, SEEDNO, SENESCE, SHELPC, SLA, STMWTO, SWFAC, TOPWT, 
      &    TURFAC, VSTAGE, WTCO, WTLF, WTLO, WTSO, XLAI, YRPLT)
-      PRINT *, "MZ_CERES CALLING MZ_OPNIT"
       CALL MZ_OPNIT(CONTROL, ISWITCH, 
      &    YRPLT, MDATE, NLAYR, SENESCE,
      &    WTNCAN,WTNSD,WTNVEG,PCNGRN,PCNVEG,
      &    WTNUP,WTNLF,WTNST,PCNL,PCNST,PCNRT)
 
-      PRINT *, "MZ_CERES CALLING MZ_OPHARV"
       CALL MZ_OPHARV(CONTROL, 
      &    AGEFAC, APTNUP, BIOMAS, CANNAA, CANWAA, GNUP,   !Input
      &    GPP, GPSM, HARVFRAC, IDETO, IDETS, IPLTI,       !Input
@@ -680,7 +654,6 @@ C----------------------------------------------------------------------
      &    BWAH, SDWTAH,rootn*pltpop*10.0,RTWT*PLTPOP*10.0)!Output
 
       IF (ISWDIS.EQ.'Y') THEN
-      PRINT *, "MZ_CERES CALLING PEST"
         CALL PEST(CONTROL, ISWITCH, 
      &    AREALF, CLW, CSW, LAGSD, LNGPEG, NR2, CARBO,    !Input
      &    PHTIM, PLTPOP, RTWTO, SLA, SLDOT, SOILPROP,     !Input
@@ -699,7 +672,6 @@ C----------------------------------------------------------------------
 C----------------------------------------------------------------------
       ELSEIF(DYNAMIC.EQ.FINAL) THEN
 
-      PRINT *, "MZ_CERES CALLING MZ_GROSUB "
         CALL MZ_GROSUB (NOUTDO,ISWNIT,ISWWAT,IDETO,DYNAMIC,
      &  STGDOY,YRDOY,DOY,PLTPOP,PHINT,ROWSPC,PORMIN,
      &  P5,G3,SUMDTT,DTT,CUMPH,ISTAGE,
@@ -722,20 +694,17 @@ C----------------------------------------------------------------------
      &  AREALF,WLIDOT,WSIDOT,WRIDOT,SWIDOT,PPLTD,ASMDOT,FILEIO,
      &  RLWR,SDSZ,RWUMX,BD,RUE, SENESCE, SLPF, P3,yrplt)
 
-      PRINT *, "MZ_CERES CALLING MZ_OPGROW"
         CALL MZ_OPGROW(CONTROL, ISWITCH,  
      &    CANHT, CANWH, HI, HIP, MDATE, NLAYR, NSTRES, PCNL, PLTPOP,
      &    PODNO, PODWT, RLV, RSTAGE, RTDEP, RTWT, SATFAC, SDSIZE, 
      &    SDWT, SEEDNO, SENESCE, SHELPC, SLA, STMWTO, SWFAC, TOPWT, 
      &    TURFAC, VSTAGE, WTCO, WTLF, WTLO, WTSO, XLAI, YRPLT)
 
-      PRINT *, "MZ_CERES CALLING MZ_OPNIT"
         CALL MZ_OPNIT(CONTROL, ISWITCH, 
      &    YRPLT, MDATE, NLAYR, SENESCE,
      &    WTNCAN,WTNSD,WTNVEG,PCNGRN,PCNVEG,
      &    WTNUP,WTNLF,WTNST,PCNL,PCNST,PCNRT)
 
-      PRINT *, "MZ_CERES CALLING MZ_OPHARV"
         CALL MZ_OPHARV(CONTROL, 
      &    AGEFAC, APTNUP, BIOMAS, CANNAA, CANWAA, GNUP,   !Input
      &    GPP, GPSM, HARVFRAC, IDETO, IDETS, IPLTI,       !Input
@@ -745,7 +714,6 @@ C----------------------------------------------------------------------
      &    WTNCAN, WTNUP, XGNP, XLAI, XN, YIELD, YRPLT,    !Input
      &    BWAH, SDWTAH,rootn*pltpop*10.0,RTWT*PLTPOP*10.0)!Output
 
-      PRINT *, "MZ_CERES CALLING HRes_Ceres"
         CALL HRes_Ceres(CONTROL,SOILPROP,
      &    CROP, GRNWT, HARVFRAC, NLAYR, PLTPOP, PODWT,    !Input
      &    RLV, ROOTN, RTWT, SENESCE, STOVN, STOVWT, WTNSD,!Input
@@ -758,7 +726,6 @@ C----------------------------------------------------------------------
 
       ENDIF
 
-      PRINT *, "MZ_CERES CALLING GETPUT_MZ_CERES"
       CALL GETPUT_MZ_CERES('PUT', STNAME, 
      +  YREND, ICSDUR, ISDATE, ISTAGE, LEAFNO, IDURP, LUNIO, 
      + MDATE, NR2, NOUTDO, RSTAGE, STGDOY, YREMRG,

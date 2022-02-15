@@ -153,7 +153,6 @@ C-----------------------------------------------------------------------
       WINDHR = WEATHER % WINDHR 
 
 !     Retrieve plant module data for use here.
-      PRINT *, "CALLING GetPutPlant"
       Call GetPutPlant('GET',
      &  CANHT, CANWH, DXR57, EXCESS, NR5, PLTPOP, RNITP, SLAAD, XPOD)
 

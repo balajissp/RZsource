@@ -101,7 +101,6 @@ C
               Deltsat = (4098.d0*(0.6108d0*Exp((17.27d0*Temp)/
      +                  (Temp+237.3d0))))/((TEMP+237.3d0)^2.d0)
               ! ----------------------- Call submodule for dynamic calculation of stomata resistance ---------------------------------
-              PRINT *, "CALLING stomat"
               Call stomat(satdef)
               ! ----------------------------------------------------------------------------------------------------------------------
               ! ----- if wind speed measurement different from 2 meter transfer to 2 meter height -------

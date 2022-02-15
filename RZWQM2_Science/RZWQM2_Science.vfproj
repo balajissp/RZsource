@@ -29,8 +29,8 @@
 		<File RelativePath="..\Input\COMGEN.BLK"/>
 		<File RelativePath="..\GLEAMS\Rz_Gleams.inc"/></Filter>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
-    <File RelativePath="..\RZWQM\MemoryDefs.for"/>
-    <File RelativePath="..\Pmodel\Addnode.for"/>
+    	<File RelativePath="..\RZWQM\MemoryDefs.for"/>
+    	<File RelativePath="..\Pmodel\Addnode.for"/>
 		<File RelativePath="..\DSSAT40\CSCER\Alt_Plant.for"/>
 		<File RelativePath="..\DSSAT40\Generic-Pest\ASMDM.FOR"/>
 		<File RelativePath="..\DSSAT40\Utilities\AUTHAR.FOR"/>
@@ -145,6 +145,7 @@
 		<File RelativePath="..\DSSAT40\CERES-Millet\ML_TILLSUB.FOR"/>
 		<File RelativePath="..\DSSAT40\CROPGRO\MOBIL.FOR"/>
 		<File RelativePath="..\DSSAT40\Utilities\ModuleDefs.for"/>
+		<File RelativePath="..\DSSAT40\CERES-Maize\MZ_memory.for"/>
 		<File RelativePath="..\DSSAT40\CERES-Maize\MZ_CERES.FOR"/>
 		<File RelativePath="..\DSSAT40\CERES-Maize\MZ_GROSUB.for"/>
 		<File RelativePath="..\DSSAT40\CERES-Maize\MZ_NFACTO.for"/>
@@ -303,9 +304,9 @@
 		<File RelativePath="..\SHAW24b\SHAW_WBRES.FOR"/>
 		<File RelativePath="..\SHAW24b\SHAW_WBSNOW.FOR"/>
 		<File RelativePath="..\SHAW24b\SHAW_Weight.for"/>
-    <File RelativePath="..\RZWQM\Snowprms.for"/>
-    <File RelativePath="..\RZWQM\RZinterrupt.for"/>
-    <File RelativePath="..\DSSAT40\Utilities\SoilNBal.FOR"/>
+	    <File RelativePath="..\RZWQM\Snowprms.for"/>
+   		<File RelativePath="..\RZWQM\RZinterrupt.for"/>
+    	<File RelativePath="..\DSSAT40\Utilities\SoilNBal.FOR"/>
 		<File RelativePath="..\DSSAT40\Weather\SOLAR.FOR"/>
 		<File RelativePath="..\DSSAT40\Utilities\SPSUBS.for"/>
 		<File RelativePath="..\Pmodel\tillage.for"/>
