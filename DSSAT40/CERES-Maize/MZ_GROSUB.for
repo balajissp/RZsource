@@ -328,25 +328,25 @@ C LIWANG MA, RZWQM-DSSAT
 C END OF MODIFICATION
 
 !----------------------------------------------------------------------
-      CALL GETPUT_MZ_GROSUB('GET', SECTION, FILEIO, C80, FILECC, 
-     +  AREALF, ASMDOT, BD, CANHT, CANWH, CARBOT, CO2X, CO2Y, 
+      CALL GETPUT_MZ_GROSUB('GET', SECTION, C80, FILECC, 
+     +  CARBOT, CO2X, CO2Y, 
      +  DUMMY, EP1, pp1, pp2, FSLFW, FSLFN, GRF, GROEAR, GROGRN, 
-     +  GROLF, GROSTM, HI, HIP, LAIDOT, LEAFNOE, CumLeafSenes, 
+     +  GROLF, GROSTM, LAIDOT, LEAFNOE, CumLeafSenes, 
      +  CumLeafSenesY, CumLfNSenes, LFWTE, LIFAC, TAW, DTAW, NDEF3, 
-     +  NFAC, NPOOL, NPOOL1, NPOOL2, NSDR, NSINK, P3, PAR, 
-     +  PARSR, PC, PCARB, PCNGRN, PCNL, PCNRT, PCNSD, PCNST, PCO2, 
-     +  PRFTC, SLPF, PLAE, PLAS, PODNO, PODWT, PPLTD, PRFT, RANC, 
-     +  RANCE, RGFILL, RGFIL, RLWR, RMNC, RNLAB, RNOUT, RSGR, RSGRT, 
-     +  RTWO, RTWTE, RTWTO, RUE, RWUMX, SATFAC, SDSIZE, SDSZ, SDWT, 
-     +  SEEDNO, SEEDRV, SEEDRVE, SFAC, SHELPC, SI1, SI2, SI3, SI4, 
-     +  SLAN, SLA, SLFC, SLFN, SLFT, SLFW, Stg2CLS, STMWTO, STMWTE, 
-     +  SUMEX, SUMRL, SWEXF, SWIDOT, SWMAX, SWMIN, TANCE, 
-     +  TAVGD, TCNP, TEMPM, TFAC, TI, TMNC, TNLAB, TOPWT, TSS, 
-     +  VANC, VSTAGE, WLIDOT, WRIDOT, WSIDOT, WTLF, XANC, XLFWT, 
+     +  NFAC, NPOOL, NPOOL1, NPOOL2, NSDR, NSINK, PAR, 
+     +  PARSR, PC, PCARB, PCO2, 
+     +  PRFTC, SLPF, PLAE, PLAS, PRFT, RANC, 
+     +  RANCE, RGFILL, RGFIL, RMNC, RNLAB, RNOUT, RSGR, RSGRT, RTWTE,
+     +  SEEDRV, SEEDRVE, SFAC, SI1, SI2, SI3, SI4, 
+     +  SLAN, SLFC, SLFN, SLFT, SLFW, Stg2CLS, STMWTE, 
+     +  SUMEX, SUMRL, SWEXF, SWMAX, SWMIN, TANCE, 
+     +  TAVGD, TCNP, TEMPM, TFAC, TI, TMNC, TNLAB, TSS, 
+     +  VANC, XANC, XLFWT, 
      +  XNF, YIELDB, RZrwu, RZtrwup, AVG_HROOT, WTDEP, qsr, TRWUP1, 
      +  CMAT, EMAT, FOUND, I, ICOLD, ISECT, L, LINC, LNUM, LUNCRP, 
-     +  LUNIO, NWSD, RSTAGE, PATHL, yrplt, ISTRESS, iresetlai,iresetht1,
+     +  LUNIO, NWSD, PATHL, ISTRESS, iresetlai,iresetht1,
      +  alaireset, WSI, heightset)   
+      PRINT *, ICOLD, DYNAMIC, RUNINIT, SEASINIT, ISTAGE
 C----------------------------------------------------------------------
 C                     DYNAMIC = RUNINIT
 C----------------------------------------------------------------------
@@ -1942,26 +1942,24 @@ C----------------------------------------------------------------------
 
       ENDIF       !Endif for DYNAMIC LOOP
 
-      CALL GETPUT_MZ_GROSUB('PUT', SECTION, FILEIO, C80, FILECC, 
-     +  AREALF, ASMDOT, BD, CANHT, CANWH, CARBOT, CO2X, CO2Y, 
+      CALL GETPUT_MZ_GROSUB('PUT', SECTION, C80, FILECC, 
+     +  CARBOT, CO2X, CO2Y, 
      +  DUMMY, EP1, pp1, pp2, FSLFW, FSLFN, GRF, GROEAR, GROGRN, 
-     +  GROLF, GROSTM, HI, HIP, LAIDOT, LEAFNOE, CumLeafSenes, 
+     +  GROLF, GROSTM, LAIDOT, LEAFNOE, CumLeafSenes, 
      +  CumLeafSenesY, CumLfNSenes, LFWTE, LIFAC, TAW, DTAW, NDEF3, 
-     +  NFAC, NPOOL, NPOOL1, NPOOL2, NSDR, NSINK, P3, PAR, 
-     +  PARSR, PC, PCARB, PCNGRN, PCNL, PCNRT, PCNSD, PCNST, PCO2, 
-     +  PRFTC, SLPF, PLAE, PLAS, PODNO, PODWT, PPLTD, PRFT, RANC, 
-     +  RANCE, RGFILL, RGFIL, RLWR, RMNC, RNLAB, RNOUT, RSGR, RSGRT, 
-     +  RTWO, RTWTE, RTWTO, RUE, RWUMX, SATFAC, SDSIZE, SDSZ, SDWT, 
-     +  SEEDNO, SEEDRV, SEEDRVE, SFAC, SHELPC, SI1, SI2, SI3, SI4, 
-     +  SLAN, SLA, SLFC, SLFN, SLFT, SLFW, Stg2CLS, STMWTO, STMWTE, 
-     +  SUMEX, SUMRL, SWEXF, SWIDOT, SWMAX, SWMIN, TANCE, 
-     +  TAVGD, TCNP, TEMPM, TFAC, TI, TMNC, TNLAB, TOPWT, TSS, 
-     +  VANC, VSTAGE, WLIDOT, WRIDOT, WSIDOT, WTLF, XANC, XLFWT, 
+     +  NFAC, NPOOL, NPOOL1, NPOOL2, NSDR, NSINK, PAR, 
+     +  PARSR, PC, PCARB, PCO2, 
+     +  PRFTC, SLPF, PLAE, PLAS, PRFT, RANC, 
+     +  RANCE, RGFILL, RGFIL, RMNC, RNLAB, RNOUT, RSGR, RSGRT, RTWTE,
+     +  SEEDRV, SEEDRVE, SFAC, SI1, SI2, SI3, SI4, 
+     +  SLAN, SLFC, SLFN, SLFT, SLFW, Stg2CLS, STMWTE, 
+     +  SUMEX, SUMRL, SWEXF, SWMAX, SWMIN, TANCE, 
+     +  TAVGD, TCNP, TEMPM, TFAC, TI, TMNC, TNLAB, TSS, 
+     +  VANC, XANC, XLFWT, 
      +  XNF, YIELDB, RZrwu, RZtrwup, AVG_HROOT, WTDEP, qsr, TRWUP1, 
      +  CMAT, EMAT, FOUND, I, ICOLD, ISECT, L, LINC, LNUM, LUNCRP, 
-     +  LUNIO, NWSD, RSTAGE, PATHL, yrplt, ISTRESS, iresetlai,iresetht1,
+     +  LUNIO, NWSD, PATHL, ISTRESS, iresetlai,iresetht1,
      +  alaireset, WSI, heightset)
-      PRINT *, "EXITING GROSUB"
       RETURN
 
 C----------------------------------------------------------------------

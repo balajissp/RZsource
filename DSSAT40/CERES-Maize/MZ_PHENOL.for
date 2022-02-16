@@ -26,7 +26,7 @@ C----------------------------------------------------------------------
 
       USE ModuleDefs
       IMPLICIT  NONE
-      SAVE
+C       SAVE
 C----------------------------------------------------------------------
 C                             Define Variables
 C----------------------------------------------------------------------
@@ -164,13 +164,13 @@ C         DYNAMIC = RUNINIT OR DYNAMIC = SEASINIT
 C ---------------------------------------------------------------------
   
       CALL GETPUT_MZ_PHENOL('GET', ABSTRES, ACOEF, BARFAC, C1, 
-     + CUMDTT, DEC, DGET, DJTI, DLV, DOPT, DSGT, DSGFT, DTT, DUMMY, 
-     + EARS, GDDE, GPP, KCAN, KEP, P2O, P3, P9, PDTT, PSKER, RATEIN, 
-     + ROPT, RUE, S1, SIND, SNDN, SNUP, SUMDTT, SWCG, SWSD, TBASE, 
-     + TDSOIL, TEMPCN, TEMPCR, TEMPCX, TH, TLNO, TMSOIL, TNSOIL, TOPT, 
-     + XNTI, XS, XSTAGE, tdsoil1, tnsoil1, tmsoil1, FOUND, ISTAGE, L, 
-     + L0, LINC, LNUM, LUNIO, MDATE, NDAS, YREMRG, ISDATE, PATHL, 
-     + LUNECO, ISECT, LUNCRP, STGDOY, SECTION, ECOTYP, C255, FILEGC, 
+     + DEC, DGET, DJTI, DLV, DOPT, DSGT, DSGFT, DUMMY, 
+     + GDDE, P2O, P9, PDTT, PSKER, RATEIN, 
+     + ROPT, S1, SIND, SNDN, SNUP, SWCG, SWSD, TBASE, 
+     + TDSOIL, TEMPCN, TEMPCR, TEMPCX, TH, TMSOIL, TNSOIL, TOPT, 
+     + XS, tdsoil1, tnsoil1, tmsoil1, FOUND, L, 
+     + L0, LINC, LNUM, LUNIO, NDAS, PATHL, 
+     + LUNECO, ISECT, LUNCRP, SECTION, ECOTYP, C255, FILEGC, 
      + ECONAM, C80)
 
 
@@ -193,7 +193,6 @@ C ---------------------------------------------------------------------
           !     Read input file name (ie. DSSAT40.INP) and path
           !-------------------------------------------------------
 C  MODIFED BY LIWANG MA, RZWQM-DSSAT
-      prinT *, "MZ_PHeNOL CALlING GETPUT_CONTROL"
           CALL GETPUT_CONTROL('GET',CONTROL)
           FILEC = CONTROL % FILEC
           FILEE = CONTROL % FILEE
@@ -202,7 +201,6 @@ C  MODIFED BY LIWANG MA, RZWQM-DSSAT
           PATHCR = CONTROL % PATHCR
           PATHER = CONTROL % PATHER
 
-      prinT *, "MZ_PHeNOL CALLiNG GETPUT_PLANTVAR"
           CALL GETPUT_PLANTVAR('GET',PLANTVAR)
           VARNO = PLANTVAR% VARNO
           VRNAME = PLANTVAR% VRNAME
@@ -274,7 +272,6 @@ C-KEN         FILEGG = PATHGE(1:(PATHL-1)) // FILEG
       ENDIF
 
 c      FILECC =  TRIM(PATHSR) // FILES
-      PRINt *, "Mz_PHENOL CALLING GETLUN"
       CALL GETLUN('FILEC', LUNCRP)
       OPEN (LUNCRP,FILE = FILECC, STATUS = 'OLD',IOSTAT=ERR)
       IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,0)
@@ -284,32 +281,23 @@ c      FILECC =  TRIM(PATHSR) // FILES
       !----------------------------------------------------------------
 
       SECTION = '*SEED '
-      PRINt *, "MZ_PHENOL CALLING FIND"
       CALL FIND(LUNCRP, SECTION, LNUM, FOUND)
       IF (FOUND .EQ. 0) THEN
-      prINT *, "MZ_PHENOL CALLING ERROR"
         CALL ERROR(SECTION, 42, FILECC, LNUM)
       ELSE
 
-      prINT *, "MZ_pHENOL CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
-      prINT *, "MZ_pHENOL CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
-      prINT *, "MZ_pHENOL CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
-      prINT *, "MZ_pHENOL CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
-      prINT *, "MZ_pHENOL CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F7.3)',IOSTAT=ERR) DSGT
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
 
-      prINT *, "MZ_pHENOL CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F7.3)',IOSTAT=ERR) DGET
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
         
-      prINT *, "MZ_pHENOL CALLING IGNORE"
         CALL IGNORE(LUNCRP,LNUM,ISECT,C80)
         READ(C80,'(9X,F7.3)',IOSTAT=ERR) SWCG
         IF (ERR .NE. 0) CALL ERROR(ERRKEY,ERR,FILECC,LNUM)
@@ -333,7 +321,6 @@ C LIWANG MA        PATHL  = INDEX(PATHER,BLANK)
 C-----------------------------------------------------------------------
 C    Read Ecotype Parameter File
 C-----------------------------------------------------------------------
-      prINT *, "MZ_pHENOL CALLING GETLUN"
         CALL GETLUN('FILEE', LUNECO)
         OPEN (LUNECO,FILE = FILEGC,STATUS = 'OLD',IOSTAT=ERRNUM)
         IF (ERRNUM .NE. 0) CALL ERROR(ERRKEY,ERRNUM,FILEE,0)
@@ -341,7 +328,6 @@ C-----------------------------------------------------------------------
         LNUM = 0
         DO WHILE (ECOTYP .NE. ECONO)
   
-      prinT *, "MZ_PHeNOL CALLING IGNORE"
           CALL IGNORE(LUNECO, LNUM, ISECT, C255)
           IF (ISECT .EQ. 1 .AND. C255(1:1) .NE. ' ' .AND.
      &          C255(1:1) .NE. '*') THEN
@@ -350,7 +336,6 @@ C-----------------------------------------------------------------------
 3100         FORMAT (A6,1X,A16,1X,9(1X,F5.1))
             IF (ERRNUM .NE. 0) CALL ERROR(ERRKEY,ERRNUM,FILEE,LNUM)
           ELSEIF (ISECT .EQ. 0) THEN
-      print *, "mZ_PHEnOL CALLING ERROR"
             CALL ERROR(ERRKEY,7,FILEE,LNUM)
           ENDIF
         ENDDO
@@ -570,7 +555,6 @@ C     ----------------------------------------------------------
                           GPP    = 1.0
 
                           WRITE(MESSAGE(1),3500)
-      print *, "mz_phenol CALLiNG WARNiNG"
                           CALL WARNING(1,'MZPHEN',MESSAGE)
                           WRITE (     *,3500)
                           IF (IDETO .EQ. 'Y') THEN
@@ -612,7 +596,6 @@ C     ----------------------------------------------------------
                   GPP    = 1.0
 
                   WRITE(MESSAGE(1),1399)
-      print *, "mz_PHEnOL CALLiNG WARNING"
                   CALL WARNING(1,'MZPHEN',MESSAGE)
 
                   WRITE (     *,1399)
@@ -821,13 +804,13 @@ C ----------------------------------------------------------------------
 
 
       CALL GETPUT_MZ_PHENOL('PUT', ABSTRES, ACOEF, BARFAC, C1, 
-     + CUMDTT, DEC, DGET, DJTI, DLV, DOPT, DSGT, DSGFT, DTT, DUMMY, 
-     + EARS, GDDE, GPP, KCAN, KEP, P2O, P3, P9, PDTT, PSKER, RATEIN, 
-     + ROPT, RUE, S1, SIND, SNDN, SNUP, SUMDTT, SWCG, SWSD, TBASE, 
-     + TDSOIL, TEMPCN, TEMPCR, TEMPCX, TH, TLNO, TMSOIL, TNSOIL, TOPT, 
-     + XNTI, XS, XSTAGE, tdsoil1, tnsoil1, tmsoil1, FOUND, ISTAGE, L, 
-     + L0, LINC, LNUM, LUNIO, MDATE, NDAS, YREMRG, ISDATE, PATHL, 
-     + LUNECO, ISECT, LUNCRP, STGDOY, SECTION, ECOTYP, C255, FILEGC, 
+     + DEC, DGET, DJTI, DLV, DOPT, DSGT, DSGFT, DUMMY, 
+     + GDDE, P2O, P9, PDTT, PSKER, RATEIN, 
+     + ROPT, S1, SIND, SNDN, SNUP, SWCG, SWSD, TBASE, 
+     + TDSOIL, TEMPCN, TEMPCR, TEMPCX, TH, TMSOIL, TNSOIL, TOPT, 
+     + XS, tdsoil1, tnsoil1, tmsoil1, FOUND, L, 
+     + L0, LINC, LNUM, LUNIO, NDAS, PATHL, 
+     + LUNECO, ISECT, LUNCRP, SECTION, ECOTYP, C255, FILEGC, 
      + ECONAM, C80)
 
       RETURN

@@ -153,7 +153,6 @@ C      +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)
         ISWITCH % MEPHO = 'C'
 !       Put ISWITCH data where it can be retreived 
 !         by other modules as needed.
-      prINT *, "ALT_PLANT CaLLING GETPUT_ISWITCH"
         CALL GETPUT_ISWITCH('PUT',ISWITCH)
 
 !       Write message to WARNING.OUT file
