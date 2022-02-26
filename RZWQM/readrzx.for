@@ -35,7 +35,7 @@
       READ(IPDSSAT,569) IOX,IDETO,IDETS,FROP,IDETG
      +,IDETC,IDETW,IDETN,IDETP,IDETD,IDETL,TRTNO
 569   FORMAT(a,'  ',a,'  ',a,'  ',I2,'  ',a,'  ',a,'  ',a,'  ',a
-     + ,'  ',a,'  ',a,'  ',a,'  ',I)
+     + ,'  ',a,'  ',a,'  ',a,'  ',I1)
 	  CALL ECHO(IPDSSAT)
       READ(IPDSSAT,*) NLAYRO
       DO 222 I=1,NLAYRO

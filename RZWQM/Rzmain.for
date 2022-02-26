@@ -359,7 +359,7 @@ C
       LOGICAL CHLRFL,Erosionactive,UseEnrichment,FEXIST
       DOUBLE PRECISION LAI,TLAI,TN(MXTN),TNC(MXTNC),TPEST(MXTP,MXPEST)
       DOUBLE PRECISION METMOD(8,12), OHORTHK(MAXHOR),thxnu(9)
-      INTEGER IPR
+      INTEGER IPR, fst
        character*3 mon(12)
        character*10 airrtype(5)
        integer DATE_TIME(8)
@@ -466,11 +466,12 @@ c         coefficient and exponent in the equation.  wgk                ei
          fac_e = 1.0d0                                                  ei
       endif                                                             ei
       IF (CO2A.EQ.0.0D0) THEN
+        fst=0
         ITOTYEAR=0
         INQUIRE (FILE = 'yearco2.dat', EXIST = FEXIST)
         IF (FEXIST) THEN
-          OPEN (UNIT=233, FILE='yearco2.dat',STATUS='UNKNOWN')
-          DO WHILE (.NOT. EOF(233))
+          OPEN (UNIT=233,FILE='yearco2.dat',STATUS='UNKNOWN',IOSTAT=fst)
+          DO WHILE (.NOT. IS_IOSTAT_END(fst))
           READ (233,*) IYEARCO2(ITOTYEAR+1),CO2PPM(ITOTYEAR+1)
           IF (CO2PPM(ITOTYEAR+1).LT.280.D0) PRINT*, 'CO2 TOO LOW'
           IF (CO2PPM(ITOTYEAR+1).GT.1000.D0) PRINT*, 'CO2 TOO HIGH'
@@ -1204,8 +1205,8 @@ C output residue information
               endif
 c          write (299,199) jday,iyyy,tlt(i),((xnu(i,j)*conv1,cn(j)),j=1,5)
           enddo
-        write (299,199)jday,iyyy,ohorthk(ij),((thxnu(j),cn(j)),j=1,5),
-     &     ((thxnu(jk),cn(jk)),jk=7,9)
+        WRITE(299,199) jday,iyyy,ohorthk(ij),(thxnu(j),cn(j),j=1,5)
+     &     ,(thxnu(jk),cn(jk),jk=7,9)
            ResdueC0 = rm*FCR                 !DEBASIS
            ResdueC1(ij) = thxnu(1)
            ResdueC2(ij) = thxnu(2)
@@ -2181,8 +2182,10 @@ C output residue information
               endif
 c          write (299,199) jday,iyyy,tlt(i),((xnu(i,j)*conv1,cn(j)),j=1,5)
           enddo
-        write (299,199) jday,iyyy,ohorthk(ij),((thxnu(j),cn(j)),j=1,5),
-     &     ((thxnu(jk),cn(jk)),jk=7,9)
+C         write (299,199) jday,iyyy,ohorthk(ij),((thxnu(j),cn(j)),j=1,5),
+C      &     ((thxnu(jk),cn(jk)),jk=7,9)
+          WRITE(299,199) jday,iyyy,ohorthk(ij),(thxnu(j),cn(j),j=1,5)
+     &     ,(thxnu(jk),cn(jk),jk=7,9)
            ResdueC0 = rm*FCR
            ResdueC1(ij) = thxnu(1)           !DEBASIS
            ResdueC2(ij) = thxnu(2)

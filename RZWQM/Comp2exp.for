@@ -2016,7 +2016,7 @@ c      CLOSE (UNIT=4)
       CLOSE (UNIT=9)
       CLOSE (UNIT=10)
       close (unit=11)
-      close (all)
+C       close (all)
       call Horizon(NN,JBDAY,JULBDAY,JULEDAY,TLT,DRSPAC,soilpss,
      &            dsk,NHOR,itypeswc,itypeno3,itypenh4)
 

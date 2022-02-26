@@ -6,7 +6,13 @@
 */state.bin
 *.obj
 *.mod
+*.log
 
 # IDE config files
 .vs/
+
+# Compilation outputs
 Release/
+IntelBuild/
+GNUBuild/
+
