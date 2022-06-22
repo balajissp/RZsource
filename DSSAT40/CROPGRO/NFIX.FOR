@@ -420,11 +420,11 @@ C-----------------------------------------------------------------------
 !            maturity for reducing N fixation due to canopy physiological age 
 ! FNFXD(I) Effects of soil water stress factor (TURFAC) on N fixation 
 ! FNFXT(I) Critical temperature points for function to reduce N fixation 
-!            rate when temperature is not optimal (°C)
+!            rate when temperature is not optimal (Â°C)
 ! FNFXW(I) Critical soil volumetric water contents for reducing N fixation 
 !            when the soil is too wet (flooded) (cm3/cm3)
 ! FNNGT(I) Critical temperature points for function to reduce Nodule growth 
-!            rates when temperature is not optimal (°C)
+!            rates when temperature is not optimal (Â°C)
 ! FRCNM    C required for reproductive and vegetative growth per nodule 
 !            mass (g[CH2O] / g[nodule] / d)
 ! LUNCRP   Logical unit number for FILEC (*.spe file) 
@@ -453,7 +453,7 @@ C-----------------------------------------------------------------------
 ! SDWNOD   Denotes first entrance to NFIX subroutine 
 ! SNACT    Specific nodule activity (g [nodule])
 ! SNACTM   Maximum activity of the nodules (g [nodule])
-! ST(L)    Soil temperature in soil layer L (°C)
+! ST(L)    Soil temperature in soil layer L (Â°C)
 ! SW(L)    Volumetric soil water content in layer L
 !            (cm3 [water] / cm3 [soil])
 ! SWFACT   Soil water deficit effect on N2 fixation and nodule growth (0-1)

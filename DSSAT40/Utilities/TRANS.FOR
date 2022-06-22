@@ -131,7 +131,7 @@ C       will depend on whether actual soil evapo (ES) meets EOS
 !           equidistant plant spacing, modified when in-row and between row
 !           spacings are not equal
 ! LNUM    Current line number of input file
-! TAVG    Average daily temperature (°C)
+! TAVG    Average daily temperature (Â°C)
 ! TRAT    Relative transpiration rate for CO2 values other than 330 ppm
 ! TRATIO  Function subroutine which calculates relative transpiration rate.
 !
@@ -258,7 +258,7 @@ c      TRATIO = XNUM / XDEN
 ! RLF      Leaf stomatal resistance at 330.0 ppm CO2 (s/m)
 ! RLFC     Leaf stomatal resistance at other CO2 concentration (s/m)
 ! RS1, RS2
-! TAVG     Average daily temperature (°C)
+! TAVG     Average daily temperature (Â°C)
 ! TRATIO   Function subroutine which calculates relative transpiration
 !            rate.
 ! UAVG     Average wind speed (m/s)

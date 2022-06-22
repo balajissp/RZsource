@@ -277,7 +277,7 @@ C-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !     IPPHENOL LOCAL VARIABLES:  (Other variables defined in PHENOL)
 !-----------------------------------------------------------------------
-! ATEMP     Temperature of transplant environment (°C)
+! ATEMP     Temperature of transplant environment (Â°C)
 ! CHAR      Contains the contents of last record read 
 ! CLDVAR    Critical daylength above which development rate remains at min 
 !             value (prior to flowering) (hours)
@@ -326,7 +326,7 @@ C-----------------------------------------------------------------------
 ! NSENP(I)  Sensitivity of phase I to Nitrogen stress. Varies from -1 
 !             (slows dev) to +1 (hastens dev) 
 ! OPTBI     Temperature below which growth rate is slowed from emergence to 
-!             flowering (°C)
+!             flowering (Â°C)
 ! PATHCR    Pathname for SPE file or FILEE. 
 ! PATHEC    Pathname for FILEC 
 ! PATHL     Number of characters in path name (path plus filename for 

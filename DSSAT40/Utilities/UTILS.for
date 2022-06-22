@@ -104,7 +104,7 @@ C
          IF (LINE(I) .NE. ' ') GO TO 100
       END DO
       !
-      ! Nothing entered .. spaces or ÄÄÙ .. set FLAG to 1.0 and exit
+      ! Nothing entered .. spaces or Ã„Ã„Ã™ .. set FLAG to 1.0 and exit
       !
       FLAG = 1.0
       GO TO 1300

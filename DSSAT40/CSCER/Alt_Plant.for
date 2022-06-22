@@ -71,7 +71,7 @@ C-----------------------------------------------------------------------
                          ! parameters, hourly weather data and flooded
                          ! conditions.
       IMPLICIT NONE
-      SAVE
+C       SAVE
 
       CHARACTER*1  MEEVP, RNMODE
       CHARACTER*6  ERRKEY
@@ -133,13 +133,13 @@ c      TYPE (FloodNType)   FLOODN
 
 !----------------------------------------------------------------------
 C        Retrieve local variables from memory
-C       CALL Alt_Plant_Memory('GET', NVALP0, YREMRG, MDATE, STGDOY, 
-C      +  CANHT, EORATIO, KCAN, KEP, KSEVAP, KTRANS, NSTRES, PORMIN, 
-C      +  RWUEP1, RWUMX, XLAI, XHLAI, RLV, UNO3, UNH4, LFWT, STMWT, 
-C      +  XSTAGE, DTT, BIOMAS, SDWT, GRNWT, EARS, RTWT, STOVWT, STOVN, 
-C      +  ROOTN, GRAINN, RTDEP, NFIXN, TOPWT, WTLF, PCNL, PCNST, PCNRT, 
-C      +  PCNSD, trnu, swfac, grwt, cwad, tfg, wfg, cnad, stwt, nupd, 
-C      +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)      
+      CALL Alt_Plant_Memory('GET', NVALP0, YREMRG, MDATE, STGDOY, 
+     +  CANHT, EORATIO, KCAN, KEP, KSEVAP, KTRANS, NSTRES, PORMIN, 
+     +  RWUEP1, RWUMX, XLAI, XHLAI, RLV, UNO3, UNH4, LFWT, STMWT, 
+     +  XSTAGE, DTT, BIOMAS, SDWT, GRNWT, EARS, RTWT, STOVWT, STOVN, 
+     +  ROOTN, GRAINN, RTDEP, NFIXN, TOPWT, WTLF, PCNL, PCNST, PCNRT, 
+     +  PCNSD, trnu, swfac, grwt, cwad, tfg, wfg, cnad, stwt, nupd, 
+     +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)      
 !***********************************************************************
 !***********************************************************************
       IF (DYNAMIC .EQ. RUNINIT) THEN
@@ -274,7 +274,7 @@ cc      IF (INDEX('RIWHMLMZSGPTBAMOMXTRSF',CROP) .GT. 0) THEN
      &    LFWT,STMWT,XSTAGE,DTT,BIOMAS,SDWT,GRNWT,EARS,    !OUTPUT
      &    RTWT,STOVWT,STOVN,ROOTN,GRAINN,RTDEP,             !Output
      &    ISTAGE,TRNU,SWFAC,turfac)           
-
+          PRINT *, "ISTAGE AFTER Alt_Plant > MZCER", ISTAGE
         IF (CONTROL%DYNAMIC .EQ. SEASINIT) THEN
 !          KTRANS = KCAN + 0.15        !Or use KEP here??
           KTRANS = KEP        !KJB/WDB/CHP 10/22/2003
@@ -544,13 +544,13 @@ c        ENDIF
       ENDIF
 !----------------------------------------------------------------------
 C        Store local variables from memory
-C       CALL Alt_Plant_Memory('PUT', NVALP0, YREMRG, MDATE, STGDOY, 
-C      +  CANHT, EORATIO, KCAN, KEP, KSEVAP, KTRANS, NSTRES, PORMIN, 
-C      +  RWUEP1, RWUMX, XLAI, XHLAI, RLV, UNO3, UNH4, LFWT, STMWT, 
-C      +  XSTAGE, DTT, BIOMAS, SDWT, GRNWT, EARS, RTWT, STOVWT, STOVN, 
-C      +  ROOTN, GRAINN, RTDEP, NFIXN, TOPWT, WTLF, PCNL, PCNST, PCNRT, 
-C      +  PCNSD, trnu, swfac, grwt, cwad, tfg, wfg, cnad, stwt, nupd, 
-C      +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)      
+      CALL Alt_Plant_Memory('PUT', NVALP0, YREMRG, MDATE, STGDOY, 
+     +  CANHT, EORATIO, KCAN, KEP, KSEVAP, KTRANS, NSTRES, PORMIN, 
+     +  RWUEP1, RWUMX, XLAI, XHLAI, RLV, UNO3, UNH4, LFWT, STMWT, 
+     +  XSTAGE, DTT, BIOMAS, SDWT, GRNWT, EARS, RTWT, STOVWT, STOVN, 
+     +  ROOTN, GRAINN, RTDEP, NFIXN, TOPWT, WTLF, PCNL, PCNST, PCNRT, 
+     +  PCNSD, trnu, swfac, grwt, cwad, tfg, wfg, cnad, stwt, nupd, 
+     +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)      
 
 !***********************************************************************
       RETURN
@@ -560,7 +560,7 @@ C      +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)
 ! Variable listing for Alt_Plant - updated 08/18/2003
 ! --------------------------------------------------------------------------
 ! CANHT     Canopy height (m)
-! CO2       Atmospheric carbon dioxide concentration (µmol[CO2] / mol[air])
+! CO2       Atmospheric carbon dioxide concentration (Âµmol[CO2] / mol[air])
 ! CONTROL   Composite variable containing variables related to control 
 !             and/or timing of simulation.  The structure of the variable 
 !             (ControlType) is defined in ModuleDefs.for. 
@@ -601,9 +601,9 @@ C      +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)
 ! MESSAGE   Text array containing information to be written to WARNING.OUT 
 !             file. 
 ! MODEL     Name of CROPGRO executable file 
-! NH4(L)    Ammonium N in soil layer L (µg[N] / g[soil])
+! NH4(L)    Ammonium N in soil layer L (Âµg[N] / g[soil])
 ! NL        Maximum number of soil layers = 20 
-! NO3(L)    Nitrate in soil layer L (µg[N] / g[soil])
+! NO3(L)    Nitrate in soil layer L (Âµg[N] / g[soil])
 ! NSTRES    Nitrogen stress factor (1=no stress, 0=max stress) 
 ! NVALP0    Set to 100,000 in PHENOLOG, used for comparison of times of 
 !             plant stages (d)
@@ -626,12 +626,12 @@ C      +  gnad, rtwts, istage, FixCanht, HARVRES, SENESCE)
 !             density, drained upper limit, lower limit, pH, saturation 
 !             water content.  Structure defined in ModuleDefs. 
 ! SRAD      Solar radiation (MJ/m2-d)
-! ST(L)     Soil temperature in soil layer L (°C)
+! ST(L)     Soil temperature in soil layer L (Â°C)
 ! STGDOY(I) Day when plant stage I occurred (YYYYDDD)
 ! SW(L)     Volumetric soil water content in layer L
 !            (cm3 [water] / cm3 [soil])
-! TMAX      Maximum daily temperature (°C)
-! TMIN      Minimum daily temperature (°C)
+! TMAX      Maximum daily temperature (Â°C)
+! TMIN      Minimum daily temperature (Â°C)
 ! TRWUP     Potential daily root water uptake over soil profile (cm/d)
 ! TWILEN    Daylength from twilight to twilight (h)
 ! UNH4(L)   Rate of root uptake of NH4, computed in NUPTAK

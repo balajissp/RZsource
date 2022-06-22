@@ -285,7 +285,7 @@ C       curve based on Drew control, disease and Lowman tag pod cohort study
 ! ERRKEY    Subroutine name for error file 
 ! FILECC    Path plus filename for species file (*.spe) 
 ! FT        Temperature function (0-1) 
-! FTHR      Used to calculate hourly air temperature (°C)
+! FTHR      Used to calculate hourly air temperature (Â°C)
 ! LUNCRP    Logical unit number for FILEC (*.spe file) 
 ! MSHELN(J) Maximum cohort shell mass (#/m2)
 ! NPP       Cohort number used as index in loops 
@@ -306,10 +306,10 @@ C       curve based on Drew control, disease and Lowman tag pod cohort study
 ! SWIDOT    Daily seed mass damage (g/m2/day)
 ! TB,       |
 ! TO1,      | Coefficients which define daily temperature distribution:
-! TO2,      | TB=base temp, T01=1st optimum, T02=2nd optimum, TM=max temp. (°C)
+! TO2,      | TB=base temp, T01=1st optimum, T02=2nd optimum, TM=max temp. (Â°C)
 ! TM        |
 ! TDLM      Last 10 days values of leaf mass (g[leaf] / m2[ground])
-! TGRO(I)   Hourly air temperature (°C)
+! TGRO(I)   Hourly air temperature (Â°C)
 ! TPODM     Total pod mass (g/m2)
 ! TS        Number of intermediate time steps (=24) 
 ! WPODY(J)  Pod mass  for cohort J (g/m2)

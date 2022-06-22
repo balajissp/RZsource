@@ -466,7 +466,7 @@ C-----------------------------------------------------------------------
 ! FNPTD(3)  Shortest daylength threshold where there is no dormancy effect
 !              for daylength effect on partitioning (for short-day dormancy)
 ! FNPTD(4)  Minimum relative effect of dormancy when crop is non-dormant (set to 0.0)
-! FREEZ2    Temperature below which plant growth stops completely. (°C)
+! FREEZ2    Temperature below which plant growth stops completely. (Â°C)
 ! FRZDC        Freezing death coefficient  - percentage tissue/population death per day per degree below FREEZ2)
 ! FRZDHD(1) Minimum temperature at which dehardening begins (relative rate=0)
 ! FRZDHD(2) Temperature at which dehardening reaches maximum rate (relative rate=1)

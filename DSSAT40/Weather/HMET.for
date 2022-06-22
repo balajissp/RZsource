@@ -150,16 +150,16 @@ C=======================================================================
 ! SNDN       Time of sunset (hr)
 ! SNUP       Time of sunrise (hr)
 ! SRAD       Solar radiation (MJ/m2-d)
-! TAIRHR(TS) Hourly air temperature (in some routines called TGRO) (캜)
-! TAVG       Average daily temperature (캜)
-! TDAY       Average temperature during daylight hours (캜)
-! TDEW       Dewpoint temperature (캜)
-! TGRO(I)    Hourly air temperature (캜)
-! TGROAV     Average daily canopy temperature (캜)
-! TGRODY     Average temperature during daylight hours (캜)
+! TAIRHR(TS) Hourly air temperature (in some routines called TGRO) (째C)
+! TAVG       Average daily temperature (째C)
+! TDAY       Average temperature during daylight hours (째C)
+! TDEW       Dewpoint temperature (째C)
+! TGRO(I)    Hourly air temperature (째C)
+! TGROAV     Average daily canopy temperature (째C)
+! TGRODY     Average temperature during daylight hours (째C)
 ! TINCR      Time increment (hr)
-! TMAX       Maximum daily temperature (캜)
-! TMIN       Minimum daily temperature (캜)
+! TMAX       Maximum daily temperature (째C)
+! TMIN       Minimum daily temperature (째C)
 ! TS         Number of intermediate time steps (=24) 
 ! VPSAT      Saturated vapor pressure of air (Pa)
 ! WINDAV     Average wind speed (m/s)
@@ -312,12 +312,12 @@ C=======================================================================
 ! SNDN       Time of sunset (hr)
 ! SNUP       Time of sunrise (hr)
 ! T          Time factor for hourly calculations 
-! TAIRHR(TS) Hourly air temperature (in some routines called TGRO) (캜)
-! TMAX       Maximum daily temperature (캜)
-! TMIN       Minimum daily temperature (캜)
+! TAIRHR(TS) Hourly air temperature (in some routines called TGRO) (째C)
+! TMAX       Maximum daily temperature (째C)
+! TMIN       Minimum daily temperature (째C)
 ! TMINI      Theoretical temperature at infinite time used for exponential 
-!              temperature decay after sunset (캜)
-! TSNDN      Temperature at sundown (캜)
+!              temperature decay after sunset (째C)
+! TSNDN      Temperature at sundown (째C)
 C=======================================================================
 
 
@@ -454,7 +454,7 @@ C=======================================================================
 ! CORR       Correction to decrease diffuse solar radiation by the 
 !              circumsolar component, since circumsolar diffuse radiation 
 !              acts like direct radiation (Spitters, 1986) 
-! COS90B     Cosine of (90� - BETA) 
+! COS90B     Cosine of (90째 - BETA) 
 ! COSB       Cosine of BETA 
 ! FRDFH      Hourly fraction diffuse radiation before correcting for 
 !              circumsolar radiation (Spitters, 1986) 

@@ -186,7 +186,8 @@ C-----------------------------------------------------------------------
 C    CERES Input variables
 C-----------------------------------------------------------------------
 c
-      CALL DSSATDRV_Memory('GET', oldhgt,PLHGHT,PLALFA)
+      CALL DSSATDRV_Memory('GET', oldhgt,PLHGHT,PLALFA,ISTAGE)
+      PRINT *, "DSSATDRV%ISTAGE = ", ISTAGE
       CALL GETPUT_ISWITCH('GET', ISWITCH)
       CALL GETPUT_CONTROL('GET', CONTROL)
 !     PRINT *, "DSSATDRV CALLING Y2K_DOY"
@@ -1044,6 +1045,7 @@ c      CALL WEATHR(CONTROL, ISWITCH, WEATHER)
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)    !Output
       else     
+      PRINT *, "1DSSATDRV%ISTAGE = ", ISTAGE
       CALL Alt_PLANT(CONTROL, ISWITCH, 
      &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
      &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
@@ -1130,6 +1132,7 @@ c
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)    !Output
       else
+      PRINT *, "2DSSATDRV%ISTAGE = ", ISTAGE
       CALL Alt_PLANT(CONTROL, ISWITCH, 
      &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
      &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
@@ -1214,6 +1217,7 @@ c        ENDIF   !ISWWAT = 'Y'
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)    !Output
       else
+      PRINT *, "3DSSATDRV%ISTAGE = ", ISTAGE
       CALL Alt_PLANT(CONTROL, ISWITCH, 
      &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
      &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
@@ -1258,6 +1262,7 @@ c---- START  DYNAMIC = INTEGR ------------------
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)    !Output
       else
+      PRINT *, "4DSSATDRV%ISTAGE = ", ISTAGE
       CALL Alt_PLANT(CONTROL, ISWITCH, 
      &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
      &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
@@ -1334,6 +1339,7 @@ c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)    !Output
       else
+      PRINT *, "5DSSATDRV%ISTAGE = ", ISTAGE
       CALL Alt_PLANT(CONTROL, ISWITCH, 
      &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
      &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
@@ -1746,7 +1752,6 @@ c pass yield to RZWQM
          yieldr(3) = DBLE(RTWT*PLTPOP*10.0D0)
          TRWUP=0.0
 c
-            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('get', CONTROL) 
                   CONTROL % DYNAMIC = FINAL
             CALL GETPUT_CONTROL('PUT', CONTROL) 
@@ -1798,6 +1803,7 @@ c     &    TNO3, TNOX, TOTAML, TOTFLOODN, TUREA, WTNUP)    !Input
      &    NFIXN,TOPWT,WTLF,PCNL,PCNST,PCNRT,PCNSD,RSTAGE,SDWT,TRNU,
      &    WTNFX,pronod,nodgr,rtdep,swfac,turfac,srdot)    !Output
       else
+      PRINT *, "6DSSATDRV%ISTAGE = ", ISTAGE
       CALL Alt_PLANT(CONTROL, ISWITCH, 
      &      EOP, HARVFRAC, NH4, NO3, SNOW,      !Input
      &      SOILPROP, SRFTEMP, ST, SW, TRWUP, WEATHER,    !Input
@@ -1816,7 +1822,6 @@ C
 !      IF (IDETS .EQ. 'Y' .OR. IDETS .EQ. 'A') THEN
         CALL OPSUM (CONTROL, ISWITCH, YRPLT,
      &     EXPER,CG, ENAME)                !LIWANG MA, RZWQM-DSSAT
-            PRINT *, "DSSATDRV CALLING GETPUT_CONTROL"
             CALL GETPUT_CONTROL('GET', CONTROL) 
                   CONTROL % DYNAMIC = SEASINIT
             CALL GETPUT_CONTROL('PUT', CONTROL) 
@@ -1898,11 +1903,11 @@ c need to check if qckplnt and qckturf need this mass balance or not. Liwang Ma,
         END IF
    90 CONTINUE
 C
-      CALL DSSATDRV_Memory('PUT', oldhgt,PLHGHT,PLALFA)
+      CALL DSSATDRV_Memory('PUT', oldhgt,PLHGHT,PLALFA,ISTAGE)
       RETURN
       endif
       FIRST15 = .FALSE.
-      CALL DSSATDRV_Memory('PUT', oldhgt,PLHGHT,PLALFA)
+      CALL DSSATDRV_Memory('PUT', oldhgt,PLHGHT,PLALFA,ISTAGE)
 CZ-MA
       RETURN
 C500   PRINT*,' -- ERROR -- ERROR -- UNABLE TO OPEN IPDSSAT --'

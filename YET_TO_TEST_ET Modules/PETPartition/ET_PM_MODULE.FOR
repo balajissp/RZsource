@@ -21,7 +21,7 @@ C=======================================================================
         END IF
 C
         WOB = WG(0,1)+REGEN(TAG)/DZ                     !-(WG(0,1)+REGEN(TAG)/DZ - WG(0,2))/4
-        IF (WOB.LT.WMIN(1)/3.0D0) WOB = WMIN(1)/3.0D0   ! ge„ndert 22.3.93
+        IF (WOB.LT.WMIN(1)/3.0D0) WOB = WMIN(1)/3.0D0   ! geâ€žndert 22.3.93
         PROZ = (WOB-WMIN(1)/3.0D0)/(W(1)-WMIN(1)/3.0D0)
         IF (PROZ.GT.1.0D0) PROZ = 1.0D0
         IF (PROZ.GT.0.33D0) THEN
@@ -51,9 +51,9 @@ C
 
 
               ! ----------------------- Calculation of reference evapotranspiration for grass acc. to Penman-Monteith  (cm/day) --------------
-              ! -- Required inputs:   Temp (temperature daily average, C°)
-              !                       Tmin (temperature daily minimum, C°)
-              !                       Tmax (temperature daily maximum, C°)
+              ! -- Required inputs:   Temp (temperature daily average, CÂ°)
+              !                       Tmin (temperature daily minimum, CÂ°)
+              !                       Tmax (temperature daily maximum, CÂ°)
               !                       RAD  (radiation daily sum,  MJ/m^2)
               !                       RH   (relative humidity, %)
               !                       DOY  (julian day)

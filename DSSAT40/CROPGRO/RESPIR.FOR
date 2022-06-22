@@ -61,7 +61,7 @@ C-----------------------------------------------------------------------
 !           (g[CH2O] / g[tissue])
 ! RP      proportion of the day's photosynthesis which is respired in the 
 !           maintenance process 
-! TGRO(I) Hourly air temperature (°C)
+! TGRO(I) Hourly air temperature (Â°C)
 ! TRSFAC  Temperature effect on maintenance respiration 
 ! TS      Number of intermediate time steps (=24) 
 ! WTMAIN  Mass of tissue assumed to require maintenance (g[tissue] / m2)

@@ -48,7 +48,7 @@ C=======================================================================
                          ! which contain control information, soil
                          ! parameters, hourly weather data.
       IMPLICIT NONE
-      SAVE
+C       SAVE
 !-----------------------------------------------------------------------
       CHARACTER*1 DETACH, IDETO, ISWNIT, ISWSYM,
      &    ISWWAT, ISWDIS, MEPHO, RNMODE
@@ -202,6 +202,40 @@ C=======================================================================
       TGROAV = WEATHER % TGROAV
       TMIN   = WEATHER % TMIN  
 
+      CALL CROPGRO_Memory('GET', DETACH, ECONO, 
+     &  NDLEAF, NDSET, NOUTDO, NR1, NR2, NR5, NR7, YREMRG, YRNR1, YRNR2,
+     &  YRNR3, YRNR5, YRNR7, AGEFAC, AGRSD3, AREALF, ASMDOT, AGRLF, 
+     &  AGRRT, AGRSH2, AGRSTM, AGRSD1, AGRSD2, AGRVG, AGRVG2, AGRNOD, 
+     &  AGRSH1, BETN, CANNAA, CANWAA, CDMREP, CGRSH, CGRSD, CNODMN, 
+     &  CO2, CSAVEV, CNDFX, CTONODR, CTONOD, CAVVEG, CADPR1, CMOBMX, 
+     &  CMINEP, CLW, CSW, CNOD, CRUSLF, CRUSRT, CRUSST, CRUSSH, CADLF, 
+     &  CADST, CANWH, CMINEA, DAYL, DWNOD, DWNODA, DISLA, DRPP, DTX, 
+     &  DXR57, EP1, EXCESS, FNINSH, FRACDN, FRCNOD, F, FNINL, FNINR, 
+     &  FNINS, FNINSD, FRLF, FRRT, FRSTM, FREEZ1, FREEZ2, GDMSD, 
+     &  GRRAT1, GROWTH, GRWRES, LAIMX, LAGSD, LNGPEG, MAINR, NPLTD, 
+     &  NDMNEW, NADRT, NADST, NGRLF, NGRRT, NGRST, NADLF, NMINEA, 
+     &  NDMOLD, NDMREP, NDMSDR, NDMTOT, NDMVEG, NMINEP, NMOBR, NDTH, 
+     &  NAVL, NRUSSH, NGRSD, NGRSH, NRUSLF, NRUSRT, NRUSST, POTLIP, 
+     &  POTCAR, PPLTD, PAR, PCTMAT, PLIGLF, PLIGNO, PLIGRT, PLIGST, 
+     &  PODWTD, PG, PCLSD, PCCSD, PCNSH, PODWT, PODNO, PGAVL, PLTPOP, 
+     &  PCARSH, PCH2O, PLIPSH, PLIGSD, PLIGSH, PMINSD, PMINSH, POASD, 
+     &  POASH, PROLFI, PRORTI, PROSHI, PROSTI, R30C2, RCH2O, RES30C, 
+     &  RPROAV, RFIXN, RLIG, RLIP, RMIN, RNITP, RNH4C, RNO3C, ROA, RPRO, 
+     &  RO, RP, RHOS, ROWSPC, RVSTGE, RSPNO3, RSPNH4, SEEDNI, 
+     &  NAVLV, PROVEG, SDNPL, SENNOD, SENRT, SATFAC, SDWTAH, SDRATE, 
+     &  SDIDOT, SDVAR, SHVAR, SDGR, SDPROR, SHELWT, SLA, SLDOT, SWIDOT, 
+     &  SEEDNO, SLAAD, SLNDOT, SSDOT, SSNDOT, TDAY, TDUMX, TDUMX2, 
+     &  TGROAV, TMIN, TAVG, TURADD, TRNH4U, TRNO3U, TNLEAK, TTFIX, 
+     &  TOTWT, VSTAGE, WLFDOT, WSIDOT, WRIDOT, WTNCAN, WTNLA, WTNLO, 
+     &  WTNNA, WTNNAG, WTNNO, WTNNOD, WTNRA, WTNRO, WTNSA, WTNSDA, 
+     &  WTNSDO, WTNSHA, WTNSHO, WTNSO, WTNUP, WTNOO, WTLO, WTSO, WTRO, 
+     &  WSDDTN, WSHDTN, WTABRT, WTSHMT, WTCO, WTSHO, WTSDO, WCRLF, 
+     &  WCRRT, WCRSH, WLDOTN, WRDOTN, WSDOTN, WCRST, WNRLF, WNRRT, 
+     &  WNRSH, WNRST, WTNRT, WTNSD, WTNSH, WTNST, WTNEW, WTMAIN, WTNLF, 
+     &  WSHIDT, WLIDOT, XPOD, XFRT, XLAI, PHTHRS, TGRO, SDDES, WTSD, 
+     &  WTSHE, SDNO, SHELN, PHTIM, PNTIM, FLWN, PUNCSD, PUNCTR, 
+     &  RZrwu, RZtrwup, AVG_HROOT, WTDEP, qsr, TRWUP1, ISTRESS, KCAN, 
+     &  KEP, RWUEP1)
 !***********************************************************************
 !***********************************************************************
 !     Run Initialization - Called once per simulation
@@ -1287,8 +1321,42 @@ C-----------------------------------------------------------------------
       Call GetPutPlant('PUT', 
      &  CANHT, CANWH, DXR57, EXCESS, NR5, PLTPOP, RNITP, SLAAD, XPOD)
 
+      CALL CROPGRO_Memory('PUT', DETACH, ECONO, 
+     &  NDLEAF, NDSET, NOUTDO, NR1, NR2, NR5, NR7, YREMRG, YRNR1, YRNR2,
+     &  YRNR3, YRNR5, YRNR7, AGEFAC, AGRSD3, AREALF, ASMDOT, AGRLF, 
+     &  AGRRT, AGRSH2, AGRSTM, AGRSD1, AGRSD2, AGRVG, AGRVG2, AGRNOD, 
+     &  AGRSH1, BETN, CANNAA, CANWAA, CDMREP, CGRSH, CGRSD, CNODMN, 
+     &  CO2, CSAVEV, CNDFX, CTONODR, CTONOD, CAVVEG, CADPR1, CMOBMX, 
+     &  CMINEP, CLW, CSW, CNOD, CRUSLF, CRUSRT, CRUSST, CRUSSH, CADLF, 
+     &  CADST, CANWH, CMINEA, DAYL, DWNOD, DWNODA, DISLA, DRPP, DTX, 
+     &  DXR57, EP1, EXCESS, FNINSH, FRACDN, FRCNOD, F, FNINL, FNINR, 
+     &  FNINS, FNINSD, FRLF, FRRT, FRSTM, FREEZ1, FREEZ2, GDMSD, 
+     &  GRRAT1, GROWTH, GRWRES, LAIMX, LAGSD, LNGPEG, MAINR, NPLTD, 
+     &  NDMNEW, NADRT, NADST, NGRLF, NGRRT, NGRST, NADLF, NMINEA, 
+     &  NDMOLD, NDMREP, NDMSDR, NDMTOT, NDMVEG, NMINEP, NMOBR, NDTH, 
+     &  NAVL, NRUSSH, NGRSD, NGRSH, NRUSLF, NRUSRT, NRUSST, POTLIP, 
+     &  POTCAR, PPLTD, PAR, PCTMAT, PLIGLF, PLIGNO, PLIGRT, PLIGST, 
+     &  PODWTD, PG, PCLSD, PCCSD, PCNSH, PODWT, PODNO, PGAVL, PLTPOP, 
+     &  PCARSH, PCH2O, PLIPSH, PLIGSD, PLIGSH, PMINSD, PMINSH, POASD, 
+     &  POASH, PROLFI, PRORTI, PROSHI, PROSTI, R30C2, RCH2O, RES30C, 
+     &  RPROAV, RFIXN, RLIG, RLIP, RMIN, RNITP, RNH4C, RNO3C, ROA, RPRO, 
+     &  RO, RP, RHOS, ROWSPC, RVSTGE, RSPNO3, RSPNH4, SEEDNI, 
+     &  NAVLV, PROVEG, SDNPL, SENNOD, SENRT, SATFAC, SDWTAH, SDRATE, 
+     &  SDIDOT, SDVAR, SHVAR, SDGR, SDPROR, SHELWT, SLA, SLDOT, SWIDOT, 
+     &  SEEDNO, SLAAD, SLNDOT, SSDOT, SSNDOT, TDAY, TDUMX, TDUMX2, 
+     &  TGROAV, TMIN, TAVG, TURADD, TRNH4U, TRNO3U, TNLEAK, TTFIX, 
+     &  TOTWT, VSTAGE, WLFDOT, WSIDOT, WRIDOT, WTNCAN, WTNLA, WTNLO, 
+     &  WTNNA, WTNNAG, WTNNO, WTNNOD, WTNRA, WTNRO, WTNSA, WTNSDA, 
+     &  WTNSDO, WTNSHA, WTNSHO, WTNSO, WTNUP, WTNOO, WTLO, WTSO, WTRO, 
+     &  WSDDTN, WSHDTN, WTABRT, WTSHMT, WTCO, WTSHO, WTSDO, WCRLF, 
+     &  WCRRT, WCRSH, WLDOTN, WRDOTN, WSDOTN, WCRST, WNRLF, WNRRT, 
+     &  WNRSH, WNRST, WTNRT, WTNSD, WTNSH, WTNST, WTNEW, WTMAIN, WTNLF, 
+     &  WSHIDT, WLIDOT, XPOD, XFRT, XLAI, PHTHRS, TGRO, SDDES, WTSD, 
+     &  WTSHE, SDNO, SHELN, PHTIM, PNTIM, FLWN, PUNCSD, PUNCTR, 
+     &  RZrwu, RZtrwup, AVG_HROOT, WTDEP, qsr, TRWUP1, ISTRESS, KCAN, 
+     &  KEP, RWUEP1)
       RETURN
-      END ! SUBROUTINE CROPGRO
+      END SUBROUTINE CROPGRO
 !=======================================================================
 
 !***********************************************************************
@@ -1345,7 +1413,7 @@ C-----------------------------------------------------------------------
 ! CNOD      C used in N-Fixation and nodule growth (including respiration 
 !             costs) today (g[CH2O] / m2 / d)
 ! CNODMN    Minimum C reserved for nodule growth (g[CH2O] / m2 / d)
-! CO2       Atmospheric carbon dioxide concentration (µmol[CO2] / mol[air])
+! CO2       Atmospheric carbon dioxide concentration (Âµmol[CO2] / mol[air])
 ! CONTROL   Composite variable containing variables related to control 
 !             and/or timing of simulation.    See Appendix A. 
 ! CROP      Crop identification code 
@@ -1404,8 +1472,8 @@ C-----------------------------------------------------------------------
 ! FRCNOD    Fraction of new root dry matter allocation that is diverted to 
 !             nodule growth 
 ! FREEZ1    Temperature below which plant loses all leaves, but development 
-!             continues (°C)
-! FREEZ2    Temperature below which plant growth stops completely. (°C)
+!             continues (Â°C)
+! FREEZ2    Temperature below which plant growth stops completely. (Â°C)
 ! FRLF      Fraction of vegetative tissue growth that goes to leaves on a 
 !             day (g[leaf] / g[veg])
 ! FRRT      Fraction of vegetative tissue growth that goes to roots on a 
@@ -1476,13 +1544,13 @@ C-----------------------------------------------------------------------
 ! NGRSD     Rate of N accumulation in new seeds (g[N] / m2 / d)
 ! NGRSH     Rate of N accumulation in new shells (g[N] / m2 / d)
 ! NGRST     Maximum N demand for stem growth (g[stem N] / m2[ground] / d)
-! NH4(L)    Ammonium N in soil layer L (µg[N] / g[soil])
+! NH4(L)    Ammonium N in soil layer L (Âµg[N] / g[soil])
 ! NLAYR     Actual number of soil layers 
 ! NMINEA    Actual Nitrogen mined from existing tissue (g[N] / m2 / d)
 ! NMINEP    Potential N mobilization from storage (g[N] / m2 / d)
 ! NMOBR     Stage-dependent potential N mining rate expressed as a fraction 
 !             of the maximum rate (NMOBMX) 
-! NO3(L)    Nitrate in soil layer L (µg[N] / g[soil])
+! NO3(L)    Nitrate in soil layer L (Âµg[N] / g[soil])
 ! NODGR     New nodule growth (g[nod] / m2 / d)
 ! NOUTDO    Logical unit for OVERVIEW.OUT file 
 ! NPLTD     Number of plants destroyed (#/m2/d)
@@ -1647,7 +1715,7 @@ C-----------------------------------------------------------------------
 ! SRDOT     Daily root senescence (g / m2 / d)
 ! SSDOT     Daily senescence of petioles (g / m2 / d)
 ! SSNDOT    Petiole senescence due to water stress (g/m2/day)
-! ST(L)     Soil temperature in soil layer L (°C)
+! ST(L)     Soil temperature in soil layer L (Â°C)
 ! STGDOY(I) Day when plant stage I occurred (YYYYDDD)
 ! STMWT     Dry mass of stem tissue, including C and N
 !            (g[stem] / m2[ground)
@@ -1656,17 +1724,17 @@ C-----------------------------------------------------------------------
 ! SWFAC     Effect of soil-water stress on photosynthesis, 1.0=no stress, 
 !             0.0=max stress 
 ! SWIDOT    Daily seed mass damage (g/m2/day)
-! TAVG      Average daily temperature (°C)
-! TDAY      Average temperature during daylight hours (°C)
+! TAVG      Average daily temperature (Â°C)
+! TDAY      Average temperature during daylight hours (Â°C)
 ! TDUMX     Photo-thermal time that occurs in a real day based on early 
 !             reproductive development temperature function
 !             (photo-thermal days / day)
 ! TDUMX2    Photo-thermal time that occurs in a real day based on late 
 !             reproductive development temperature function
 !             (photo-thermal days / day)
-! TGRO(I)   Hourly canopy temperature (°C)
-! TGROAV    Average daily canopy temperature (°C)
-! TMIN      Minimum daily temperature (°C)
+! TGRO(I)   Hourly canopy temperature (Â°C)
+! TGROAV    Average daily canopy temperature (Â°C)
+! TMIN      Minimum daily temperature (Â°C)
 ! TNLEAK    Total nitrogen leak (g[N] / m2 / d)
 ! TOPWT     Total weight of above-ground portion of crop, including pods
 !            (g[tissue] / m2)

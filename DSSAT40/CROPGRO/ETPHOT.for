@@ -370,7 +370,7 @@ C  KJB and SPSUM hourly.
      &      PGHR, SLWSH, SLWSL, T0HR, TCAN(H), THR, TSHR, !Output
      &      TSURF)                                        !Output
 
-C         Integrate instantaneous canopy photoynthesis (µmol CO2/m2/s)
+C         Integrate instantaneous canopy photoynthesis (Âµmol CO2/m2/s)
 C         and evapotranspiration (mm/h) to get daily values (g CO2/m2/d
 C         and mm/d).
 

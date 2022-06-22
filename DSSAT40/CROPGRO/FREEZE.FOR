@@ -56,12 +56,12 @@ C-----------------------------------------------------------------------
 !     FREEZE VARIABLES: 
 C-----------------------------------------------------------------------
 ! DAP    Number of days after planting (d)
-! FREEZ2 Temperature below which plant growth stops completely. (°C)
+! FREEZ2 Temperature below which plant growth stops completely. (Â°C)
 ! IDETO  Switch for printing OVERVIEW.OUT file 
 ! NOUTDO Logical unit for OVERVIEW.OUT file 
 ! NRUSLF N actually mobilized from leaves in a day (g[N]/m2-d)
 ! SLDOT  Defoliation due to daily leaf senescence (g/m2/day)
-! TMIN   Minimum daily temperature (°C)
+! TMIN   Minimum daily temperature (Â°C)
 ! WLFDOT Leaf weight losses due to freezing (g[leaf]/m2-d)
 ! WTLF   Dry mass of leaf tissue including C and N (g[leaf] / m2[ground])
 ! YRDOY  Current day of simulation (YYDDD)

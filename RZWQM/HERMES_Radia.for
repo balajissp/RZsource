@@ -137,7 +137,7 @@
      +                 /(298.d0*(Temp+273.d0)*8.314d0))
              kTko=EXP(1400.d0*((Temp+273.d0)-298.d0)           
      +                 /(298.d0*(Temp+273.d0)*8.314d0))
-           ! ****Berechnung des Transformationsfaktors für pflanzenspez. AMAX bei 25 grad *********
+           ! ****Berechnung des Transformationsfaktors fÃ¼r pflanzenspez. AMAX bei 25 grad *********
              Fakamax= MAXAMAX/34.695d0
              vcmax = 98.d0*FAKAMAX * KTVMAX
            ! **************************************************************************************
@@ -216,7 +216,7 @@
           SSLAE = SIN((90.d0+DEC-LAT)*PI/180.d0)
           X = LOG(1.d0+ .45d0*DRC/(DLE*3600.d0)*EFFE/(SSLAE*AMAX))
           PHCH1 = SSLAE*AMAX*DLE*X/(1.d0+X)
-        ! Žnderung nach P.d. Vries am 25.5.93
+        ! Å½nderung nach P.d. Vries am 25.5.93
           Y = LOG(1.d0+.55d0*DRC/(DLE*3600.d0)*EFFE/((5.d0-SSLAE)*AMAX))
           PHCH2=(5.d0-SSLAE)*AMAX*DLE*Y/(1.d0+Y)
           PHCH=0.95d0*(PHCH1+PHCH2)+20.5d0
@@ -234,7 +234,7 @@
           Z = DRO/(DLE*3600.d0)*EFFE/(5.0d0*AMAX)
           PHOH1 = 5.0d0*AMAX*DLE*Z/(1.0d0+Z)
           PHOH=0.9935d0*PHOH1+1.1d0
-        ! Žnderung nach P.d. Vries am 25.5.93
+        ! Å½nderung nach P.d. Vries am 25.5.93
           PHO3=PHOH*(1.d0-EXP(-.8d0*LAI))
         IF(PHO3 < PHC4) THEN
              MIPHO = PHO3

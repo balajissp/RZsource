@@ -415,7 +415,7 @@ C      ==============================
 !      date_time(7)  The seconds of the minute (range 0 to 59) - local time  
 !      date_time(8)  The milliseconds of the second (range 0 to 999) - local time  
       WRITE(*,1000)
-	WRITE(*,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+      WRITE(*,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
 C GET AVERAGE AIR TEMPEARTURE AS SOIL AVERAGE TEMP FOR THE SHAW MODEL 
 c      CALL AVERAGES(INP3,TAAVG)
@@ -482,7 +482,7 @@ c         coefficient and exponent in the equation.  wgk                ei
         CLOSE(233)
       ENDIF
 c      if (ishaw.eq.1.or.ipenflux.eq.1) then
-	  INQUIRE (FILE = 'canopy.dat', EXIST = FEXIST)
+        INQUIRE (FILE = 'canopy.dat', EXIST = FEXIST)
         IF (FEXIST) THEN
           OPEN (UNIT=222, FILE='canopy.dat',STATUS='UNKNOWN')
           CALL ECHO(222)
@@ -509,8 +509,8 @@ c      if (ishaw.eq.1.or.ipenflux.eq.1) then
            else
             NPCPOINT=0
             NUSE=0
-	  ENDIF
-c	endif
+        ENDIF
+c      endif
 C======================================================
 C     INITIALIZE THE OUTPUT FILE SET FOR INITIAL DATA
 C======================================================
@@ -569,7 +569,7 @@ c      Do i = 1,6
 c       CumulErodedSolute(i) = 0.0D0                     !sab intialize cumul loss of sorbing solutes
 c      enddo
 c      endif
-	  INQUIRE (FILE = 'GLEAMS.DAT', EXIST = FEXIST)
+        INQUIRE (FILE = 'GLEAMS.DAT', EXIST = FEXIST)
         IF (FEXIST.and.IMAGIC.LE.0) THEN
          OPEN(65,FILE='GLEAMS.DAT',STATUS='UNKNOWN') 
          Call Read_Gleams_Erosion_Input(65,ErosionActive)  !sab
@@ -593,37 +593,37 @@ C adjust pori after tillage
 C     ..OPEN DEBUG FILES
 c      OPEN(UNIT=333,FILE='ETSHAW.DAT',STATUS='UNKNOWN',ERR=20)
       OPEN(UNIT=98,FILE='WEATHERD.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (98,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (98,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
       WRITE (UNIT=98,FMT=778) 
       OPEN(UNIT=89,FILE='WEATHERH.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (89,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (89,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
       WRITE (UNIT=89,FMT=779) 
       OPEN(UNIT=109,FILE='DSSATWTH.WTH',STATUS='UNKNOWN',ERR=20)
-C	  WRITE (109,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+C        WRITE (109,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 C     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
       WRITE (UNIT=109,FMT=789) XLAT*R2D,XLONG*R2D,INT(ELEV),XW,XW
 c      
       OPEN(UNIT=70,FILE='MANAGE.OUT',STATUS='UNKNOWN',ERR=20)
-	WRITE (70,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+      WRITE (70,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
       OPEN(UNIT=9,FILE='MBLWAT.OUT',STATUS='UNKNOWN',ERR=20)
-	WRITE (9,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+      WRITE (9,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
       IF(IMAGIC.LT.0.AND.IMAGIC.GT.-12) THEN
         OPEN(UNIT=74,FILE='MBLNIT.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (74,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (74,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         OPEN(UNIT=75,FILE='MBLCARBON.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (75,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (75,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         OPEN(UNIT=72,FILE='NUPTAK.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (72,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (72,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(72,IYYY)
         OPEN(UNIT=73,FILE='NUTRI.OUT',STATUS='UNKNOWN',ERR=20,RECL=300)
-c	WRITE (73,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c      WRITE (73,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(73,IYYY)
       ENDIF
@@ -631,87 +631,87 @@ c changed by Liwang Ma to print out Accwat.out at any time, April 19, 2001
 c     IF ((IMAGIC.LE.-1 .AND. IMAGIC.GE.-2).OR.IMAGIC.EQ.-10) THEN
       IF (IMAGIC.LE.-1) THEN
         OPEN(UNIT=77,FILE='ACCWAT.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (77,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (77,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(77,IYYY)
         OPEN(UNIT=78,FILE='CLEACH.OUT',STATUS='UNKNOWN',ERR=20,RECL=255)
-	  WRITE (78,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (78,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(78,IYYY)
         OPEN(UNIT=79,FILE='MACRO.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (79,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (79,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         OPEN(UNIT=179,FILE='MACRO-P.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (179,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (179,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         OPEN(UNIT=279,FILE='MACRO-PC.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (279,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (279,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
       ENDIF
       IF(IMAGIC.EQ.-3) THEN
         OPEN(UNIT=99,FILE='PROFILE.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (99,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (99,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(99,IYYY)
       ENDIF
       IF(IMAGIC.EQ.-7.OR.IMAGIC.EQ.-8) THEN
         OPEN(UNIT=90,FILE='PLANT0.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (90,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (90,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(90,IYYY)
         OPEN(UNIT=91,FILE='PLANT1.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (91,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (91,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(91,IYYY)
         OPEN(UNIT=92,FILE='PLANT2.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (92,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (92,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(92,IYYY)
         OPEN(UNIT=93,FILE='PLANT3.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (93,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (93,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(93,IYYY)
         OPEN(UNIT=94,FILE='PLANT4.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (94,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (94,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(94,IYYY)
         OPEN(UNIT=95,FILE='PLANT5.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (95,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (95,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(95,IYYY)
         OPEN(UNIT=96,FILE='PLPROD.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (96,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (96,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(96,IYYY)
         OPEN(UNIT=97,FILE='PLANT.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (97,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (97,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(97,IYYY)
       ENDIF
       IF(npest.gt.0) THEN
         OPEN(UNIT=50,FILE='PESTP.OUT',STATUS='UNKNOWN',ERR=20)  !contain all three pesticides
-c	  WRITE (50,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (50,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
 C       NAME = 'MBLP1_'+NMPEST[1]
         OPEN(UNIT=60,FILE='MBLP1.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (60,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (60,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         OPEN(UNIT=61,FILE='MBLP2.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (61,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (61,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         OPEN(UNIT=62,FILE='MBLP3.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (62,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (62,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         OPEN(UNIT=80,FILE='PEST1.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (80,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (80,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(80,IYYY)
         OPEN(UNIT=81,FILE='PEST2.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (81,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (81,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(81,IYYY)
         OPEN(UNIT=82,FILE='PEST3.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (82,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (82,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         CALL PRNTYR(82,IYYY)
       ENDIF
@@ -720,19 +720,19 @@ c tested by Liwang Ma
      +   (IMAGIC .EQ. -8)) then
 c      IF (IMAGIC .EQ. -11) THEN
         OPEN(UNIT=76,FILE='AVG6IN.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (76,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (76,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
       ENDIF
         OPEN(UNIT=100,FILE='test.out',STATUS='UNKNOWN',ERR=20)
-	  WRITE (100,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (100,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         OPEN(UNIT=101,FILE='Phenology.out',STATUS='UNKNOWN',ERR=20)
-	  WRITE (101,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (101,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         OPEN(UNIT=299,FILE='RESIDUES.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (299,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (299,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-	  write (unit=299,fmt=1189)
+        write (unit=299,fmt=1189)
 C
       if(ipenflux.eq.1.or.(ishaw.eq.1).or.ihourly.eq.1) then
         OPEN(UNIT=87,FILE='ebalance.out',STATUS='UNKNOWN',ERR=20)
@@ -749,73 +749,73 @@ c        OPEN(UNIT=88,FILE='weather.out',STATUS='UNKNOWN',ERR=20)
         OPEN(UNIT=287,FILE='SHAWCanLWR.out',STATUS='UNKNOWN',ERR=20)
         OPEN(UNIT=288,FILE='SHAWCanSWR.out',STATUS='UNKNOWN',ERR=20)
         OPEN(UNIT=289,FILE='SHAWLeafTemp.out',STATUS='UNKNOWN',ERR=20)
-	  WRITE (87,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (87,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-	  write (unit=87,fmt=287)
-c	  WRITE (88,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        write (unit=87,fmt=287)
+c        WRITE (88,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-c	  write (unit=88,fmt=288)
-	  WRITE (86,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        write (unit=88,fmt=288)
+        WRITE (86,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-	  write (unit=86,fmt=1186) (ZN(J), J=1,NN)
-	  WRITE (84,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        write (unit=86,fmt=1186) (ZN(J), J=1,NN)
+        WRITE (84,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-	  write (unit=84,fmt=1184) (ZN(J), J=1,NN)
-	  WRITE (184,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        write (unit=84,fmt=1184) (ZN(J), J=1,NN)
+        WRITE (184,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-	  write (unit=184,fmt=1184) (ZN(J), J=1,NN)
-	  WRITE (185,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        write (unit=184,fmt=1184) (ZN(J), J=1,NN)
+        WRITE (185,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-	  write (unit=185,fmt=1184) (ZN(J), J=1,NN)
-	  WRITE (186,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        write (unit=185,fmt=1184) (ZN(J), J=1,NN)
+        WRITE (186,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-	  write (unit=186,fmt=1187)
-	  WRITE (187,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        write (unit=186,fmt=1187)
+        WRITE (187,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         write (187,fmt=889)
-	  WRITE (284,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (284,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-	  write (unit=284,fmt=1190) (J, J=1,11)
-	  WRITE (285,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        write (unit=284,fmt=1190) (J, J=1,11)
+        WRITE (285,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-	  write (unit=285,fmt=1190) (J, J=1,11)
-	  WRITE (286,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        write (unit=285,fmt=1190) (J, J=1,11)
+        WRITE (286,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
-	  write (unit=286,fmt=1190) (J, J=1,11)
-	  WRITE (287,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        write (unit=286,fmt=1190) (J, J=1,11)
+        WRITE (287,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         write (287,fmt=1190) (J, J=1,11)
-	  WRITE (288,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (288,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         write (288,fmt=1190) (J, J=1,11)
-	  WRITE (289,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (289,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         write (289,fmt=1190) (J, J=1,11)
       endif
         OPEN(UNIT=555,FILE='SHAWET.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (555,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (555,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         write (555,fmt=888)
         OPEN(UNIT=666,FILE='MASSBAL.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (666,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (666,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         OPEN(UNIT=6666,FILE='PHOTOSYN.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (6666,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (6666,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
         WRITE (6666,'(a136)') 'YEAR-DOY   POTENTIAL_PHOTO  ACTUAL_PHOTO 
      &       TEMP_STRESS    WATER_STRESS     N_STRESS      CO2_FACTOR  
      &   FERTILITY_FACTOR   AVG_TEMP'
        WRITE (6666,'(11X,A30)') '=========== G/PLANT/DAY ============='
         OPEN(UNIT=777,FILE='STRESS.OUT',STATUS='UNKNOWN',ERR=20)
-	  WRITE (777,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+        WRITE (777,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
      &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
       write (unit=777,fmt=717) 
-	  INQUIRE (FILE = 'LOWERB.DAT', EXIST = FEXIST)
+        INQUIRE (FILE = 'LOWERB.DAT', EXIST = FEXIST)
         IF (FEXIST) THEN
         OPEN(UNIT=188,FILE='LOWERB.DAT',STATUS='UNKNOWN',ERR=20)
         CALL ECHO(188)
         ENDIF
-	  INQUIRE (FILE = 'EXPDATA.DAT', EXIST = FEXIST)
+        INQUIRE (FILE = 'EXPDATA.DAT', EXIST = FEXIST)
         IF (FEXIST) THEN
         OPEN (UNIT=189,FILE='EXPDATA.DAT',STATUS='OLD',err=23)
 C  read the new addition to expdata.dat for horizon.out depth
@@ -844,12 +844,12 @@ C
         read (189,fmt=1123) string
         k=inumb(string)
         backspace (189)
-	 if (k.eq.1) then
+       if (k.eq.1) then
         READ (UNIT=189,FMT=*,err=27) NEDATA  !, ITYPESWC  !,iwater
         itypeswc=0
         iwater=0
 c       print*,'TAB is used in expdata.dat for 1st line soil moisture'
-	 else if (k.eq.2) then
+       else if (k.eq.2) then
         READ (UNIT=189,FMT=*,err=27) NEDATA, ITYPESWC  !,iwater
         iwater=0
        else if (k.eq.3) then
@@ -1003,7 +1003,7 @@ c      ENDIF
         
 c     for ishutl>0    
 c        OPEN(UNIT=88,FILE='weather.OUT',STATUS='UNKNOWN',ERR=20)
-c	  WRITE (88,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
+c        WRITE (88,103) Mon(DATE_TIME(2)), DATE_TIME(3), 
 c     &    DATE_TIME(1), DATE_TIME(5), DATE_TIME(6), DATE_TIME(7)
 1186    FORMAT ('  DY HR  YR     Tair   Tplas  Tres   Tcan ',
      &         300(F6.2,1x))
@@ -1266,7 +1266,7 @@ c write down initial condition in the ANA file
 C END OF INIITAL STATUS OUTPUT
 C
       DO 200 MDAY=JBDAY,JEDAY
-	  INQUIRE (FILE = 'LOWERB.DAT', EXIST = FEXIST)
+        INQUIRE (FILE = 'LOWERB.DAT', EXIST = FEXIST)
         IF (FEXIST) THEN
 28      READ (188,*) IID,IIM,IIY,DUMMT
                 iidate=JDATE(IID,IIM,IIY)
@@ -1275,7 +1275,7 @@ C
               ENDDO
         IF (MDAY.EQ.iidate) THEN
            TBOTM=DUMMT
-	     GOTO 18
+           GOTO 18
         ELSE IF (MDAY.GT.iidate) THEN
            GOTO 28
         ELSE IF (MDAY.LT.iidate) THEN
@@ -1287,7 +1287,7 @@ C
 18        JDAY=JDAY+1
 c this is to take input to SHAW
        IF (NPCPOINT.GT.0.and.nuse.eq.1) THEN
-	    DO 111 J=1,NPCPOINT-1
+          DO 111 J=1,NPCPOINT-1
              IF (MDAY.GE.NPCJDAY(J).AND.MDAY.LE.NPCJDAY(J+1)) THEN
                 HEIGHT=PCHT(J)+(PCHT(J+1)-PCHT(J))/
      +         (NPCJDAY(J+1)-NPCJDAY(J))*(MDAY-NPCJDAY(J))   !plant height IN CM
@@ -1359,8 +1359,8 @@ cc        ENDDO
             ENDIF
   111   CONTINUE 
 c       ELSE
-c	   OMSEA(41)=PLANTBIOMASS
-	   ENDIF      
+c         OMSEA(41)=PLANTBIOMASS
+         ENDIF      
 c   end of plant inputs to SHAW
         If (ErosionActive) then
             CALL ResetGleamsOrganicFraction(FRACOM(1)) !sab
@@ -1397,6 +1397,11 @@ c      if ((iwcinit.eq.2). and. (jday.eq.jbday)) then
       else
           iwcinit1=0
       endif
+      if ((NUTEQ(13).EQ.1).and.(jday.eq.jbday).and.(iyyy.ne.iyb)) then
+        CALL RZMAIN_Memory('GET', ...)
+        PRINT *,'======> Restored Previous run state'
+      end    
+
 161        CALL DAYJACK(ID,IM,IYYY,0)
 C
         TDAY=DBLE(MDAY)
@@ -1499,7 +1504,7 @@ cc        WRITE (UNIT=89,FMT=780) IYYY,IM,ID,JDAY,I-1,HRT(I),HRU(I),
 cc     +    HRTS(I),HRH(I),CO2R,HRZPAR(I),ETr_HR_T/10.0d0,ETr_HR_S/10.0d0
 cc        Ret_day_T=Ret_day_T+ETr_HR_T/10.0d0
 cc        Ret_day_S=Ret_day_S+ETr_HR_S/10.0d0
-cc	  ENDDO
+cc        ENDDO
 cc        else
 cc        CALL REF_ET(I,Tmin,Tmax,RTH,rh,w*1.0d3/(24.0d0*3.6d3),elev,
 cc     +       xlat*R2D,Xlong*R2D,jday,ETr_hr_T,ETr_hr_S,trat,xw,ihourly)
@@ -1566,7 +1571,7 @@ c      if ((iplp.eq.0).and.(ipl.eq.1).and.(iwcinit.eq.1)) then
           iwcinit1=0
       endif
         iplp=iplr
-	  iplr=0
+        iplr=0
       endif
 C       ..MANAGE FERTILIZER APPLICATIONS
         CALL MAFERT(CC,THETA,AIRR,JDAY,NN,IQUE,NDXT2N,NITNHB,ANHYD,
@@ -2336,10 +2341,10 @@ c      IF (IMAGIC .EQ. -11) THEN
 C EDITED BY LIWANG MA
 c      IF(IMAGIC.EQ.-12) THEN
         CLOSE (UNIT=83)
-	  close (unit=84)
-	  close (unit=86)
-	  close (unit=87)
-c	  close (unit=88)
+        close (unit=84)
+        close (unit=86)
+        close (unit=87)
+c        close (unit=88)
 c      ENDIF
 C
 C     ..PRINTOUT RZINIT.DAT SPECIFIC INFORMATION FOR WATER, TEMPERATURE,
@@ -2372,7 +2377,7 @@ C Edited by Liwang Ma
      +        JDATE(IDmxP,IMmxP,IYYYmxP),BalmxP
        write (unit=666,fmt=671) (totalAdd(i),i=1,iyyy-iyb+1)
        close (inp5)
-	 close (666)
+       close (666)
        close (98)
        CLOSE (777)
        CLOSE (555)
@@ -3679,8 +3684,8 @@ c accumulate daily solar radiation, windrun, humidity
         TMAX = -50.0D0
         TMIN = 50.0D0
         EPAN=0.0D0
-	  rhmax=0.0d0
-	  rhmin=100.d0
+        rhmax=0.0d0
+        rhmin=100.d0
         avg_VP=0.0d0
         avg_T=0.0d0
 C
@@ -4378,7 +4383,7 @@ C
         read (inp2,1110) string
         k=inumb(string)
         backspace (inp2)
-	 if (k.eq.6) then
+       if (k.eq.6) then
          READ(INP2,*) AREA,ELEV,ASPECT,XLAT,SLOPE,XLONG
          Iwzone=2
          CO2A=330
@@ -4534,7 +4539,7 @@ C
         read (inp2,1110) string
         k=inumb(string)
         backspace (inp2)
-	 if (k.eq.16) then
+       if (k.eq.16) then
           READ(INP2,*,ERR=260) ICRUST,CRUSTK,IREBOT,AEF,RICH_EPS,
      +    MAXITER_RICH,MAXCYCLE_RICH,TWL,ITBL,BOTFLX,IDRAIN,DRDEP,
      +    DRSPAC,DRRAD,IUGFLW,hydgrad
@@ -4610,7 +4615,7 @@ c      READ(INP2,*) A0,AW,AC,ARI,XW,FSUN,COEPAN,IHOURLY,ISHAW,IPENFLUX
         CKmax=1.0d0
        palbedo=0.0d0
        ptransm=1.0d0
-	 else if (k.eq.10) then
+       else if (k.eq.10) then
       READ(INP2,*) A0,AW,AC,ARI,XW,FSUN,COEPAN,IHOURLY,ISHAW,IPENFLUX
          rss=37.0d0
          istress=0 
@@ -4723,7 +4728,7 @@ C     ..CONVERT RESIDUE MASS UNITS MT/HA ---> KG/HA
       RM=RM*1.0D3
 csssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 c     jak LIWANG MA, WSTUBL MT/HA ---> KG/HA
-	wstubl = wstubl * 1.0D3
+      wstubl = wstubl * 1.0D3
 ceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 
 C
@@ -5034,7 +5039,7 @@ C
         IF (O2LIM.GT.1.D0) O2LIM=1.0D0
 C
       ISBUG=NOSTAR
-	IF (ISBUG.EQ.0) THEN
+      IF (ISBUG.EQ.0) THEN
         EFFMAX=0.0D0
         EFFNIT=0.0D0
         EFFDEN=0.0D0
@@ -5790,19 +5795,19 @@ C     ..INITIALIZE RESIDUE COVER TYPE BASED ON CROP TYPE
           IRTYPE(IPL)=3
             ELSE IF(INDEX(PLNAME(IPL),'SUNFLOWER').NE.0 .OR.
      +        INDEX(PLNAME(IPL),'sunflower').NE.0 ) THEN
- 	          IRTYPE(IPL)=1
+                 IRTYPE(IPL)=1
             ELSE IF(INDEX(PLNAME(IPL),'ALFALFA').NE.0 .OR.
      +        INDEX(PLNAME(IPL),'alfalfa').NE.0 ) THEN
- 	          IRTYPE(IPL)=2
+                 IRTYPE(IPL)=2
             ELSE IF(INDEX(PLNAME(IPL),'COTTON').NE.0 .OR.
      +        INDEX(PLNAME(IPL),'cotton').NE.0 ) THEN
- 	          IRTYPE(IPL)=1
+                 IRTYPE(IPL)=1
             ELSE IF(INDEX(PLNAME(IPL),'SUGARCANE').NE.0 .OR.
      +        INDEX(PLNAME(IPL),'sugarcane').NE.0 ) THEN
- 	          IRTYPE(IPL)=1
+                 IRTYPE(IPL)=1
             ELSE IF(INDEX(PLNAME(IPL),'SORGHUM').NE.0 .OR.
      +        INDEX(PLNAME(IPL),'sorghum').NE.0 ) THEN
-	          IRTYPE(IPL)=1
+                IRTYPE(IPL)=1
         ELSE   !ALL OTHER CROPS
           IRTYPE(IPL)=2
         ENDIF
@@ -6356,7 +6361,7 @@ C
 C
       RETURN
 C 1000 FORMAT(1X,13(G9.3,1X))
-      END
+      END SUBROUTINE TILADJ
 C
       SUBROUTINE NITBAL(NN,BD,THETA,XNU,JDAY,TL,RPOOL,CC,TLPLNT,TSPLNT,
      +    IMAGIC,MDAY,ANHYD,IYYY,OMSEA,NYR,TN,JNUM,FIXN,TSOTN0yr,
@@ -6479,7 +6484,7 @@ C-MA     Liwang Ma
       COMMON/NITROGEN_C/TSNO3_C,TSNH4_C,TSNH4P_C,TSUR_C,TOTO_C,TOTP_C,
      +       TOTF_C,TSHP_C,RZSOILC(mxnod),RZSOILN(mxnod),
      +       totminr,totimm,totden,totvol,TOTFERT,TOTMANU
-	common/rootdepth/ IR
+      common/rootdepth/ IR
       common/maxbal/IDmxH2O,IMmxH2O,IYYYmxH2O,IDmxN,IMmxN,IYYYmxN,
      +              IDmxC,IMmxC,IYYYmxC,IDmxP,IMmxP,IYYYmxP,
      +              DTMASSmxH2O,BalmxN,BalmxC,BalmxP,IWCINIT1
@@ -6689,7 +6694,7 @@ C         ..SUM UP FOR SUMMARY CALCULATIONS
           TN(39)=TN(39)+TNSORB
           IF(NYR.NE.IYYY) then
             tapmun=tn(29)
-		  CALL NITBYR(NYR,IYYY,JNUM,TN,0,TSOTN0yr,TSOTN)
+              CALL NITBYR(NYR,IYYY,JNUM,TN,0,TSOTN0yr,TSOTN)
           endif
 C
           CALL CDATE(JDAY,ID,IM,IYYY)
@@ -6701,11 +6706,11 @@ C
      +        TSBP,TSBP1,TSBP2,TSBP3,TSNO3,TSNH4,TSNH4P,TSUR,TSOTN,BAL
 C
 c          OMSEA(80) = TSHP  ! TOTAL SOIL ORGANIC N (HUMUS POOLS)
-	  if (abs(bal).ge.abs(balmxN)) then
+        if (abs(bal).ge.abs(balmxN)) then
             balmxN=bal
             IDmxN=id
-		  IMmxN=im
-		  IYYYmxN=iyyy
+              IMmxN=im
+              IYYYmxN=iyyy
         endif
           if (abs(bal).gt.1.0d-1) THEN !changed by Liwang Ma
           CALL dayjack(0,0,0,3)!send message that N mass balance was bad
@@ -6914,7 +6919,7 @@ C
 C-MA     Liwang Ma
 c      COMMON/NITROGEN_C/TSNO3_C,TSNH4_C,TSNH4P_C,TSUR_C,TOTO_C,TOTP_C,
 c     +       TOTF_C,TSHP_C,RZSOILC(mxnod)
-	common/rootdepth/ IR
+      common/rootdepth/ IR
       common/maxbal/IDmxH2O,IMmxH2O,IYYYmxH2O,IDmxN,IMmxN,IYYYmxN,
      +              IDmxC,IMmxC,IYYYmxC,IDmxP,IMmxP,IYYYmxP,
      +              DTMASSmxH2O,BalmxN,BalmxC,BalmxP,IWCINIT1
@@ -7040,17 +7045,17 @@ C         ..SUM UP FOR SUMMARY CALCULATIONS
           TNC(11)=TNC(11)+TACUREA
 C          TNC(11)=OMSEA(41)/2.5D0
           TNC(12)=TNC(12)+TSRESC
-	    TNC(13)=TNC(13)+TSRPC1
-	    TNC(14)=TNC(14)+TSRPC2
-	    TNC(15)=TNC(15)+TSHPC1
-	    TNC(16)=TNC(16)+TSHPC2
-	    TNC(17)=TNC(17)+TSHPC3
-	    TNC(18)=TNC(18)+TSBPC1
-	    TNC(19)=TNC(19)+TSBPC2
-	    TNC(20)=TNC(20)+TSBPC3
-	    TNC(21)=TNC(21)+TAMANC_BAL
-	    TNC(22)=TNC(22)+RCO2               !CO2 from surface residue
-	    TNC(23)=(tcag+tcbg)/c2bm   !CO2 assimilation by plant
+          TNC(13)=TNC(13)+TSRPC1
+          TNC(14)=TNC(14)+TSRPC2
+          TNC(15)=TNC(15)+TSHPC1
+          TNC(16)=TNC(16)+TSHPC2
+          TNC(17)=TNC(17)+TSHPC3
+          TNC(18)=TNC(18)+TSBPC1
+          TNC(19)=TNC(19)+TSBPC2
+          TNC(20)=TNC(20)+TSBPC3
+          TNC(21)=TNC(21)+TAMANC_BAL
+          TNC(22)=TNC(22)+RCO2               !CO2 from surface residue
+          TNC(23)=(tcag+tcbg)/c2bm   !CO2 assimilation by plant
           TNC(24)=TNC(24)+dtadjC
           TNC(25)=TNC(25)+TOTCH4
           TNC(26)=TNC(26)+ERODEDMASS(6)
@@ -7070,11 +7075,11 @@ C LIWANG MA ADD CARBON BALANCE
      +        TSHPC3,TSBPC,TSBPC1,TSBPC2,TSBPC3,TSOTC,BAL
 C LIWANG MA ADD CARBON BALANCE
 C
-	  if (abs(bal).ge.abs(balmxC)) then
+        if (abs(bal).ge.abs(balmxC)) then
             balmxC=bal
             IDmxC=id
-		  IMmxC=im
-		  IYYYmxC=iyyy
+              IMmxC=im
+              IYYYmxC=iyyy
         endif
           if (abs(bal).gt.1.0d-1) THEN !changed by Liwang Ma
             CALL dayjack(0,0,0,4)!send message that C mass balance was bad
@@ -7788,11 +7793,11 @@ c        ENDIF
         TSOTPDAY(IP)=TSOTP(IP)
         CALL VGATE(TDAY,31+IP,TSL2X)
       ENDIF
-	  if (abs(bal).ge.abs(balmxP)) then
+        if (abs(bal).ge.abs(balmxP)) then
             balmxP=bal
             IDmxP=id
-		  IMmxP=im
-		  IYYYmxP=iyyy
+              IMmxP=im
+              IYYYmxP=iyyy
         endif
           if (abs(bal).gt.1.0d-5) THEN !changed by Liwang Ma
           CALL dayjack(0,0,0,5)!send message that pesticide mass balance was bad
@@ -8045,7 +8050,7 @@ C     ...DEFINE POINTER (PTR(I,J))TO POINT TO PROPER RECORDS IN DATABASE
    20   CONTINUE
         if (iptr.eq.0) return
       DO I=1,NGNPL
-	   IF (IPTR.EQ.0) PTR(I)=I   !FOR DSSAT TO CALCULATE PLANT HEIGHT
+         IF (IPTR.EQ.0) PTR(I)=I   !FOR DSSAT TO CALCULATE PLANT HEIGHT
       ENDDO
 C
 C     ====================================================
@@ -8258,22 +8263,22 @@ C Liwang Ma, 6-28-2006, use GDD approach
 C         ...CALCULATE ACTUAL DEVELOPMENT RATES FOR EACH GROWTH STAGE
          if (GDDFLG(K).eq.0) then
           DEVRAT(2,K)=STEND(2,K)/DEVRAT(2,K)
-	   else 
+         else 
           DEVRAT(2,K)=STEND(2,K)/GSGDD(2,K)
          endif
           DO 220 I=3,6
          if (GDDFLG(K).eq.0) then
             DEVRAT(I,K)=(STEND(I,K)-STEND(I-1,K))/DEVRAT(I,K)
-	   else
+         else
             DEVRAT(I,K)=(STEND(I,K)-STEND(I-1,K))/GSGDD(I,K)
          endif
   220     CONTINUE
 C why use 30 here?
          if (GDDFLG(K).eq.0) then
           DEVRAT(7,K)=(1.0D0-STEND(6,K))/30.0D0
-	   else
+         else
           DEVRAT(7,K)=(1.0D0-STEND(6,K))/300.0D0
-	   endif
+         endif
         ELSE
           READ(INP6,*) DUMMY
         ENDIF
@@ -9006,14 +9011,14 @@ C     ..  INITIALIZE DAYMET FILE
       read (inp3,1000) string
         k=inumb(string)
       backspace (inp3)
-	 if (k.eq.6) then
+       if (k.eq.6) then
       READ(INP3,*) IDUM,IDUM,IDUM,IDUM,IDUM,IDUM
-	   IWEATHER=0
-C	   xlat=40
-c	   xlong=104.6383D0   !GREELEY, COLORADO LOCATION
+         IWEATHER=0
+C         xlat=40
+c         xlong=104.6383D0   !GREELEY, COLORADO LOCATION
        else if (k.eq.7) then
       READ(INP3,*) IDUM,IDUM,IDUM,IDUM,IDUM,IDUM,IWEATHER
-c	   xlong=104.6383D0   !GREELEY, COLORADO LOCATION
+c         xlong=104.6383D0   !GREELEY, COLORADO LOCATION
        else if (k.eq.9) then
       READ(INP3,*) IDUM,IDUM,IDUM,IDUM,IDUM,IDUM,IWEATHER,xlat1,xlong1
        else if (k.eq.10) then
@@ -9173,10 +9178,10 @@ c      if (jseqday.eq.1000) curstate(2)=.true. !4 testing only
       END
 C
       SUBROUTINE AVERAGES(INP3,TAAVG)
-	DOUBLE PRECISION TEMPMIN,TEMPMAX,TAAVG
-	INTEGER N,INP3,iday1,iday2,iyear1,iyear2
-	CHARACTER FILENAME*255
-	PARAMETER (IPNAME=80)
+      DOUBLE PRECISION TEMPMIN,TEMPMAX,TAAVG
+      INTEGER N,INP3,iday1,iday2,iyear1,iyear2
+      CHARACTER FILENAME*255
+      PARAMETER (IPNAME=80)
 C ..  OPEN FILE WITH ALL THE NAMES
       OPEN(IPNAME,FILE='IPNAMES.DAT',STATUS='UNKNOWN')
 C
@@ -9192,27 +9197,27 @@ C     ..  OPEN DAYMET.DAT DATAFILE
       CALL ECHO(INP3)
       READ(INP3,1000) FILENAME
       CALL ECHO(INP3)
-	READ (INP3,*) iday1, iyear1
-	READ (INP3,*) iday2, iyear2
-	backspace (inp3)
-	backspace (inp3)
+      READ (INP3,*) iday1, iyear1
+      READ (INP3,*) iday2, iyear2
+      backspace (inp3)
+      backspace (inp3)
       taavg=0.0d0
-	n=0
-	if (iday1.eq.iday2) then
+      n=0
+      if (iday1.eq.iday2) then
       DO WHILE (.TRUE.)
-	READ (INP3,*) iday1, iyear1,tempmin
-	taavg=taavg+tempmin
-	N=N+1
+      READ (INP3,*) iday1, iyear1,tempmin
+      taavg=taavg+tempmin
+      N=N+1
       END DO
-	else
+      else
       DO WHILE (.TRUE.)
-	READ (INP3,*) iday1, iyear1,tempmin,tempmax
-	taavg=taavg+(tempmin+tempmax)/2
-	N=N+1
+      READ (INP3,*) iday1, iyear1,tempmin,tempmax
+      taavg=taavg+(tempmin+tempmax)/2
+      N=N+1
       end do
-	endif
+      endif
       taavg=taavg/N
-	close (inp3)
-	close (ipname)
+      close (inp3)
+      close (ipname)
  1000 FORMAT(A255)
       END

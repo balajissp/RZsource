@@ -441,8 +441,8 @@ C-----------------------------------------------------------------------
 ! FRCNOD   Fraction of new root dry matter allocation that is diverted to 
 !            nodule growth 
 ! FREEZ1   Temperature below which plant loses all leaves, but development 
-!            continues (°C)
-! FREEZ2   Temperature below which plant growth stops completely. (°C)
+!            continues (Â°C)
+! FREEZ2   Temperature below which plant growth stops completely. (Â°C)
 ! ISECT    Data record code (0 - End of file encountered, 1 - Found a good 
 !            line to read, 2 - End of Section in file encountered, denoted 
 !            by * in column 1

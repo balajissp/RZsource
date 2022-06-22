@@ -250,7 +250,7 @@
      &'-Nitrogen--|',/,
      &25X,'Span   Max   Min   Rad  [day]   Rain  Trans  Photo',9X,'Pho',
      &'to',/,
-     &25X,'days    øC    øC MJ/m2     hr     mm     mm  synth Growth  ',
+     &25X,'days    ?C    ?C MJ/m2     hr     mm     mm  synth Growth  ',
      &'synth Growth',/,96('-'))
 
 

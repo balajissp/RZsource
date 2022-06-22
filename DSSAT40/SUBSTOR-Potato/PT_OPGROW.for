@@ -85,20 +85,20 @@ C-----------------------------------------------------------------------
 !      DATA GROHEAD(1)/
      &'! YR       Days  Days  Grow       Fresh          
      &      Dry Weight                           Pod      Phot. Grow    
-     &   Leaf Shell   Spec    Canopy          Root  ³    Root Length Den
-     &sity   ³ Senesced mass              ',
+     &   Leaf Shell   Spec    Canopy          Root  Â³    Root Length Den
+     &sity   Â³ Senesced mass              ',
 
 !      DATA GROHEAD(2)/
      &'!   and   after after Stage  LAI  Yield  Leaf  St
      &em Tuber  Root  Crop  Tops DLeaf   HI   Wgt.   No.    Water     Ni
-     &t.   Nit -ing   Leaf  Hght  Brdth      Depth  ³     cm3/cm3   of 
-     &soil    ³    (kg/ha)                ',
+     &t.   Nit -ing   Leaf  Hght  Brdth      Depth  Â³     cm3/cm3   of 
+     &soil    Â³    (kg/ha)                ',
 
 !      DATA GROHEAD(3)/
-     &'!     DOY   sim plant             Mg/Ha  ³<------
-     &--------- kg/Ha --------------->³      Kg/Ha        ³<Stress (0-1)
-     &>³    %     %   Area    m     m           m   ³<------------------
-     &------>³ Surface  Soil              ',
+     &'!     DOY   sim plant             Mg/Ha  Â³<------
+     &--------- kg/Ha --------------->Â³      Kg/Ha        Â³<Stress (0-1)
+     &>Â³    %     %   Area    m     m           m   Â³<------------------
+     &------>Â³ Surface  Soil              ',
 
 !      DATA GROHEAD(4) / 
      &'@YEAR DOY   DAS   DAP  GSTD  LAID  UYAD  LWAD  
@@ -118,8 +118,8 @@ C-----------------------------------------------------------------------
      &g.   take    N     N     N     N     N     (kg/ha) ',
 
 !      DATA NITHEAD(3)/
-     &'!     DOY   Sim Plant  ³<--- Kg/Ha -->³ ³<-- % --
-     &>³  ³<--- kg/ha --->³ ³<----- % ----->³  Surface Soil',
+     &'!     DOY   Sim Plant  Â³<--- Kg/Ha -->Â³ Â³<-- % --
+     &>Â³  Â³<--- kg/ha --->Â³ Â³<----- % ----->Â³  Surface Soil',
 
 !      DATA NITHEAD(4)/  
      &'@YEAR DOY   DAS   DAP  TUNA  UNAD  VNAD  UN%D  

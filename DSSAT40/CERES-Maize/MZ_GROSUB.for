@@ -779,6 +779,8 @@ C      FILECC =  TRIM(PATHSR) // FILES
           YIELDB = 0.0
 
           IF (ISWNIT .NE. 'N') THEN
+            PRINT *, ISWNIT, ":CALLING MZ_NFACTO:",ISTAGE,TANC,TCNP,
+     %       TMNC,AGEFAC,NDEF3,NFAC,NSTRES
              CALL MZ_NFACTO(DYNAMIC,ISTAGE,TANC,TCNP,TMNC,
      %       AGEFAC,NDEF3,NFAC,NSTRES)         
           ELSE
@@ -971,6 +973,7 @@ c          TMNC = TMNCO    !Where is TMNCO given value?
           !        Compute Nitrogen Stress Factors 
           !-------------------------------------------------------------
           IF (ISWNIT .NE. 'N' .AND. ISTAGE .LT. 7) THEN
+            PRINT *, ISWNIT, ": istage=", ISTAGE, ": CALLING MZ_NFACTO"
               CALL MZ_NFACTO(DYNAMIC,                 !Control
      %        ISTAGE,TANC,TCNP,TMNC,                  !Inputs
      %        AGEFAC,NDEF3,NFAC,NSTRES)               !Outputs

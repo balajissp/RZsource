@@ -52,8 +52,9 @@ C
       PARAMETER(PDTMIN=1.0D-4,PDTMAX=1.0D-1)
       LOGICAL FIRST4,TFIRST, IHFLAG     !LIWANG MA, RZ-SHAW
       DIMENSION Q(MXNOD),ASAVE(MXNOD),thetai(mxnod)
-      SAVE ASAVE,TFIRST,DELTSV   !LIWANG MA, RZ-SHAW
+C       SAVE ASAVE,TFIRST,DELTSV   !LIWANG MA, RZ-SHAW
 C
+      CALL ADJDT_Memory('GET', ASAVE,TFIRST,DELTSV)
       IF(FIRST4) THEN
         TFIRST=.TRUE.
         DELT=PDTMIN
@@ -120,6 +121,7 @@ C     ..LIMIT TIME STEP
       DELT=MAX(DELT,PDTMIN)
       IF(DAYTIM+DELT.GT.TS0NXT) DELT=TS0NXT-DAYTIM
 C
+      CALL ADJDT_Memory('PUT', ASAVE,TFIRST,DELTSV)
       RETURN
       END
 C
@@ -713,10 +715,10 @@ C     ..SHAW VARIABLES DIMENSIONED
      +     thetaold(mxnod),lwsnow,lwres(NODRES),lwsoil,thetaoldi(mxnod)
      +     ,dsnow,subl,totmelt
 ceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-      SAVE PERIOD,SPAN,DELT,START,NBPR,COR,TTRO,STMSEG,ND,FIRST5,JSTDAY,
-     +    TSTART,OLDSTR,TRFDD,TCII,TROI,NBPRI,CANIRR,HROOT,RNDR,SNP,
-     +    SSTART,PKTEMP,hrootdummy
-      SAVE IDIMIYOLD,wthour,totalsub
+C       SAVE PERIOD,SPAN,DELT,START,NBPR,COR,TTRO,STMSEG,ND,FIRST5,JSTDAY,
+C      +    TSTART,OLDSTR,TRFDD,TCII,TROI,NBPRI,CANIRR,HROOT,RNDR,SNP,
+C      +    SSTART,PKTEMP,hrootdummy
+C       SAVE IDIMIYOLD,wthour,totalsub
       data pfirst/.true./
 C
       DATA PERIOD /'STORM'/,SPAN /.FALSE./,ISEG /1/,COR /1.0D-6/,START /
@@ -777,6 +779,10 @@ C    ISTRESS=3, USE NIMAH-HANKS/SHAW PET
 C    ISTRESS=4, USE DSSAT Potential Water uptake/SHAW PET
 C-----------------------------------------------------------------------
 C
+      CALL PHYSCL_Memory('GET', PERIOD, SPAN, DELT, START, NBPR, 
+     +    COR, TTRO, STMSEG, ND, FIRST5, JSTDAY,
+     +    TSTART, OLDSTR, TRFDD, TCII, TROI, NBPRI, CANIRR, HROOT, RNDR, 
+     +    SNP, SSTART, PKTEMP, hrootdummy, IDIMIYOLD, wthour, totalsub)
       ipet1=ipet
       rzrunoff=0.0d0 
       IF(START) THEN
@@ -2995,6 +3001,10 @@ C     print out stress related water balance stuff
      +       avg_H,avg_sw,trwup,acttrndum,RET_day_T,SumCropET,
      +       avg_Hrdf,avg_swrdf
   707 format (i8,i6,12(f15.4,2x))
+      CALL PHYSCL_Memory('PUT', PERIOD, SPAN, DELT, START, NBPR, 
+     +    COR, TTRO, STMSEG, ND, FIRST5, JSTDAY,
+     +    TSTART, OLDSTR, TRFDD, TCII, TROI, NBPRI, CANIRR, HROOT, RNDR, 
+     +    SNP, SSTART, PKTEMP, hrootdummy, IDIMIYOLD, wthour, totalsub)
       RETURN
 csssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 c     jak

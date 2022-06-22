@@ -125,7 +125,7 @@ C      RP = R30C2 * 24
 ! STMMRC  Maintenance respiration cost for stem (g[CH2O] / g stem protein / hr)
 ! STRMRC  Maintenance respiration cost for storage 
 !            (g[CH2O] / g storage protein / hr)
-! TGRO(I) Hourly air temperature (°C)
+! TGRO(I) Hourly air temperature (Â°C)
 ! TRSFAC  Temperature effect on maintenance respiration 
 ! TRST(4)       Maintenance respiration temperature response parameters define
 !             the shape of maintenance respiration temperature response

@@ -115,8 +115,8 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 ! DAP    Number of days after planting (d)
 ! FREEZ1   Temperature below which plant loses all leaves, but development 
-!            continues (°C)
-! FREEZ2 Temperature below which plant growth stops completely. (°C)
+!            continues (Â°C)
+! FREEZ2 Temperature below which plant growth stops completely. (Â°C)
 ! FRZDC        Freezing death coefficient  - percentage tissue/population death per day per degree below FREEZ2
 ! FRZDL  Todays death loss of storage tissue/plant population due to freezing (proportion of STRWT and PLNTPOP)
 ! IDETO  Switch for printing OVERVIEW.OUT file 
@@ -136,7 +136,7 @@ C-----------------------------------------------------------------------
 ! SSRDOT  Storage organ loss due to daily senescence (g/m2/day)
 ! ST(I)      Temperature in soil layer (I) (degrees C)
 ! STMWT   Dry mass of stem tissue, including C and N (g[stem] / m2[ground)
-! TMIN   Minimum daily temperature (°C)
+! TMIN   Minimum daily temperature (Â°C)
 ! VSTAGE    Number of nodes on main stem of plant 
 ! WLFDOT Leaf weight losses due to freezing (g[leaf]/m2-d)
 ! WSFDOT Stem weight losses due to freezing (g[stem]/m2-d)

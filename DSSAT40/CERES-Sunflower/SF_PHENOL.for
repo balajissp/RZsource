@@ -559,17 +559,17 @@ cc      CNSD1 = CNSD1 + 1.0-NSTRES
 cc      CNSD2 = CNSD2 + 1.0-AGEFAC
 cc      ICSDUR = ICSDUR + 1
 
-      !  ีอออออออออออออออออออออออออออออออออออออธ
-      !  ณ7 - Sowing date                      ณ
-      !  ณ8 - Germination                      ณ
-      !  ณ9 - Emergence                        ณ
-      !  ณ1 - End juvenile                     ณ
-      !  ณ2 - Pannicle initiation              ณ
-      !  ณ3 - End leaf growth                  ณ
-      !  ณ4 - End pannicle growth              ณ
-      !  ณ5 - Grain fill                       ณ
-      !  ณ6 - Maturity                         ณ
-      !  ิอออออออออออออออออออออออออออออออออออออพ
+      !  ร•รรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรยธ
+      !  ยณ7 - Sowing date                      ยณ
+      !  ยณ8 - Germination                      ยณ
+      !  ยณ9 - Emergence                        ยณ
+      !  ยณ1 - End juvenile                     ยณ
+      !  ยณ2 - Pannicle initiation              ยณ
+      !  ยณ3 - End leaf growth                  ยณ
+      !  ยณ4 - End pannicle growth              ยณ
+      !  ยณ5 - Grain fill                       ยณ
+      !  ยณ6 - Maturity                         ยณ
+      !  ร”รรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรรยพ
 C   COMMON TO ALL ISTAGES
           CNSD1=0.0
           CNSD2=0.0

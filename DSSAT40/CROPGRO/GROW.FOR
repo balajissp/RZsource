@@ -1624,7 +1624,7 @@ C=======================================================================
 ! SDLIP    Maximum lipid composition in seed (fraction)
 ! SDNPL    Seed N (g[N] / m2)
 ! SDPDOT   Daily seed puncture damage (not yet implemented) 
-! SDPRO    Seed protein fraction at 25ºC (g[protein] / g[seed])
+! SDPRO    Seed protein fraction at 25ÂºC (g[protein] / g[seed])
 ! SDPROR   Ratio to adjust lipid and carbohydrate proportions when seed 
 !            protein differs from protein composition of standard cultivar 
 !            (SDPROS) 

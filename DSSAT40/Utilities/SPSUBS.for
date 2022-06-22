@@ -213,8 +213,8 @@ C-----------------------------------------------------------------------
 ! AVES    Average soil evaporation since last printout (mm/d)
 ! AVET    Average evapotranspiration since last printout (mm/d)
 ! AVSRAD  Average solar radiation since last printout (MJ/m2-d)
-! AVTMN   Average min temperature since last printout (ºC)
-! AVTMX   Average max temperature since last printout (ºC)
+! AVTMN   Average min temperature since last printout (ÂºC)
+! AVTMX   Average max temperature since last printout (ÂºC)
 ! AVWTD   Average water table depth since last printout (cm)
 ! CEP     Cumulative transpiration (mm)
 ! CES     Cumulative evaporation (mm)
@@ -234,15 +234,15 @@ C-----------------------------------------------------------------------
 ! NL      Maximum number of soil layers = 20 
 ! LUN     Unit number for spam output file 
 ! OUTW    Filename for soil water output file (set in IPIBS) 
-! ST(L)   Soil temperature in soil layer L (°C)
+! ST(L)   Soil temperature in soil layer L (Â°C)
 ! SW(L)   Volumetric soil water content in layer L
 !           (cm3 [water] / cm3 [soil])
 ! TDRAIN  Cumulative daily drainage from profile (mm)
 ! TIMDIF  Integer function which calculates the number of days between two 
 !           Julian dates (da)
 ! TITLET  Description of treatment for this simulation 
-! TMAX    Maximum daily temperature (°C)
-! TMIN    Minimum daily temperature (°C)
+! TMAX    Maximum daily temperature (Â°C)
+! TMIN    Minimum daily temperature (Â°C)
 ! TOTIR   Total seasonal irrigation (mm)
 ! TRUNOF  Cumulative runoff (mm)
 ! WTDEP   Water table depth  (cm)

@@ -209,7 +209,7 @@ C         message to the WARNING.OUT file.
      &   ('Value of TAV, average annual soil temperature, is missing.')
   110 FORMAT('Value of TAMP, amplitude of soil temperature function,',
      &            ' is missing.')
-  120 FORMAT('A default value of', F5.1, '튏 is being used for this',
+  120 FORMAT('A default value of', F5.1, '쨘C is being used for this',
      &            ' simulation,')
   130 FORMAT('which may produce undesirable results.')
 
@@ -440,19 +440,19 @@ c      ENDIF
 ! SNDN       Time of sunset (hr)
 ! SNUP       Time of sunrise (hr)
 ! SRAD       Solar radiation (MJ/m2-d)
-! TAIRHR(TS) Hourly air temperature (in some routines called TGRO) (캜)
+! TAIRHR(TS) Hourly air temperature (in some routines called TGRO) (째C)
 ! TAMP       Amplitude of temperature function used to calculate soil 
-!              temperatures (캜)
+!              temperatures (째C)
 ! TAV        Average annual soil temperature, used with TAMP to calculate 
-!              soil temperature. (캜)
-! TAVG       Average daily temperature (캜)
-! TDAY       Average temperature during daylight hours (캜)
-! TDEW       Dewpoint temperature (캜)
-! TGRO(I)    Hourly air temperature (캜)
-! TGROAV     Average daily canopy temperature (캜)
-! TGRODY     Average temperature during daylight hours (캜)
-! TMAX       Maximum daily temperature (캜)
-! TMIN       Minimum daily temperature (캜)
+!              soil temperature. (째C)
+! TAVG       Average daily temperature (째C)
+! TDAY       Average temperature during daylight hours (째C)
+! TDEW       Dewpoint temperature (째C)
+! TGRO(I)    Hourly air temperature (째C)
+! TGROAV     Average daily canopy temperature (째C)
+! TGRODY     Average temperature during daylight hours (째C)
+! TMAX       Maximum daily temperature (째C)
+! TMIN       Minimum daily temperature (째C)
 ! TS         Number of intermediate time steps (=24) 
 ! WINDHR(TS) Hourly wind speed (m/s)
 ! WINDHT     Reference height for wind speed (m)

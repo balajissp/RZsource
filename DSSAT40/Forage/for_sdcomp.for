@@ -93,8 +93,8 @@ C-----------------------------------------------------------------------
 ! FNINSD Maximum fraction of N for growing seed tissue based on temperature
 !          (g[N] / g[seed])
 ! GENSUM Protein plus lipid composition (%)
-! LIPOPT Temperature above which lipid composition is at a maximum (°C)
-! LIPTB  Temperature below which lipid composition is zero (°C)
+! LIPOPT Temperature above which lipid composition is at a maximum (Â°C)
+! LIPTB  Temperature below which lipid composition is zero (Â°C)
 ! LIPTEM Factor to reduce lipid composition based on temperature (0-1). 
 !          Normalized quadratic plateau function. 
 ! PLIGSD Proportion of seed tissue that is lignin (fraction)
@@ -124,7 +124,7 @@ C-----------------------------------------------------------------------
 ! SLOSUM Slope of temperature vs. SUMTEM line (1/oC)
 ! SUMTEM Factor which affects protein composition based on average 
 !          temperature. 
-! TAVG   Average daily temperature (°C)
+! TAVG   Average daily temperature (Â°C)
 ! TOTAL  Check for total composition equal to one. 
 !-----------------------------------------------------------------------
 !     END SUBROUTINE FOR_SDCOMP

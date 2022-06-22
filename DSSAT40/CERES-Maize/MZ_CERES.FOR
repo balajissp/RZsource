@@ -307,6 +307,7 @@ C       SAVE
      + WTSD, SDNO, WTSHE, SHELN,
      + SDDES, SWIDOT, WSHIDT, ASMDOT, DISLA, NPLTD, 
      + PPLTD, WLIDOT,WRIDOT,WSIDOT)
+      PRINT *, "ISTAGE AFTER MZCER > getput", ISTAGE
 C----------------------------------------------------------------------
 C
 C              Code for all Dynamic Variables
@@ -345,7 +346,7 @@ C----------------------------------------------------------------------
      &    XN,YRDOY,YRSIM,                                         !I
      &    CUMDTT,DTT,EARS,GPP,ISDATE, ISTAGE,MDATE,STGDOY,SUMDTT, !O
      &    XNTI,TLNO,XSTAGE,YREMRG,RUE,KCAN,KEP,P3)                !O
-
+      PRINT *, "ISTAGE AFTER MZCER > mzphen", ISTAGE
           !-------------------------------------------------------------
           !Call growth routine
           !-------------------------------------------------------------
@@ -371,6 +372,7 @@ C----------------------------------------------------------------------
      &  AREALF,WLIDOT,WSIDOT,WRIDOT,SWIDOT,PPLTD,ASMDOT,FILEIO,
      &  RLWR,SDSZ,RWUMX,BD,RUE, SENESCE, SLPF, P3,yrplt)
 
+      PRINT *, "ISTAGE AFTER MZCER > mz_grosub", ISTAGE
 
           !-------------------------------------------------------------
           !Call Root routine
@@ -381,12 +383,14 @@ C----------------------------------------------------------------------
      %        LL,DUL,NO3,NH4,NLAYR,PLTPOP,PORMIN,RLWR,SAT,SDEPTH, !I
      %        SHF,STGDOY,SW,SWFAC,YRDOY,                          !I
      %        RTDEP,RLV)            
+      PRINT *, "ISTAGE AFTER MZCER > rootgr", ISTAGE
 
           CALL MZ_OPGROW(CONTROL, ISWITCH,  
      &    CANHT, CANWH, HI, HIP, MDATE, NLAYR, NSTRES, PCNL, PLTPOP,
      &    PODNO, PODWT, RLV, RSTAGE, RTDEP, RTWT, SATFAC, SDSIZE, 
      &    SDWT, SEEDNO, SENESCE, SHELPC, SLA, STMWTO, SWFAC, TOPWT, 
      &    TURFAC, VSTAGE, WTCO, WTLF, WTLO, WTSO, XLAI, YRPLT)
+      PRINT *, "ISTAGE AFTER MZCER > opgrow", ISTAGE
 
           CALL MZ_OPNIT(CONTROL, ISWITCH, 
      &    YRPLT, MDATE, NLAYR, SENESCE,
@@ -401,6 +405,7 @@ C----------------------------------------------------------------------
      &    SWFAC, TOPWT, TURFAC,                           !Input
      &    WTNCAN, WTNUP, XGNP, XLAI, XN, YIELD, YRPLT,    !Input
      &    BWAH, SDWTAH,rootn*pltpop*10.0,RTWT*PLTPOP*10.0)!Output
+      PRINT *, "ISTAGE AFTER MZCER > opharv", ISTAGE
 C TEMP COMMENTED OUT BY LIWANG MA, RZWQM-DSSAT
         !IF (ISWDIS.EQ.'Y') THEN
 C         CALL PEST(CONTROL, ISWITCH, 
@@ -447,6 +452,7 @@ C-----------------------------------------------------------------------
      &    XN,YRDOY,YRSIM,                                         !I
      &    CUMDTT,DTT,EARS,GPP,ISDATE, ISTAGE,MDATE,STGDOY,SUMDTT, !O
      &    XNTI,TLNO,XSTAGE,YREMRG,RUE,KCAN,KEP,P3)                !O
+      PRINT *, "ISTAGE AFTER MZCER_dyn > MZ_PHENOL", ISTAGE
 
 
           CALL MZ_GROSUB (NOUTDO,ISWNIT,ISWWAT,IDETO,DYNAMIC,
@@ -470,6 +476,7 @@ C-----------------------------------------------------------------------
      &  CANHT,CANWH,VSTAGE,RSTAGE,PCNGRN,SATFAC,
      &  AREALF,WLIDOT,WSIDOT,WRIDOT,SWIDOT,PPLTD,ASMDOT,FILEIO,
      &  RLWR,SDSZ,RWUMX,BD,RUE, SENESCE, SLPF, P3,yrplt)
+      PRINT *, "ISTAGE AFTER MZCER_dyn > MZ_GROSUB", ISTAGE
                           
 
           CALL MZ_ROOTGR (DYNAMIC,ISWNIT,                         !C
@@ -477,6 +484,7 @@ C-----------------------------------------------------------------------
      %        LL,DUL,NO3,NH4,NLAYR,PLTPOP,PORMIN,RLWR,SAT,SDEPTH, !I
      %        SHF,STGDOY,SW,SWFAC,YRDOY,                          !I
      %        RTDEP,RLV)            
+      PRINT *, "ISTAGE AFTER MZCER_dyn > MZ_ROOTGR", ISTAGE
 
           CALL MZ_OPGROW(CONTROL, ISWITCH,  
      &    CANHT, CANWH, HI, HIP, MDATE, NLAYR, NSTRES, PCNL, PLTPOP,
@@ -498,6 +506,7 @@ C-----------------------------------------------------------------------
      &    SWFAC, TOPWT, TURFAC,                           !Input
      &    WTNCAN, WTNUP, XGNP, XLAI, XN, YIELD, YRPLT,    !Input
      &    BWAH, SDWTAH,rootn*pltpop*10.0,RTWT*PLTPOP*10.0)!Output
+      PRINT *, "ISTAGE AFTER MZCER_dyn > MZ_OPHARV", ISTAGE
 
 C----------------------------------------------------------------------
 C----------------------------------------------------------------------
@@ -552,6 +561,7 @@ C----------------------------------------------------------------------
      &    XN,YRDOY,YRSIM,                                         !I
      &    CUMDTT,DTT,EARS,GPP,ISDATE, ISTAGE,MDATE,STGDOY,SUMDTT, !O
      &    XNTI,TLNO,XSTAGE,YREMRG,RUE,KCAN,KEP,P3)                !O
+      PRINT *, "ISTAGE AFTER MZCER_dyn_int > MZ_PHENOL", ISTAGE
           ENDIF
         ENDIF
           !------------------------------------------------------------
@@ -579,6 +589,7 @@ C----------------------------------------------------------------------
      &      CANHT,CANWH,VSTAGE,RSTAGE,PCNGRN,SATFAC,
      &      AREALF,WLIDOT,WSIDOT,WRIDOT,SWIDOT,PPLTD,ASMDOT,FILEIO,
      &      RLWR,SDSZ,RWUMX,BD,RUE, SENESCE, SLPF, P3,yrplt)
+      PRINT *, "ISTAGE AFTER MZCER_lt6 > MZ_GROSUB", ISTAGE
         ELSE
           UNO3 = 0.0
           UNH4 = 0.0
@@ -595,6 +606,7 @@ c          IF (ISWWAT .EQ. 'Y') THEN
      %        LL,DUL,NO3,NH4,NLAYR,PLTPOP,PORMIN,RLWR,SAT,SDEPTH, !I
      %        SHF,STGDOY,SW,SWFAC,YRDOY,                          !I
      %        RTDEP,RLV)            
+      PRINT *, "ISTAGE AFTER MZCER > MZ_ROOTGR_iswwt", ISTAGE
 c          ENDIF
 
 C----------------------------------------------------------------------
@@ -631,6 +643,7 @@ C----------------------------------------------------------------------
      &  CANHT,CANWH,VSTAGE,RSTAGE,PCNGRN,SATFAC,
      &  AREALF,WLIDOT,WSIDOT,WRIDOT,SWIDOT,PPLTD,ASMDOT,FILEIO,
      &  RLWR,SDSZ,RWUMX,BD,RUE, SENESCE, SLPF, P3,yrplt)
+      PRINT *, "ISTAGE AFTER MZCER_dyn_out > MZ_GROSUB", ISTAGE
 
         ENDIF   
 
@@ -652,7 +665,7 @@ C----------------------------------------------------------------------
      &    SWFAC, TOPWT, TURFAC,                           !Input
      &    WTNCAN, WTNUP, XGNP, XLAI, XN, YIELD, YRPLT,    !Input
      &    BWAH, SDWTAH,rootn*pltpop*10.0,RTWT*PLTPOP*10.0)!Output
-
+      PRINT *, "ISTAGE AFTER MZCER_dyn_out > MZ_opharv", ISTAGE
       IF (ISWDIS.EQ.'Y') THEN
         CALL PEST(CONTROL, ISWITCH, 
      &    AREALF, CLW, CSW, LAGSD, LNGPEG, NR2, CARBO,    !Input
@@ -693,7 +706,7 @@ C----------------------------------------------------------------------
      &  CANHT,CANWH,VSTAGE,RSTAGE,PCNGRN,SATFAC,
      &  AREALF,WLIDOT,WSIDOT,WRIDOT,SWIDOT,PPLTD,ASMDOT,FILEIO,
      &  RLWR,SDSZ,RWUMX,BD,RUE, SENESCE, SLPF, P3,yrplt)
-
+      PRINT *, "ISTAGE AFTER MZCER_dyn_final > MZ_GROSUB", ISTAGE
         CALL MZ_OPGROW(CONTROL, ISWITCH,  
      &    CANHT, CANWH, HI, HIP, MDATE, NLAYR, NSTRES, PCNL, PLTPOP,
      &    PODNO, PODWT, RLV, RSTAGE, RTDEP, RTWT, SATFAC, SDSIZE, 
@@ -713,7 +726,7 @@ C----------------------------------------------------------------------
      &    SWFAC, TOPWT, TURFAC,                           !Input
      &    WTNCAN, WTNUP, XGNP, XLAI, XN, YIELD, YRPLT,    !Input
      &    BWAH, SDWTAH,rootn*pltpop*10.0,RTWT*PLTPOP*10.0)!Output
-
+      PRINT *, "ISTAGE AFTER MZCER_dyn_fin > MZ_opharv", ISTAGE
         CALL HRes_Ceres(CONTROL,SOILPROP,
      &    CROP, GRNWT, HARVFRAC, NLAYR, PLTPOP, PODWT,    !Input
      &    RLV, ROOTN, RTWT, SENESCE, STOVN, STOVWT, WTNSD,!Input

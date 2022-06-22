@@ -403,14 +403,6 @@ C MODIFIED BY LIWANG MA, RZWQM-DSSAT
         REAL REFET, SKC, KCBMIN, KCBMAX, KCB, KE, KC
       End Type SPAMType
 
-!     Data transferred from CROPGRO routine 
-      TYPE PlantType
-        REAL CANHT, CANWH, DXR57, EXCESS,
-     &    PLTPOP, RNITP, SLAAD, XPOD
-        REAL BIOMAS
-        INTEGER NR5, iSTAGE, iSTGDOY
-        CHARACTER*10 iSTNAME
-      END TYPE PlantType
 
 !     Data transferred from management routine 
       Type MgmtType
@@ -459,7 +451,7 @@ C MODIFIED BY LIWANG MA, RZWQM-DSSAT
         Type (ControlType) CONTROL
         Type (SwitchType)  ISWITCH
 C        Type (OutputType)  OUTPUT
-        Type (PlantType)   PLANT
+C        Type (PlantType)   PLANT
         Type (MgmtType)    MGMT
         Type (NiType)      NITR
         Type (OrgCType)    ORGC
@@ -635,19 +627,19 @@ C      END SUBROUTINE PUT_OUTPUT
         Case DEFAULT; ERR = .TRUE.
         END SELECT
 
-      Case ('PLANT')
-        SELECT CASE (VarName)
-        Case ('BIOMAS'); Value = SAVE_data % PLANT % BIOMAS
-        Case ('CANHT') ; Value = SAVE_data % PLANT % CANHT
-        Case ('CANWH') ; Value = SAVE_data % PLANT % CANWH
-        Case ('DXR57') ; Value = SAVE_data % PLANT % DXR57
-        Case ('EXCESS'); Value = SAVE_data % PLANT % EXCESS
-        Case ('PLTPOP'); Value = SAVE_data % PLANT % PLTPOP
-        Case ('RNITP') ; Value = SAVE_data % PLANT % RNITP
-        Case ('SLAAD') ; Value = SAVE_data % PLANT % SLAAD
-        Case ('XPOD')  ; Value = SAVE_data % PLANT % XPOD
-        Case DEFAULT; ERR = .TRUE.
-        END SELECT
+C       Case ('PLANT')
+C         SELECT CASE (VarName)
+C         Case ('BIOMAS'); Value = SAVE_data % PLANT % BIOMAS
+C         Case ('CANHT') ; Value = SAVE_data % PLANT % CANHT
+C         Case ('CANWH') ; Value = SAVE_data % PLANT % CANWH
+C         Case ('DXR57') ; Value = SAVE_data % PLANT % DXR57
+C         Case ('EXCESS'); Value = SAVE_data % PLANT % EXCESS
+C         Case ('PLTPOP'); Value = SAVE_data % PLANT % PLTPOP
+C         Case ('RNITP') ; Value = SAVE_data % PLANT % RNITP
+C         Case ('SLAAD') ; Value = SAVE_data % PLANT % SLAAD
+C         Case ('XPOD')  ; Value = SAVE_data % PLANT % XPOD
+C         Case DEFAULT; ERR = .TRUE.
+C         END SELECT
 
       Case ('MGMT')
         SELECT CASE (VarName)
@@ -759,19 +751,19 @@ C      END SUBROUTINE PUT_OUTPUT
         Case DEFAULT; ERR = .TRUE.
         END SELECT
 
-      Case ('PLANT')
-        SELECT CASE (VarName)
-        Case ('BIOMAS'); SAVE_data % PLANT % BIOMAS = Value
-        Case ('CANHT');  SAVE_data % PLANT % CANHT  = Value
-        Case ('CANWH');  SAVE_data % PLANT % CANWH  = Value
-        Case ('DXR57');  SAVE_data % PLANT % DXR57  = Value
-        Case ('EXCESS'); SAVE_data % PLANT % EXCESS = Value
-        Case ('PLTPOP'); SAVE_data % PLANT % PLTPOP = Value
-        Case ('RNITP');  SAVE_data % PLANT % RNITP  = Value
-        Case ('SLAAD');  SAVE_data % PLANT % SLAAD  = Value
-        Case ('XPOD');   SAVE_data % PLANT % XPOD   = Value
-        Case DEFAULT; ERR = .TRUE.
-        END SELECT
+C       Case ('PLANT')
+C         SELECT CASE (VarName)
+C         Case ('BIOMAS'); SAVE_data % PLANT % BIOMAS = Value
+C         Case ('CANHT');  SAVE_data % PLANT % CANHT  = Value
+C         Case ('CANWH');  SAVE_data % PLANT % CANWH  = Value
+C         Case ('DXR57');  SAVE_data % PLANT % DXR57  = Value
+C         Case ('EXCESS'); SAVE_data % PLANT % EXCESS = Value
+C         Case ('PLTPOP'); SAVE_data % PLANT % PLTPOP = Value
+C         Case ('RNITP');  SAVE_data % PLANT % RNITP  = Value
+C         Case ('SLAAD');  SAVE_data % PLANT % SLAAD  = Value
+C         Case ('XPOD');   SAVE_data % PLANT % XPOD   = Value
+C         Case DEFAULT; ERR = .TRUE.
+C         END SELECT
 
       Case ('MGMT')
         SELECT CASE (VarName)
@@ -909,13 +901,13 @@ C      END SUBROUTINE PUT_OUTPUT
       ERR = .FALSE.
 
       SELECT CASE (ModuleName)
-      Case ('PLANT')
-        SELECT CASE (VarName)
-        Case ('NR5');  Value = SAVE_data % PLANT % NR5
-        Case ('iSTAGE');  Value = SAVE_data % PLANT % iSTAGE
-        Case ('iSTGDOY'); Value = SAVE_data % PLANT % iSTGDOY
-        Case DEFAULT; ERR = .TRUE.
-        END SELECT
+C       Case ('PLANT')
+C         SELECT CASE (VarName)
+C         Case ('NR5');  Value = SAVE_data % PLANT % NR5
+C         Case ('iSTAGE');  Value = SAVE_data % PLANT % iSTAGE
+C         Case ('iSTGDOY'); Value = SAVE_data % PLANT % iSTGDOY
+C         Case DEFAULT; ERR = .TRUE.
+C         END SELECT
 
       Case Default; ERR = .TRUE.
       END SELECT
@@ -942,13 +934,13 @@ C      END SUBROUTINE PUT_OUTPUT
       ERR = .FALSE.
 
       SELECT CASE (ModuleName)
-      Case ('PLANT')
-        SELECT CASE (VarName)
-        Case ('NR5');  SAVE_data % PLANT % NR5  = Value
-        Case ('iSTAGE');  SAVE_data % PLANT % iSTAGE  = Value
-        Case ('iSTGDOY'); SAVE_data % PLANT % iSTGDOY = Value
-        Case DEFAULT; ERR = .TRUE.
-        END SELECT
+C       Case ('PLANT')
+C         SELECT CASE (VarName)
+C         Case ('NR5');  SAVE_data % PLANT % NR5  = Value
+C         Case ('iSTAGE');  SAVE_data % PLANT % iSTAGE  = Value
+C         Case ('iSTGDOY'); SAVE_data % PLANT % iSTGDOY = Value
+C         Case DEFAULT; ERR = .TRUE.
+C         END SELECT
 
       Case DEFAULT; ERR = .TRUE.
       END SELECT
@@ -981,11 +973,11 @@ C      END SUBROUTINE PUT_OUTPUT
         Case DEFAULT; ERR = .TRUE.
         END SELECT
 
-      Case ('PLANT')
-        SELECT CASE (VarName)
-        Case ('iSTNAME');  Value = SAVE_data % PLANT % iSTNAME
-        Case DEFAULT; ERR = .TRUE.
-        END SELECT
+C       Case ('PLANT')
+C         SELECT CASE (VarName)
+C         Case ('iSTNAME');  Value = SAVE_data % PLANT % iSTNAME
+C         Case DEFAULT; ERR = .TRUE.
+C         END SELECT
 
       Case Default; ERR = .TRUE.
       END SELECT
@@ -1017,11 +1009,11 @@ C      END SUBROUTINE PUT_OUTPUT
         Case DEFAULT; ERR = .TRUE.
         END SELECT
 
-      Case ('PLANT')
-        SELECT CASE (VarName)
-        Case ('iSTNAME');  SAVE_data % PLANT % iSTNAME = Value
-        Case DEFAULT; ERR = .TRUE.
-        END SELECT
+C       Case ('PLANT')
+C         SELECT CASE (VarName)
+C         Case ('iSTNAME');  SAVE_data % PLANT % iSTNAME = Value
+C         Case DEFAULT; ERR = .TRUE.
+C         END SELECT
 
       Case DEFAULT; ERR = .TRUE.
       END SELECT

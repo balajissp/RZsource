@@ -190,11 +190,11 @@ C     EO=ET0
 ! SBZCON   Stefan Boltzmann constant = 4.903E-9 (MJ/m2/d)
 ! SHAIR    = 1005.0
 ! SRAD    Solar radiation (MJ/m2-d)
-! TAVG    Average daily temperature (캜)
-! TDEW    Dewpoint temperature (캜)
+! TAVG    Average daily temperature (째C)
+! TDEW    Dewpoint temperature (째C)
 ! TK4     Temperature to 4th power ((oK)**4)
-! TMAX    Maximum daily temperature (캜)
-! TMIN    Minimum daily temperature (캜)
+! TMAX    Maximum daily temperature (째C)
+! TMIN    Minimum daily temperature (째C)
 ! VHCAIR
 ! VPD     Vapor pressure deficit (Pa)
 ! VPSAT   Saturated vapor pressure of air (Pa)
@@ -486,9 +486,9 @@ C=======================================================================
 ! SALB    Bare soil albedo (fraction)
 ! SLANG   Solar radiation 
 ! SRAD    Solar radiation (MJ/m2-d)
-! TD      Approximation of average daily temperature (튏)
-! TMAX    Maximum daily temperature (캜)
-! TMIN    Minimum daily temperature (캜)
+! TD      Approximation of average daily temperature (쨘C)
+! TMAX    Maximum daily temperature (째C)
+! TMIN    Minimum daily temperature (째C)
 ! XHLAI   Leaf area index (m2[leaf] / m2[ground])
 !-----------------------------------------------------------------------
 !     END SUBROUTINE PETPT
@@ -612,11 +612,11 @@ C     Pa to kPa. Equation for RNETMG converts from MJ/m2/d to mm/day.
 ! SBZCON   Stefan Boltzmann constant = 4.093E-9 (MJ/m2/d)
 ! SHAIR    = 1005.0 
 ! SRAD    Solar radiation (MJ/m2-d)
-! TAVG    Average daily temperature (캜)
-! TDEW    Dewpoint temperature (캜)
+! TAVG    Average daily temperature (째C)
+! TDEW    Dewpoint temperature (째C)
 ! TK4     Temperature to 4th power ((oK)**4)
-! TMAX    Maximum daily temperature (캜)
-! TMIN    Minimum daily temperature (캜)
+! TMAX    Maximum daily temperature (째C)
+! TMIN    Minimum daily temperature (째C)
 ! VHCAIR   
 ! VPD     Vapor pressure deficit (Pa)
 ! VPSAT   Saturated vapor pressure of air (Pa)
